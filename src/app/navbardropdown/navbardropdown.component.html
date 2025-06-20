@@ -1,0 +1,41 @@
+<div class="mt-[116px]">
+    <swiper-container
+    [navigation]="true"
+    [loop]="true"
+    class="w-full h-auto"
+  >
+    <ng-container *ngFor="let item of defaultSlides">
+      <swiper-slide>
+        <img [src]="item.img" [alt]="item.alt" class="w-full h-auto object-cover" />
+      </swiper-slide>
+    </ng-container>
+  </swiper-container>
+  </div>
+  <!-- cards -->
+  <main>
+    <section class="">
+      <div class="container mx-auto px-0">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-2">
+          <div
+            *ngFor="let feature of features"
+            class="flex items-center bg-gray-100 p-4 lg:p-2 md:p-3 shadow-md cursor-pointer"
+            [routerLink]="feature.route" 
+          >
+       <i [class]="feature.icon + ' text-xl mr-4 p-2'"></i>
+            <p class="text-gray-700 font-bold text-sm text-nowrap">
+              {{ feature.text }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  
+  
+  
+  
+  
+  
+  
+  
+  

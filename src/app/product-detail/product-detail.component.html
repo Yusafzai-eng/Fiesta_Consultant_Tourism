@@ -1,0 +1,283 @@
+ 
+
+      <div class="mt-36">
+   <h1 class="lg:text-2xl text-xl font-bold text-center mt-5" *ngIf="productDetails">
+  {{ productDetails.producttitle }}
+</h1>
+<div *ngIf="!productDetails && !isloader" class="text-red-500 text-center mt-5">
+  Failed to load product details.
+</div>
+      </div>
+
+<div class="flex-col flex lg:flex-row justify-center lg:space-x-8  ">
+  
+  <div class="-mt-16" *ngIf="productDetails?.thumbnail?.length > 0; else noImages">
+    
+    <div class="flex flex-col justify-center">
+      
+      <div class="mt-2 swiper-container  relative overflow-hidden bg-cover mx-auto ">
+       
+        <div class="flex justify-center">
+          
+          <div class="lg:w-[40vw] w-[90vw] h-auto mt-20">
+            
+            <!-- Swiper Container -->
+            <swiper-container navigation="true" loop="true" style="--swiper-navigation-color:#fff;" class="h-full w-full ">
+              <swiper-slide *ngFor="let thumb of productDetails.thumbnail; let i = index" class="bg-cover bg-center">
+                <img
+                  [src]="'http://localhost:4000/uploads/' + thumb"
+                  [alt]="'Product Image ' + (i + 1)"
+                  class="w-full rounded-md mt-4"
+                  loading="lazy"
+                />
+              </swiper-slide>
+            </swiper-container>
+          </div>
+        </div>
+        
+      </div>
+      <div class=" flex gap-3 mx-auto ">
+        <div class="h-20 lg:w-[13vw] md:w-[27vw] bg-cover  flex mt-6" *ngFor="let thumb of productDetails.thumbnail; let i = index">
+          <img
+            [src]="'http://localhost:4000/uploads/' + thumb"
+            [alt]="'Product Image ' + (i + 1)"
+            class="w-full h-full bg-cover rounded-md cursor-pointer "
+          />
+        </div>
+      </div>
+          
+    </div>
+  </div>
+  <ng-template #noImages>
+    <p>No images available.</p>
+  </ng-template>
+  <div class="flex justify-center  mt-9 py-4 px-5 " >
+    <div class="md:h-[73%] w-[95vw] lg:w-[36vw]   hover:shadow-2xl shadow-xl  px-1 sm:px-10 py-5">
+      <div class="flex flex-wrap justify-between text-center mt-5">
+        <div class="flex items-center mb-4" *ngFor="let item of button">
+          <i [ngClass]="item.icon" class=""></i>
+          <h1 class="mx-4 font-base text-xs md:text-base " [ngClass]="item.textClass">
+            {{ item.label }}
+            <span *ngIf="item.label === 'TourService'">: {{ productDetails.tourService }}</span>
+            <span *ngIf="item.label === 'Duration'">{{ productDetails.duration }} Hour</span>
+            <span *ngIf="item.label === ''">{{ productDetails.transportService }}</span>
+            <span *ngIf="item.label === 'PickUp'">{{ productDetails.pickUp }}</span>
+            <span *ngIf="item.label === 'Lang'">: {{productDetails.translatelanguage}}</span>
+            <span *ngIf="item.label === 'Free'">Wifi Available</span>
+            <span *ngIf="item.label === 'Adult'">{{ productDetails.adultBaseprice }}</span>
+            <span *ngIf="item.label === 'Child'">{{ productDetails.kidsBaseprice}}</span>
+          </h1>
+          
+        </div>
+       
+        
+       
+      </div>
+      <hr class="text-slate-500">
+      <div class="flex justify-between mt-3">
+        <p>Start From</p>
+        <p class="text-xl font-bold text-pink-600">AED {{productDetails.price}}</p>
+      </div>
+      
+      <div>
+        <!-- Conditional Rendering Based on isLoading -->
+        <div *ngIf="!isapi; else loadingTemplate">
+          <button
+            (click)="onBooknow()"
+            type="button"
+            class="bg-gradient-to-r from-pink-600 to-pink-500 text-white font-semibold py-2 px-24 w-full rounded-lg shadow-lg hover:from-pink-700 hover:to-pink-600 transition duration-150 ease-in-out"
+          >
+            Book Now
+          </button>
+        </div>
+      
+        <!-- Loading Template -->
+        <ng-template #loadingTemplate>
+          <div class="flex justify-center   items-center ">
+            <img
+              src="https://www.dubaitraveltourism.com/assets/images/widget-loader-lg.gif"
+              alt="Loading..."
+              class=""
+            />
+          </div>
+        </ng-template>
+      </div>
+      
+      <div class="mt-5 flex justify-center">
+        <img
+          src="https://imagedelivery.net/SwMP4f7rTNZkFOn4O9xPmg/cbe68dcf-dee3-4c33-3275-927ed5d40b00/public"
+          alt=""
+        />
+      </div>
+      
+
+
+<div *ngIf="form" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center z-50 transition-opacity duration-500 opacity-0" [ngClass]="{ 'opacity-100': form }">
+  <div class="bg-white p-6 rounded-xl shadow-xl w-full max-w-sm relative ">
+   
+    <h2 class="text-2xl font-semibold text-center text-white mb-4 rounded-md bg-pink-700">Welcome to YallahDubai</h2>
+    <button
+    (click)="form = false"
+    class="absolute top-2 rounded-md right-2 mt-4 text-white text-2xl font-bold bg-pink-700  h-8 w-8 flex justify-center items-center hover:bg-pink-800 transition duration-150 ease-in-out"
+    aria-label="Close"
+  >
+    &times;
+  </button>
+    <form class="space-y-4">
+      <!-- Form fields -->
+      <div class="mb-4">
+        <label for="Date" class="text-sm text-black mb-1 block">Select Date</label>
+        <input
+          id="Date"
+          name="Date"
+          [(ngModel)]="userobj.Date"
+          [min]="minDate"
+          placeholder="Enter your Date"
+          class="bg-gray-100 text-gray-800 border border-gray-300 rounded-md p-1 w-full focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-150 ease-in-out"
+          type="date"
+          required
+        />
+      </div>
+      
+
+      <div class="mb-4">
+        <label for="NoofAdult" class="text-sm text-black mb-1 block">No of Adults</label>
+        <input
+          id="NoofAdult"
+          name="NoofAdult"
+          [(ngModel)]="userobj.NoofAdult"
+          (ngModelChange)="onBookNow()"
+          placeholder="Enter number of adults"
+          class="bg-gray-100 text-slate-600 border border-gray-300 rounded-md p-1 w-full focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-150 ease-in-out"
+          type="number"
+          required
+        />
+      </div>
+
+      <div class="mb-4">
+        <label for="NoofChild" class="text-sm text-black mb-1 block">No of Children</label>
+        <input
+          id="NoofChild"
+          name="NoofChild"
+          [(ngModel)]="userobj.NoofChild"
+          (ngModelChange)="onBookNow()" 
+          placeholder="Enter number of children"
+          class="bg-gray-100 text-gray-800 border border-gray-300 rounded-md p-1 w-full focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-150 ease-in-out"
+          type="number"
+          required
+        />
+      </div>
+
+      <div class="mb-4">
+        <label for="TotalBill" class="text-sm text-black mb-1 block">Total Bill</label>
+        <div class="border-2 border-slate-300 rounded-md h-10 w-full flex items-center">
+          <p *ngIf="result !== null" class="text-xl text-gray-700 mx-4">{{ result }}</p>
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <label for="Transfer" class="text-sm text-black mb-1 block">Transfer Type</label>
+        <select
+          id="Transfer"
+          name="Transfer"
+          [(ngModel)]="userobj.Transfer"
+          class="bg-gray-100 text-gray-800 border border-gray-300 rounded-md p-1 w-full focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-150 ease-in-out"
+          required
+        >
+          <option value="" disabled>Select Transfer Type</option>
+          <option value="Private">Private</option>
+          <option value="Shared">Shared</option>
+        </select>
+      </div>
+
+      <div class="mb-4 flex justify-between">
+        <button
+          (click)="onsignup()"
+          type="button"
+          class="bg-gradient-to-r from-pink-800 to-pink-700 text-white font-semibold py-2 w-full rounded-lg shadow-lg hover:from-pink-500 hover:bg-pink-900 transition duration-150 ease-in-out"
+        >
+          Book Now
+        </button>
+        <!-- <button
+          (click)="onBookNow()"
+          type="button"
+          class="bg-gradient-to-r from-green-500 to-green-600 text-white font-semibold py-2 px-6 rounded-lg shadow-lg hover:from-green-600 hover:to-green-700 transition duration-150 ease-in-out"
+        >
+          Add Calculation
+        </button> -->
+      </div>
+    </form>
+
+    <!-- <button
+  (click)="form = false"
+  class="absolute top-2 right-2 text-white text-2xl font-bold bg-pink-700 rounded-full h-8 w-8 flex justify-center items-center hover:bg-pink-800 transition duration-150 ease-in-out"
+  aria-label="Close"
+>
+  &times;
+</button> -->
+
+  </div>
+</div>
+
+
+      
+    </div>
+  </div> 
+
+</div>
+
+
+<router-outlet></router-outlet>
+
+
+
+
+
+
+
+
+
+
+
+<div class="grid place-content-center">
+  
+<div class="flex justify-center w-[95vw] flex-col md:flex-row gap-6 p-6 ">
+  <!-- Main Content Section -->
+  <div class="md:w-[80vw] bg-white p-6 shadow-lg rounded-lg ">
+    <h1 class="text-2xl font-bold text-pink-700 mb-4">{{productDetails.producttitle}}</h1>
+ 
+<p class="text-gray-700 mb-4 text-justify" [ngClass]="{'line-clamp-5': !showMore}">
+  {{ productDetails.citydescription }}
+</p>
+<button
+  (click)="showMore = !showMore"
+  class="bg-pink-600 text-white px-4 py-2 rounded hover:bg-pink-700 transition"
+>
+  {{ showMore ? 'Read less...' : 'Read more...' }}
+</button>
+
+  </div>
+
+  <!-- Sidebar Section -->
+  <div class="md:w-1/5 bg-white p-4 shadow-lg rounded-lg text-center">
+    <h2 class="text-xl font-bold text-gray-800 mb-4">Why Book With Us?</h2>
+  
+    <a
+      *ngFor="let feature of features"
+      [routerLink]="feature.route"
+      class="flex items-center p-4 lg:p-2 md:p-3 hover:bg-gray-100 transition rounded"
+    >
+      <i [class]="feature.icon + ' text-xl p-2'"></i>
+      <p class="text-gray-700 font-bold text-sm text-nowrap">
+        {{ feature.text }}
+      </p>
+    </a>
+  </div>
+  
+</div>
+</div>
+
+  
+    
+  
+<router-outlet></router-outlet>

@@ -1,0 +1,226 @@
+
+<header class="bg-white  fixed top-0 w-full left-0 right-0 z-50">
+    <div class="container mx-auto flex flex-wrap text-center lg:justify-between md:justify-around  justify-around items-center py-4 ">
+      <!-- Logo and Contact Info -->
+      <div class="flex items-center ">
+       <div class="cursor-pointer">
+        <img routerLink="/main"
+        alt="Dubai Travel & Tourism Logo"
+        class="w-24"
+        height="50"
+        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRe3s7j5EwHBjg3cvCnXGnx29TEgK4v62h3F-9ly-WWuy5L91wxcTS7IHvuXLj5oN_Cjw&usqp=CAU"
+        width="150" 
+      />
+       </div>
+        <div class="ml-4 md:block hidden">
+            <div class="flex items-center space-x-2 cursor-pointer ">
+                <i class="fa-solid fa-phone rotate-45 text-xs text-pink-600"></i>
+                <p class="text-pink-700 font-bold text-xs sm:text-sm mt-1 hover:text-indigo-950  "(click)="openWhatsApp()">+971 54 540 4171</p>
+            </div>
+            <div class="flex items-center space-x-2 cursor-pointer" (click)="openWhatsApp()">
+              <i class="fa-brands fa-whatsapp text-green-700 text-lg"></i>
+              <p class="text-pink-700 font-bold text-sm sm:text-sm hover:text-indigo-950">+971 54 540 4171</p>
+            </div>
+            
+                        </div>
+
+
+                        <div class=" items-center space-x-4  sm:mt-0 hidden md:block">
+                            <div class="flex items-center space-x-2 mx-4">
+                                <i class="fa-solid fa-envelope text-pink-700"></i>
+                                    <p class="text-pink-700 hover:text-indigo-950 font-bold text-sm sm:text-sm">inquiryubaitravelotourism.com</p>
+                                </div>
+                            <div class="flex items-center space-x-2 mt- w-28  ">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSduKfXoMWOmScspj3hXVYULnzXNvRbWiKV-Q&s" alt="" srcset="">
+                                  <i class="fa-solid fa-bullseye text-green-600"></i>
+                                  <i class="fa-solid fa-bullseye text-green-600"></i>
+                                  <i class="fa-solid fa-bullseye text-green-600"></i>
+                                  <i class="fa-solid fa-bullseye text-green-600"></i>
+                                  <i class="fa-solid fa-bullseye text-green-600"></i>
+                              </div>
+                          
+                          </div>
+                          <!-- <div class="w-32 mx-7 hidden md:block ">
+                            <img class=" rounded-md w-full" src="https://imagedelivery.net/SwMP4f7rTNZkFOn4O9xPmg/6d7c0c86-06fa-4296-6a6b-1bf5f01c2d00/public" alt="" srcset="">
+                           </div> -->
+                   
+            
+      </div>
+  
+      <button
+        class="text-white block hidden  bg-pink-700 p-3 w-14 rounded-full focus:outline-none  md:block lg:hidden"
+        (click)="toggleMenu()"
+      >
+        <i [ngClass]="menuOpen ? 'fas fa-times' : 'fas fa-bars'" class="text-2xl"></i>
+      </button>
+      <div class="ml-4 md:hidden ">
+        <div class="flex items-center space-x-2 md:hidden">
+            <i class="fa-solid fa-phone rotate-45 text-xs text-pink-600"></i>
+            <p class="text-pink-700 font-bold text-xs sm:text-sm mt-1 hover:text-indigo-950">+971 54 540 4171</p>
+        </div>
+        <div class="flex items-center space-x-2">
+            <i class="fa-brands fa-whatsapp text-green-700 text-lg"></i>
+                        <p class="text-pink-700 font-bold text-sm sm:text-sm hover:text-indigo-950">+971 54 540 4171</p>
+        </div>
+        </div>
+      <nav
+        [ngClass]="{
+          'hidden': !menuOpen,
+          'block': menuOpen
+        }"
+        class="w-full relative lg:flex lg:items-center lg:w-auto mt-4 lg:mt-0  transition-all duration-300 ease-in-out"
+      >
+      
+      <ul class="font-medium text-start mx-5 flex flex-col lg:space-y-0 space-y-5 lg:flex-row lg:space-x-4 text-pink-600">
+        <li *ngFor="let link of menuLinks">
+          <a class="hover:text-indigo-950" [routerLink]="link.href">{{ link.name }}</a>
+        </li>
+        <li>
+          <button class="rounded-full bg-pink-700 text-white p-2">
+            <i class="fas fa-shopping-cart"></i>
+          </button>
+        </li>
+      </ul>
+      
+      
+      </nav>
+    </div>
+  </header>
+
+  <nav class="bg-pink-700  fixed md:top-[83px] top-20 w-full z-40">
+    <div class="container mx-auto px-6">
+      <!-- Desktop and tablet view -->
+      <div class="hidden md:flex justify-center items-center space-x-0 lg:space-x-2">
+        <div *ngFor="let link of links" class="hover:bg-white p-2 group">
+          <a
+            class="text-white group-hover:text-pink-700 font-medium text-xs px-2 py-1 rounded"
+            [href]="link.path"
+          >
+
+            {{ link.label }}
+          </a>
+        </div>
+      </div>
+  
+      <!-- Mobile view -->
+      <div class="md:hidden">
+        <div class="flex justify-between items-center">
+          <div class="flex space-x-2">
+            <div *ngFor="let link of links.slice(0, 2)" class="hover:bg-white p-2 group">
+              <a
+                class="text-white group-hover:text-pink-700 font-medium text-sm px-2 py-1 rounded"
+                [href]="link.path"
+                (click)="closeMenu()"
+              >
+                {{ link.label }}
+              </a>
+            </div>
+          </div>
+          <button
+            class="text-white focus:outline-none"
+            (click)="toggleMenu2()"
+            aria-label="Toggle menu"
+          >
+            <!-- Menu icon -->
+            <svg
+              class="w-6 h-6"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 6h16M4 12h16m-7 6h7"
+              />
+            </svg>
+          </button>
+        </div>
+  
+        <!-- Dropdown menu -->
+        <div *ngIf="isMenuOpen" class="mt-2 space-y-1 border-2 border-white">
+          <!-- Dynamically generated links -->
+          <div *ngFor="let link of links.slice(2)" class="hover:bg-white p-2 group">
+            <a
+              class="text-white border-2 border-white group-hover:text-pink-700 font-medium text-sm px-2 py-1 rounded block"
+              [href]="link.path"
+              (click)="closeMenu()"
+            >
+              {{ link.label }}
+            </a>
+          </div>
+  
+          <div class="hover:bg-white mx-2 space-y-2 group">
+            <h1
+              *ngFor="let item of menuItems"
+              (click)="item.action()"
+              class="text-white group-hover:text-pink-700 font-medium text-lg px-2 py-1 rounded block border-2 border-white"
+            >
+              {{ item.label }}
+            </h1>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+  
+    
+
+  
+    <router-outlet></router-outlet>
+
+
+
+   
+    
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <aside class="w-10  border- z-50 fixed right-0 top-[72%] transform -translate-y-1/2 space-y-2">
+      <a
+        *ngFor="let link of socialLinks; let i = index"
+        [href]="link.href"
+        [ngClass]="[
+          link.bgColor,
+          'block text-white p-2 rounded-sm text-center items-center',
+          i === 0 || i === socialLinks.length - 1 ? 'rounded-tl-[17px]' : ''
+        ]"
+      >
+        <i [class]="link.iconClass" class="text-xl"></i>
+      </a>
+    </aside>
+    
+
+
+
