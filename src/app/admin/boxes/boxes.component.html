@@ -1,0 +1,63 @@
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 my-6 mx-4">
+
+  <!-- Card Start -->
+ <div
+  class="w-full p-3 border border-gray-200 rounded-lg shadow transition-all duration-500 transform hover:scale-105 hover:bg-indigo-800 cursor-pointer hover:text-white group"
+  *ngFor="let card of cards"
+>
+
+    <div class="flex justify-between gap-8 md:gap-16">
+      <div>
+        <div class="text-sm text-slate-500 transition-all duration-300 group-hover:text-white">
+          <span>{{ card.title }}</span>
+        </div>
+        <div class="text-2xl font-bold text-gray-900 transition-all duration-300 group-hover:text-white">
+          <span>{{ card.value }}</span>
+        </div>
+      </div>
+      <div>
+<i class="{{ card.icon }} text-2xl transition-all duration-300 group-hover:text-white" [style.color]="card.iconColor"></i>
+      </div>
+    </div>
+
+    <hr class="mt-2 border-gray-200 group-hover:border-white">
+
+    <div class="mt-2 flex items-end justify-between">
+      <div
+        class="text-sm px-2 py-1 rounded-full font-semibold flex items-center gap-1 transition-all duration-300"
+        [ngClass]="[
+          card.tagBg,
+          card.tagText,
+          'group-hover:bg-white',
+          'group-hover:text-pink-600'
+        ]"
+      >
+        <div>{{ card.tag }}</div>
+      </div>
+
+      <!-- Chart (Static) -->
+      <div class="relative w-24 h-10 overflow-hidden">
+        <svg viewBox="0 0 100 40" class="absolute w-full h-full">
+          <path
+            d="M0,30 C20,10 40,25 60,15 80,25 100,10 100,40 L0,40 Z"
+            [attr.fill]="card.chartColor"
+            fill-opacity="0.6"
+          />
+        </svg>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="flex justify-end px-4">
+  <select [(ngModel)]="selectedMonth" (change)="loadData()"
+    class="border border-gray-300 rounded px-3 py-1 text-sm focus:outline-none focus:ring">
+    <option value="all">All Months</option>
+    <option *ngFor="let m of months" [value]="m.value">{{ m.name }}</option>
+  </select>
+</div>
+
+
+
+
+
+

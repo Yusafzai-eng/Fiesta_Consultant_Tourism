@@ -1,0 +1,87 @@
+<div class="max-w-4xl mx-auto p-8 bg-white shadow-xl rounded-2xl border border-slate-300">
+  <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b pb-2">✏️ Edit Product</h2>
+
+  <form (ngSubmit)="updateProduct()" #editForm="ngForm" class="space-y-5">
+
+    <!-- Reusable input block -->
+    <div *ngFor="let field of [
+      {label: 'Product Title', key: 'producttitle'},
+      {label: 'City Name', key: 'cityName'},
+      {label: 'Category', key: 'categorie'},
+      {label: 'Duration', key: 'duration'},
+      {label: 'Pick Up', key: 'pickUp'},
+      {label: 'Price', key: 'price', type: 'number'},
+      {label: 'Discount Percentage', key: 'discountPercentage', type: 'number'},
+      {label: 'Discounted Total', key: 'discountedTotal', type: 'number'},
+      {label: 'Adult Base Price', key: 'adultBaseprice', type: 'number'},
+      {label: 'Kids Base Price', key: 'kidsBaseprice', type: 'number'},
+      {label: 'Quantity', key: 'quantity', type: 'number'},
+      {label: 'Prime', key: 'prime', type: 'number'},
+      {label: 'Non-Prime', key: 'nonprime', type: 'number'},
+      {label: 'Private Transfer Price', key: 'privatetransferprice', type: 'number'},
+      {label: 'Private Transfer Person', key: 'privatetransferperson', type: 'number'},
+      {label: 'Transport Service', key: 'transportService'},
+      {label: 'Tour Service', key: 'tourService'},
+      {label: 'Language', key: 'translatelanguage'},
+      {label: 'Wifi', key: 'wifi'}
+    ]">
+      <label class="block text-slate-700 font-semibold mb-1">{{ field.label }}</label>
+      <input
+        [(ngModel)]="productData[field.key]"
+        [name]="field.key"
+        [type]="field.type || 'text'"
+        class="w-full px-4 py-2 rounded-lg border border-slate-300 bg-slate-50 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-400" />
+    </div>
+
+    <!-- Description Fields -->
+    <div>
+      <label class="block text-slate-700 font-semibold mb-1">City Description</label>
+      <textarea [(ngModel)]="productData.citydescription" name="citydescription" rows="3"
+                class="w-full px-4 py-2 rounded-lg border border-slate-300 bg-slate-50 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-400"></textarea>
+    </div>
+
+    <div>
+      <label class="block text-slate-700 font-semibold mb-1">Product Description</label>
+      <textarea [(ngModel)]="productData.productdescription" name="productdescription" rows="3"
+                class="w-full px-4 py-2 rounded-lg border border-slate-300 bg-slate-50 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-400"></textarea>
+    </div>
+
+    <!-- City Image -->
+    <div>
+      <label class="block text-slate-700 font-semibold mb-1">City Image</label>
+      <div class="mb-2">
+        <img *ngIf="productData.cityImage" [src]="'http://localhost:4000/uploads/' + productData.cityImage"
+             class="w-40 h-28 rounded border border-slate-300 shadow" />
+      </div>
+      <input type="file" (change)="onCityImageChange($event)"
+             class="text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200" />
+      <div *ngIf="cityImageFile" class="text-sm text-slate-600 mt-1">
+        Selected: {{ cityImageFile.name }}
+      </div>
+    </div>
+
+    <!-- Thumbnails -->
+    <div>
+      <label class="block text-slate-700 font-semibold mb-1">Product Thumbnails</label>
+      <div class="flex flex-wrap gap-3 mb-2">
+        <img *ngFor="let thumb of productData.thumbnail"
+             [src]="'http://localhost:4000/uploads/' + thumb"
+             class="w-24 h-16 border border-slate-300 rounded shadow-sm" />
+      </div>
+      <input type="file" (change)="onThumbnailChange($event)" multiple
+             class="text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200" />
+      <ul class="text-sm mt-2 list-disc ml-5" *ngIf="thumbnailFiles.length">
+        <li *ngFor="let file of thumbnailFiles">{{ file.name }}</li>
+      </ul>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="pt-4 text-right">
+      <button type="submit"
+              class="bg-slate-800 text-white font-semibold px-6 py-2 rounded-lg shadow hover:bg-slate-900 transition">
+        Update Product
+      </button>
+    </div>
+
+  </form>
+</div>

@@ -21,7 +21,7 @@ export class CityComponent implements OnInit {
   constructor(private http: HttpClient, private sanitizer: DomSanitizer) {}
 
   ngOnInit(): void {
-    this.generateSkeletons(6); // or any default expected count
+    this.generateSkeletons(12); // or any default expected count
     this.fetchProductData();
   }
 
@@ -31,7 +31,7 @@ export class CityComponent implements OnInit {
 
   fetchProductData() {
     this.isloader = true;
-    this.generateSkeletons(6); // Optional: show 6 skeletons while loading
+    this.generateSkeletons(12); // Optional: show 6 skeletons while loading
     this.http.get<any>('http://localhost:4000/api/home').subscribe(response => {
       this.cities = response.distinctCities.map((product: any) => ({
         id: product.id,

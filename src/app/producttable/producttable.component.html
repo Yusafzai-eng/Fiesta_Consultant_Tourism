@@ -1,24 +1,22 @@
 <div class="mt-32  ">
-    <img src="https://d1i3enf1i5tb1f.cloudfront.net/Imagewise-Banner/206/summer-in-azerbaijan.jpg" 
-         alt="" 
-         class=" ">
+<img src="undefined" data-srcset="https://imagedelivery.net/SwMP4f7rTNZkFOn4O9xPmg/c4281d45-5ad9-45a0-01d2-2bcd7ae04700/public" width="100%" class="object-fit" alt="Leading Tour Operator &amp; Destination Management Company" srcset="https://imagedelivery.net/SwMP4f7rTNZkFOn4O9xPmg/c4281d45-5ad9-45a0-01d2-2bcd7ae04700/public">         
   </div>
   
   
   
   <div class="lg:flex md:items-center md:space-x-3 justify-center">
-    <div class="grid place-content-center items-center mt-14 overflow-x-auto">
+    <div class="grid place-content-center items-center mt-10 overflow-x-auto">
       <!-- Table Container -->
       <div class="min-w-[80vw] overflow-x-auto rounded-lg bg-white shadow-lg">
         <table class="w-full">
           <!-- Table Header -->
-          <thead class="bg-slate-800 text-white">
+          <thead class="bg-pink-700 text-white">
             <tr>
               <th class="px-6 py-4 text-left font-semibold">ID</th>
               <th class="px-6 py-4 text-left font-semibold">Image</th>
               <th class="px-6 py-4 text-left font-semibold">Title</th>
-              <th class="px-6 py-4 text-left font-semibold">No. of Adults</th>
-              <th class="px-6 py-4 text-left font-semibold">No. of Children</th>
+              <th class="px-6 py-4 text-left font-semibold">No.of Adults</th>
+              <th class="px-6 py-4 text-left font-semibold">No.of Children</th>
               <th class="px-6 py-4 text-left font-semibold">Transfer</th>
               <th class="px-6 py-4 text-left font-semibold">Total</th>
               <th class="px-6 py-4 text-left font-semibold">Actions</th>
@@ -32,19 +30,15 @@
               <!-- Image -->
               <td class="px-4 py-4 border-2 border-slate-200">
                 <div *ngIf="productData?.thumbnail?.length > 0" class="w-20">
-                  <img
-                    [src]="'http://localhost:4000/uploads/' + productData.thumbnail[0]"
-                    alt="Product Image"
-                    class="w-full rounded-md"
-                    loading="lazy"
-                  />
+                <img [src]="'http://localhost:4000/uploads/' + productData.thumbnail[1]">
+
                 </div>
               </td>
              
               <!-- Title -->
               <td class="px-6 py-4 text-indigo-600 border-2 border-slate-200 max-w-[300px] truncate">
                 <a [routerLink]="['/products', productData?._id]">
-                  {{ productData?.producttitle }}
+{{ productData.producttitle }}
     
                </a>
               </td>

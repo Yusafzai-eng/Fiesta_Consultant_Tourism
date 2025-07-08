@@ -1,13 +1,13 @@
  
 
-      <div class="mt-36">
-   <h1 class="lg:text-2xl text-xl font-bold text-center mt-5" *ngIf="productDetails">
+<div class="mt-36">
+  <h1 class="lg:text-2xl text-xl font-bold text-center mt-5" *ngIf="productDetails">
   {{ productDetails.producttitle }}
 </h1>
 <div *ngIf="!productDetails && !isloader" class="text-red-500 text-center mt-5">
   Failed to load product details.
 </div>
-      </div>
+</div>
 
 <div class="flex-col flex lg:flex-row justify-center lg:space-x-8  ">
   
@@ -16,7 +16,7 @@
     <div class="flex flex-col justify-center">
       
       <div class="mt-2 swiper-container  relative overflow-hidden bg-cover mx-auto ">
-       
+      
         <div class="flex justify-center">
           
           <div class="lg:w-[40vw] w-[90vw] h-auto mt-20">
@@ -52,8 +52,8 @@
     <p>No images available.</p>
   </ng-template>
   <div class="flex justify-center  mt-9 py-4 px-5 " >
-    <div class="md:h-[73%] w-[95vw] lg:w-[36vw]   hover:shadow-2xl shadow-xl  px-1 sm:px-10 py-5">
-      <div class="flex flex-wrap justify-between text-center mt-5">
+    <div class="md:h-[80%] w-[95vw] lg:w-[36vw]   hover:shadow-2xl shadow-xl  px-1 sm:px-10 py-5">
+      <div class="flex flex-wrap justify-between text-center mt-">
         <div class="flex items-center mb-4" *ngFor="let item of button">
           <i [ngClass]="item.icon" class=""></i>
           <h1 class="mx-4 font-base text-xs md:text-base " [ngClass]="item.textClass">
@@ -69,9 +69,9 @@
           </h1>
           
         </div>
-       
+      
         
-       
+      
       </div>
       <hr class="text-slate-500">
       <div class="flex justify-between mt-3">
@@ -114,7 +114,7 @@
 
 <div *ngIf="form" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center z-50 transition-opacity duration-500 opacity-0" [ngClass]="{ 'opacity-100': form }">
   <div class="bg-white p-6 rounded-xl shadow-xl w-full max-w-sm relative ">
-   
+  
     <h2 class="text-2xl font-semibold text-center text-white mb-4 rounded-md bg-pink-700">Welcome to YallahDubai</h2>
     <button
     (click)="form = false"
@@ -198,23 +198,11 @@
         >
           Book Now
         </button>
-        <!-- <button
-          (click)="onBookNow()"
-          type="button"
-          class="bg-gradient-to-r from-green-500 to-green-600 text-white font-semibold py-2 px-6 rounded-lg shadow-lg hover:from-green-600 hover:to-green-700 transition duration-150 ease-in-out"
-        >
-          Add Calculation
-        </button> -->
+    
       </div>
     </form>
 
-    <!-- <button
-  (click)="form = false"
-  class="absolute top-2 right-2 text-white text-2xl font-bold bg-pink-700 rounded-full h-8 w-8 flex justify-center items-center hover:bg-pink-800 transition duration-150 ease-in-out"
-  aria-label="Close"
->
-  &times;
-</button> -->
+
 
   </div>
 </div>
@@ -246,7 +234,7 @@
   <div class="md:w-[80vw] bg-white p-6 shadow-lg rounded-lg ">
     <h1 class="text-2xl font-bold text-pink-700 mb-4">{{productDetails.producttitle}}</h1>
  
-<p class="text-gray-700 mb-4 text-justify" [ngClass]="{'line-clamp-5': !showMore}">
+<p class="text-gray-700 mb-4 text-justify" [ngClass]="{'line-clamp-8': !showMore}">
   {{ productDetails.citydescription }}
 </p>
 <button

@@ -5,36 +5,58 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
 
+// First define the Timings interface
+interface Timings {
+  duration?: string;
+  tourService?: string;
+  pickupTime?: string;
+  wifi?: string;
+}
+
+// Then define the Product interface
 interface Product {
   _id: number;
   id: number;
   cityName: string;
+  productdescription: string;
+  wifi: string;
+  tourService: string;
+  duration: string;
   price: number;
+  pickUp: number;
   cityImage: string;
   imageUrl: string;
   citydescription: string;
   producttitle: string;
   title: string;
   thumbnail: string[];
-  categorie: string; // Ensure this is included in your Product interface
+  categorie: string;
+  inclusions?: string[];
+  timings?: Timings;
+  usefulInfo?: string;
 }
 
 @Component({
   selector: 'app-citydetails',
-  imports: [CommonModule, RouterLink,NgxSkeletonLoaderModule],
+  imports: [CommonModule, RouterLink, NgxSkeletonLoaderModule],
   templateUrl: './citydetails.component.html',
   styleUrl: './citydetails.component.css'
 })
 export class CitydetailsComponent implements OnInit {
-
   deplist: any[] = [];
   products: Product[] = [];
   displayedProducts: Product[] = [];
-  uniqueCategories: string[] = []; // Changed from uniqueProductTitles to uniqueCategories
-  selectedCategories: string[] = []; // Changed from selectedProductTitles to selectedCategories
+  uniqueCategories: string[] = [];
+  selectedCategories: string[] = [];
   skeletonArray: number[] = [];
   isloader: boolean = false;
   cityName: string | null = null;
+  
+  // Modal properties
+  showModal: boolean = false;
+  modalTitle: string = '';
+  modalContent: any; // Changed to any to handle different content types
+  currentProduct: Product | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -43,14 +65,13 @@ export class CitydetailsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.generateSkeletons(8); // or any default expected count
-
+    this.generateSkeletons(8);
     this.cityName = this.route.snapshot.queryParamMap.get('cityName');
     if (this.cityName) {
       this.fetchCityDetails();
     }
-
   }
+
   generateSkeletons(count: number) {
     this.skeletonArray = Array(count).fill(0);
   }
@@ -72,8 +93,21 @@ export class CitydetailsComponent implements OnInit {
         cityName: product.cityName,
         price: product.price,
         citydescription: product.citydescription,
+        productdescription: product.productdescription,
         producttitle: product.producttitle,
         categorie: product.categorie,
+        inclusions: product.inclusions || [
+          "Once you fill out our form online and do the needful you will receive a confirmation on your screens immediately.",
+          "You will also receive an email confirmation from our booking team confirming the details of your trip.",
+          "There would be a follow via phone call (on International Number) before the trips due date, you will also receive text messages via WHATS APP on the developments leading to your visit to the Arabian Deserts."
+        ],
+        timings: product.timings || {
+          duration: product.duration,
+          departurePoint: product.tourService,
+          pickupTime: product.pickUp,
+          wifi:product.wifi,
+        },
+        usefulInfo: product.usefulInfo || 'Not available',
         imageUrl: this.sanitizer.bypassSecurityTrustUrl(`http://localhost:4000/uploads/${product.thumbnail[0]}`),
       }));
       this.isloader = false;
@@ -81,7 +115,41 @@ export class CitydetailsComponent implements OnInit {
       this.uniqueCategories = [...new Set(this.products.map(product => product.categorie))];
     });
   }
-  
+
+  // Modal functions
+  openModal(product: Product, type: string) {
+    this.currentProduct = product;
+    this.modalTitle = type;
+    
+    switch(type) {
+      case 'Description':
+        this.modalContent = product.citydescription;
+        break;
+      case 'Inclusion':
+        // We'll handle inclusions directly in the template
+        this.modalContent = null;
+        break;
+      case 'Timings':
+        // Assign the timings object
+        this.modalContent = product.timings || {
+          duration: product.duration,
+          departurePoint: product.tourService,
+          pickupTime: product.pickUp,
+          wifi:product.wifi,
+        };
+        break;
+      case 'Useful Info':
+        this.modalContent = product.usefulInfo || 'Not available';
+        break;
+    }
+    
+    this.showModal = true;
+  }
+
+  closeModal() {
+    this.showModal = false;
+    this.currentProduct = null;
+  }
 
   onCategoryFilterChange(event: any) {
     const category = event.target.value;
@@ -105,15 +173,12 @@ export class CitydetailsComponent implements OnInit {
     return this.products.filter(product => product.categorie === category).length;
   }
 
-
-
   checkbox: boolean = true;
-
   toggleCheckbox(): void {
     this.checkbox = !this.checkbox;
   }
+  
   checkbox2: boolean = true;
-
   toggleCheckbox2(): void {
     this.checkbox2 = !this.checkbox2;
   }

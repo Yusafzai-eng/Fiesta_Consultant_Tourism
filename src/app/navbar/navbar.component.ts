@@ -1,22 +1,97 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { RouterLink, RouterModule, Routes } from '@angular/router';
+import { RouterLink, RouterModule, Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-navbar',
+  standalone: true,
   imports: [CommonModule, RouterModule, RouterLink],
   templateUrl: './navbar.component.html',
-  styleUrl: './navbar.component.css'
+  styleUrls: ['./navbar.component.css']
 })
 export class NavbarComponent {
+  email: string = 'inquiry@dubaitraveltourism.com';
+
+  menuOpen = false;
+  isMenuOpen = false;
+  isLoggedIn = false;
+
+  constructor(private http: HttpClient, private router: Router) {
+    this.checkLoginStatus();
+    // Listen for login events from other tabs
+    window.addEventListener('storage', (event) => {
+      if (event.key === 'loginStatus') {
+        this.checkLoginStatus();
+      }
+    });
+  }
+
+  checkLoginStatus(): void {
+    this.http.get('http://localhost:4000/api/verify-token', {
+      withCredentials: true
+    }).subscribe({
+      next: (res: any) => {
+        this.isLoggedIn = true;
+        this.updateMenuItems();
+      },
+      error: () => {
+        this.isLoggedIn = false;
+        this.updateMenuItems();
+      }
+    });
+  }
+
+  // Call this method after successful login
+  handleLoginSuccess() {
+    this.isLoggedIn = true;
+    this.updateMenuItems();
+    localStorage.setItem('loginStatus', 'loggedIn');
+    window.location.reload(); // Force full page refresh
+  }
+
+  logout() {
+    this.http.post('http://localhost:4000/api/logout', {}, { withCredentials: true })
+      .subscribe({
+        next: () => {
+          this.isLoggedIn = false;
+          this.updateMenuItems();
+          localStorage.setItem('loginStatus', 'loggedOut');
+          window.location.href = '/login';
+        },
+        error: (err) => {
+          console.error('Logout failed:', err);
+          window.location.href = '/login';
+        }
+      });
+  }
+
+  updateMenuItems(): void {
+    this.menuItems = [
+      { label: 'Tours', action: () => this.closeMenu(), href: 'citytour' },
+      { label: 'About', action: () => this.closeMenu(), href: 'aboutus' },
+      this.isLoggedIn
+        ? { label: 'Log Out', action: () => this.logout(), href: '' }
+        : { label: 'Log In', action: () => { this.closeMenu(); this.router.navigate(['/login']); }, href: 'login' },
+      { label: 'Corporate', action: () => this.closeMenu(), href: 'corporate' },
+      { label: 'Local Guide', action: () => this.closeMenu(), href: 'local' }
+    ];
+
+    this.menuLinks = [
+      { name: 'Tours', href: 'citytour' },
+      { name: 'About us', href: 'aboutus' },
+      { name: 'Corporate', href: 'corporate' },
+      this.isLoggedIn
+        ? { name: 'Log Out', href: '', action: () => this.logout() }
+        : { name: 'LogIn', href: 'login', action: () => { this.closeMenu(); this.router.navigate(['/login']); } },
+      { name: 'Local Guide', href: 'local' }
+    ];
+  }
+
   openWhatsApp() {
     window.open('https://wa.me/971545404171', '_blank');
   }
-  
-  menuOpen = false;
-  isMenuOpen = false;
 
-  // Toggle methods
   toggleMenu() {
     this.menuOpen = !this.menuOpen;
   }
@@ -25,12 +100,10 @@ export class NavbarComponent {
     this.isMenuOpen = !this.isMenuOpen;
   }
 
-  // Close menu method
   closeMenu() {
     this.isMenuOpen = false;
   }
 
-  // Social Links
   socialLinks = [
     { href: 'https://pk.linkedin.com/company/fiesta-consultants', bgColor: 'bg-blue-700', iconClass: 'fab fa-linkedin-in' },
     { href: 'https://www.facebook.com/FiestaConsultants/', bgColor: 'bg-blue-500', iconClass: 'fab fa-facebook-f' },
@@ -39,38 +112,18 @@ export class NavbarComponent {
     { href: 'https://wa.me/971545404171', bgColor: 'bg-green-500', iconClass: 'fab fa-whatsapp' },
   ];
 
-  // Navigation Links
   links = [
-    { label: 'NEW YEAR EVENTS', path:'http://localhost:4200/city?cityName=NEW%20YEAR%20EVENTS' },
-    { label: 'SAFARI TOURS', path: 'http://localhost:4200/city?cityName=SAFARI%20TOURS' },
-    { label: 'COMBO DEALS', path: 'http://localhost:4200/city?cityName=COMBO%20DEALS' },
-    { label: 'SEA ADVENTURES', path: 'http://localhost:4200/city?cityName=CITY%20TOURS' },
-    { label: 'CITY TOURS', path: 'http://localhost:4200/city?cityName=CITY%20TOURS' },
-    { label: 'DHOW CRUISE', path: 'http://localhost:4200/city?cityName=DHOW%20CRUISE' },
+    { label: 'NEW YEAR EVENTS', path:'/city?cityName=NEW%20YEAR%20EVENTS' },
+    { label: 'SAFARI TOURS', path: '/city?cityName=SAFARI%20TOURS' },
+    { label: 'COMBO DEALS', path: '/city?cityName=COMBO%20DEALS' },
+    { label: 'SEA ADVENTURES', path: '/city?cityName=CITY%20TOURS' },
+    { label: 'CITY TOURS', path: '/city?cityName=CITY%20TOURS' },
+    { label: 'DHOW CRUISE', path: '/city?cityName=DHOW%20CRUISE' },
   ];
 
+  menuItems: any[] = [];
+  menuLinks: any[] = [];
 
-
-  menuItems = [
-    { label: 'Home', action: () => this.closeMenu() },
-    { label: 'About', action: () => this.closeMenu() },
-    { label: 'Log In', action: () => this.closeMenu() },
-    { label: 'Package', action: () => this.closeMenu() },
-    { label: 'Corporate', action: () => this.closeMenu() },
-    { label: 'Local Guide', action: () => this.closeMenu() }
-  ];
-
-  // Method to close the menu
-
-  menuLinks = [
-    { name: 'Tours', href: 'citytour' },
-    { name: 'About us', href: 'aboutus' },
-    { name: 'Corporate', href: 'corporate' },
-    { name: 'Packages', href: 'packages' },
-    { name: 'LogIn', href: 'login' },
-    { name: 'Local Guide', href: '' },
-  ];
-  
   contactInfo = [
     {
       icon: 'fa-solid fa-phone rotate-45 text-xs text-pink-600',
@@ -84,16 +137,15 @@ export class NavbarComponent {
     },
   ];
 
-  // Additional Info
   additionalInfo = [
     {
       icon: 'fa-solid fa-envelope text-pink-700',
-      label: 'inquiryubaitravelotourism.com',
+      label: 'inquiry@dubaitraveltourism.com',
       class: 'text-pink-700 hover:text-indigo-950 font-bold text-sm sm:text-sm',
     },
     {
       icon: 'fa-solid fa-bullseye text-green-600',
-      iconCount: 5, // Number of bullseye icons
+      iconCount: 5,
     },
     {
       image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSduKfXoMWOmScspj3hXVYULnzXNvRbWiKV-Q&s',
