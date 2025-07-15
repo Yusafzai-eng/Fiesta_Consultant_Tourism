@@ -20,7 +20,7 @@ export class SingupService {
         console.log('Access Token:', res.token);
 
         // Optional: Token ko localStorage mein store kar sakte ho
-        localStorage.setItem('token', res.token);
+        // localStorage.setItem('token', res.token);
       }
     },
     error: (err) => {

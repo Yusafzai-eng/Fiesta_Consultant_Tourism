@@ -1,7 +1,11 @@
 <ng-container *ngIf="isloader">
   <div class="p-4 mt-20 grid">
+            <h1 class="font-bold text-xl ">Users</h1>
+
     <div *ngIf="paginatedUsers.length > 0; else noData">
-      <table class="min-w-[300px] bg-white border border-slate-300 rounded shadow-sm text-sm">
+      <div>
+      </div>
+      <table class="min-w-[360px] bg-white border border-slate-300 rounded shadow-sm text-sm">
         <thead class="bg-slate-800 text-white">
           <tr>
             <th class="py-2 px-4 border-b">ID</th>
@@ -15,14 +19,14 @@
             <td class="py-2 px-4 border-b text-slate-700">
               {{ (currentPage - 1) * itemsPerPage + i + 1 }}
             </td>
-            <td class="py-2 px-4 border-b text-slate-800">{{ user.name }}</td>
-            <td class="py-2 px-4 border-b text-slate-600">{{ user.email }}</td>
+            <td class="py-2 text-center border-b text-slate-800">{{ user.name }}</td>
+            <td class="py-2 text-center border-b text-slate-600">{{ user.email }}</td>
           </tr>
         </tbody>
       </table>
 
       <!-- Pagination Controls -->
-      <div class="flex flex-col md:flex-row justify-center items-center gap-4 mt-4">
+      <div class="flex flex-col md:flex-row  items-center gap-4 mt-4">
         <div class="flex items-center gap-3">
           <button (click)="prevPage()" [disabled]="currentPage === 1"
                   class="px-4 py-1 bg-slate-200 rounded hover:bg-slate-300 disabled:opacity-50">
@@ -46,6 +50,21 @@
     </ng-template>
   </div>
 </ng-container>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 <!-- Skeleton Loader -->
 <ng-container *ngIf="!isloader">

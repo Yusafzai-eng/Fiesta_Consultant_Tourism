@@ -100,38 +100,35 @@ features = [
 
 
 fetchProductDetails(productId: string | null): void {
-  if (!productId) {
-    this.errorMessage = 'Invalid product ID.';
-    this.isLoading = false;
-    return;
-  }
+  if (!productId) return;
 
   this.isloader = true;
-  this.generateSkeletons(8);
 
   this.service.getproductDepartment(productId).subscribe({
     next: (data: any) => {
-      console.log('Service Data:', data);
-
-      // Prefer products if available
-      if (data?.products?.producttitle) {
-        this.productDetails = data.products;
-      } else if (data?.product?.producttitle) {
-        this.productDetails = data.product;
-      } else {
-        console.error('Invalid product data format:', data);
+      const product = data?.products || data?.product;
+      if (!product) {
         this.productDetails = undefined;
+        return;
+      }
+
+      this.productDetails = product;
+
+      // Optional: fill values into userobj if needed (only viewable)
+      if (product.private) {
+        this.userobj.privateAdult = product.privateAdult;
+        this.userobj.privateChild = product.privateChild;
       }
 
       this.isloader = false;
     },
-    error: (error) => {
-      console.error('Error fetching product details:', error);
-      this.errorMessage = 'Failed to load product details.';
+    error: () => {
       this.isloader = false;
+      this.errorMessage = "Failed to load product details.";
     }
   });
 }
+
   showMore: boolean = false;
 
 initializeSwiper(): void {
@@ -189,23 +186,35 @@ showError: boolean = false;
 result: number | null = null;
 
 onsignup() {
+  this.onBookNow();  // Recalculate bill before checking
+
   if (!this.isFormComplete() || this.result === null) {
-    this.showError = true;
     alert("Please complete the form and see the total bill before submitting.");
     return;
   }
+
+  const adultCount = Number(this.userobj.NoofAdult) || 0;
+  const childCount = Number(this.userobj.NoofChild) || 0;
+  const totalPeople = adultCount + childCount;
+  const maxQuantity = Number(this.productDetails?.quantity);  // 👈 backend-defined quantity
+
+  if (maxQuantity && totalPeople > maxQuantity) {
+    this.showError = true;
+    this.errorMessage = `❌ Only ${maxQuantity} people allowed. You selected ${totalPeople}.`;
+    return;
+  }
+
   this.showError = false;
+  this.errorMessage = '';
 
   const resultObj = {
     ...this.userobj,
     Total: this.result
   };
 
-  console.log("Form Submitted Successfully with Raw Values", resultObj);
+  this.depsrv.setFormData(resultObj);
 
-  this.depsrv.setFormData(resultObj);  // Should work now
-
-  if (this.productDetails && this.productDetails.thumbnail && this.productDetails.title) {
+  if (this.productDetails?.thumbnail && this.productDetails?.title) {
     const apiData = {
       image: this.productDetails.thumbnail[0],
       title: this.productDetails.title,
@@ -213,53 +222,111 @@ onsignup() {
     this.depsrv.setProductData(apiData);
   }
 
-  alert("Signup successful!");
+  alert("✅ Booking successful!");
 
   const productId = this.productDetails?._id;
   if (productId) {
-    this.router.navigate(['/producttable', productId]);  
+    this.router.navigate(['/producttable', productId]);
   }
 }
 
-onBookNow() {
-  // Check if NoofAdult and NoofChild are valid numbers
-  if (this.userobj.NoofAdult === null || this.userobj.NoofChild === null) {
-    return; // Exit if values are not set
+
+
+
+// Add this property to your component class
+showPrivateForm = false;
+
+// Add this method for private transfer booking
+onPrivateBookNow() {
+  // Set transfer type to Private
+  this.userobj.Transfer = 'Private';
+  
+  // Calculate total for private transfer
+  const privateTransferPrice = this.productDetails?.privatetransferprice || 0;
+  const perPersonPrice = this.productDetails?.privatetransferperson || 0;
+  
+  // Calculate based on number of people
+  const totalPeople = (this.userobj.NoofAdult || 0) + (this.userobj.NoofChild || 0);
+  this.result = privateTransferPrice + (totalPeople * perPersonPrice);
+  this.userobj.Total = this.result;
+  
+  // Save form data
+  this.depsrv.setFormData(this.userobj);
+  
+  // Show success alert
+  alert('Booking successful!');
+   const productId = this.productDetails?._id;
+  if (productId) {
+    this.router.navigate(['/producttable', productId]);
   }
+  // Close the form
+  this.form = false;
+  
+  // Navigate to next component (replace 'next-component' with your actual route)
+  // this.router.navigate(['/next-component']);
+}
 
-  // Fetch rates for adults and kids from the API response
-  let rateAdult = this.productDetails?.adultBaseprice;  // Use the adultBaseprice from API
-  let rateChild = this.productDetails?.kidsBaseprice;   // Use the kidsBaseprice from API
+// Modify your existing onBookNow method to set transfer type to Shared
+onBookNow() {
+  // Set transfer type to Shared by default
+  this.userobj.Transfer = 'Shared';
+  
+  const adultCount = Number(this.userobj.NoofAdult) || 0;
+  const childCount = Number(this.userobj.NoofChild) || 0;
 
-  // Ensure rates are available, else show an error
-  if (!rateAdult || !rateChild) {
-    alert("Rate information is missing for adults or children!");
+  // Check if adults is 0
+  if (adultCount === 0) {
+    this.showError = true;
+    this.errorMessage = '❌ At least 1 adult is required';
+    this.result = null;
     return;
   }
 
-  // Calculate the total cost based on the number of adults and children
-  let multipliedAdult = this.userobj.NoofAdult * rateAdult;
-  let multipliedChild = this.userobj.NoofChild * rateChild;
+  const rateAdult = this.productDetails?.adultBaseprice;
+  const rateChild = this.productDetails?.kidsBaseprice;
+  const discountPercentage = this.productDetails?.discountPercentage || 0;
+  const maxQuantity = Number(this.productDetails?.quantity) || 0;
 
-  // Compute the total result
-  this.result = multipliedAdult + multipliedChild;
+  if (!rateAdult || !rateChild) {
+    alert("Adult or Child rate is missing!");
+    return;
+  }
 
-  // Store the result in the user object
+  const totalPeople = adultCount + childCount;
+  if (maxQuantity && totalPeople > maxQuantity) {
+    this.showError = true;
+    this.errorMessage = `❌ Only ${maxQuantity} people allowed. You selected ${totalPeople}.`;
+  } else {
+    this.showError = false;
+    this.errorMessage = '';
+  }
+
+  const totalAdult = adultCount * rateAdult;
+  const totalChild = childCount * rateChild;
+  const total = totalAdult + totalChild;
+
+  const discount = (total * discountPercentage) / 100;
+  const finalTotal = total - discount;
+
+  this.result = Math.round(finalTotal);
   this.userobj.Total = this.result;
+  this.userobj.UsedAdultRate = rateAdult;
+  this.userobj.UsedChildRate = rateChild;
 
-  // Pass the user data to the service
   this.depsrv.setFormData(this.userobj);
-
-  console.log('Total Calculated Automatically:', this.result);
 }
+
+
+
 
 
 
 isFormComplete(): boolean {
-  return this.userobj.Date &&
-    this.userobj.NoofAdult &&
+  return (
+    this.userobj.Date &&
+    this.userobj.NoofAdult &&  // Ensures at least 1 adult
     this.userobj.Transfer &&
-    this.userobj.NoofChild;
+    (this.userobj.NoofChild || this.userobj.NoofChild === 0)  // Allows 0 children
+  );
 }
-
 }

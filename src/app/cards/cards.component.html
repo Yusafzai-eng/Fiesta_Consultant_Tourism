@@ -32,56 +32,132 @@
   </div>
 </ng-container>
 
-<!-- Product Display Section -->
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <ng-container *ngIf="!isloader">
   <div class="container mx-auto mt-10 w-[90vw]">
 
-    <!-- Products -->
     <div class="flex flex-wrap gap-5 w-[88vw] place-content-center mt-4">
+
       <div 
         *ngFor="let item of displayedProducts" 
-        class="card w-[400px] md:w-[280px] h-[280px] bg-white border hover:shadow-xl shadow-md"
+        class="card w-[400px] md:w-[280px] h-[280px] bg-white border hover:shadow-xl shadow-md relative"
       >
         <a [routerLink]="['/products', item?.id]">
-          <!-- Product Image -->
-          <div class="h-[195px] w-full">
+
+          <!-- 🖼️ Product Image -->
+          <div class="h-[195px] w-full relative">
             <img 
               [src]="item.image" 
               alt="Card Image" 
               class="w-full h-full mx-auto bg-cover"
             />
+
+            <!-- 🔖 Discount Badge -->
+            <div *ngIf="item.discountPercentage" class="absolute top-1 bg-pink-700 text-white text-xs font-bold px-2 py-1 shadow-md">
+              {{item.discountPercentage}}% OFF
+            </div>
           </div>
 
-          <!-- Product Content -->
+          <!-- 📦 Product Content -->
           <div class="p-2">
             <h2 class="text-sm font-semibold text-center line-clamp-1">
               {{ item.title }}
             </h2>
 
+            <!-- 🔼 Top Price Line -->
             <div class="flex justify-between mt-4">
               <p class="text-xs text-gray-500 text-center">Tour Duration</p>
-              <p class="text-xs text-gray-500 text-center">Start From</p>
+              <p class="text-xs text-gray-500 text-center">
+                <ng-container *ngIf="item.discountedTotal === 0; else showOldPrice">
+                  <span>Start:</span>
+                  <span>From</span>
+                </ng-container>
+                <ng-template #showOldPrice>
+                  <span>Start:</span>
+                  <span class="line-through">{{ item.adultBaseprice }}</span>
+                </ng-template>
+              </p>
             </div>
 
+            <!-- 🔽 Duration & Final Price -->
             <div class="flex justify-between">
               <div class="flex space-x-1 items-center">
                 <i class="fa-regular fa-clock text-pink-800 text-sm font-medium"></i>
                 <p class="text-sm font-medium">{{ item.duration }} Hours</p>
               </div>
+
               <p class="text-xs font-medium text-center">
                 <span class="text-pink-700 mr-1">AED</span>
-                {{ item.price | number:'1.0-0' }}
+                <ng-container *ngIf="item.discountedTotal === 0; else showDiscounted">
+                  {{ item.adultBaseprice }}
+                </ng-container>
+                <ng-template #showDiscounted>
+                  {{ item.discountedTotal }}
+                </ng-template>
               </p>
             </div>
           </div>
+
         </a>
       </div>
-    </div>
 
-    <!-- Buttons -->
+    </div>
 
   </div>
 </ng-container>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <div class="mt-5 flex justify-center items-center">
   <!-- Desert Safaries Button -->
   <button 

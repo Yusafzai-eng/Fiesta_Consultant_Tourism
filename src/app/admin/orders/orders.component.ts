@@ -36,60 +36,76 @@ export class OrdersComponent {
     this.skeletonArray = Array(count).fill(0);
   }
 
-  fetchData(): void {
-    this.isloader = true;
-    this.generateSkeletons(5);
+ fetchData(): void {
+  this.isloader = true;
+  this.generateSkeletons(5);
 
-    this.http.get<any>('http://localhost:4000/api/admin', {
-      withCredentials: true
-    }).subscribe({
-      next: (res) => {
-        const orders = res.order ?? [];
-        const userMap = new Map<string, any>();
+  this.http.get<any>('http://localhost:4000/api/admin', {
+    withCredentials: true
+  }).subscribe({
+    next: (res) => {
+      const orders = res.order ?? [];
+      const userMap = new Map<string, any>();
 
-        for (let order of orders) {
-          const key = order.userEmail;
-          const userId = order.userId;
-          const name = order.userName;
-          const address = order.address;
-          const products: any[] = order.products ?? [];
-          const total = products.reduce((sum: number, p: any) => sum + (p.total || 0), 0);
-          const orderDate = new Date(order.date);
-          const firstThumbnail = products[0]?.thumbnail?.[0] || null;
+      for (let order of orders) {
+        const key = order.userEmail;
+        const userId = order.userId;
+        const name = order.userName;
+        const address = order.address;
+        const products: any[] = order.products ?? [];
+        const total = products.reduce((sum: number, p: any) => sum + (p.total || 0), 0);
+        const orderDate = new Date(order.date);
 
-          if (!userMap.has(key)) {
-            userMap.set(key, {
-              userId,
-              userName: name,
-              userEmail: key,
-              address,
-              total,
-              products: [...products],
-              latestDate: orderDate,
-              thumbnail: firstThumbnail
-            });
-          } else {
-            const existing = userMap.get(key);
-            existing.total += total;
-            existing.products.push(...products);
-            if (orderDate > existing.latestDate) {
-              existing.latestDate = orderDate;
+        // ✅ Thumbnail fallback logic: check 1st, 2nd, 3rd product
+        let firstThumbnail = null;
+        for (let i = 0; i < products.length; i++) {
+          if (products[i]?.thumbnail?.[0]) {
+            firstThumbnail = products[i].thumbnail[0];
+            break;
+          }
+        }
+
+        if (!userMap.has(key)) {
+          userMap.set(key, {
+            userId,
+            userName: name,
+            userEmail: key,
+            address,
+            total,
+            products: [...products],
+            latestDate: orderDate,
+            thumbnail: firstThumbnail
+          });
+        } else {
+          const existing = userMap.get(key);
+          existing.total += total;
+          existing.products.push(...products);
+          if (orderDate > existing.latestDate) {
+            existing.latestDate = orderDate;
+
+            // ✅ Update thumbnail only if previous one was null
+            if (!existing.thumbnail && firstThumbnail) {
               existing.thumbnail = firstThumbnail;
             }
           }
         }
-
-        this.userSummaries = Array.from(userMap.values());
-        this.userSummaries.sort((a, b) => b.latestDate - a.latestDate);
-        this.originalUserSummaries = [...this.userSummaries];
-        this.isloader = false;
-      },
-      error: (err) => {
-        console.error('❌ Error:', err);
-        this.isloader = false;
       }
-    });
-  }
+
+      // ✅ Filter out users with total = 0 and sort by latest date
+      this.userSummaries = Array.from(userMap.values())
+        .filter(u => u.total > 0)
+        .sort((a, b) => b.latestDate - a.latestDate);
+
+      this.originalUserSummaries = [...this.userSummaries];
+      this.isloader = false;
+    },
+    error: (err) => {
+      console.error('❌ Error:', err);
+      this.isloader = false;
+    }
+  });
+}
+
 
   showUserDetails(user: any) {
     this.selectedUser = user;

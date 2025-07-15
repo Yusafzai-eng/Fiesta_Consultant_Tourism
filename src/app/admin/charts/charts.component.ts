@@ -28,70 +28,96 @@ Chart.register(
   standalone: true,
   imports: [],
   templateUrl: './charts.component.html',
-  styleUrl: './charts.component.css'
+  styleUrls: ['./charts.component.css']
 })
 export class ChartsComponent implements OnInit {
   constructor(private chardata: ChartssService) {}
 
   ngOnInit(): void {
     this.chardata.getChartData().subscribe((res: any) => {
-      const yearMap: { [year: string]: number } = {};
-      const colorMap: { [year: string]: string } = {};
-      const borderColorMap: { [year: string]: string } = {};
+      console.log('Raw API Data:', res); // Debug log
 
-      const currentYear = new Date().getFullYear();
-
-      // ✅ Your requested colors:
-      const backgroundColors = [
-        'rgba(15, 30, 239, 0.6)',   // Blue
-        'rgba(15, 239, 59, 0.6)'    // Green
-      ];
-
-      const borderColorsList = [
-        'rgba(15, 30, 239, 1)',     // Blue border
-        'rgba(15, 239, 59, 1)'      // Green border
-      ];
-
-      res.order.forEach((order: any) => {
-        order.products.forEach((product: any) => {
-          const dateStr = product.order_date;
-          const year = new Date(dateStr).getFullYear();
-
-          if (year < currentYear - 4) return;
-
-          const total = product.total;
-          const yearStr = year.toString();
-
-          if (!yearMap[yearStr]) {
-            const index = Object.keys(yearMap).length % 2;
-            colorMap[yearStr] = backgroundColors[index];
-            borderColorMap[yearStr] = borderColorsList[index];
-          }
-
-          yearMap[yearStr] = (yearMap[yearStr] || 0) + total;
-        });
-      });
-
-      const years = Object.keys(yearMap);
-      const totals = years.map(y => yearMap[y]);
-      const colors = years.map(y => colorMap[y]);
-      const borderColors = years.map(y => borderColorMap[y]);
-
-      this.showdata(years, totals, colors, borderColors);
+      const yearData = this.processChartData(res);
+      this.showdata(yearData.years, yearData.totals, yearData.colors, yearData.borderColors);
     });
   }
 
-  showdata(year: any, amount: any, color: any, borderColor: any) {
+  private processChartData(res: any): {
+    years: string[],
+    totals: number[],
+    colors: string[],
+    borderColors: string[]
+  } {
+    const yearMap: { [year: string]: number } = {};
+    const currentYear = new Date().getFullYear();
+
+    // 1. Process Orders Data
+    res.order?.forEach((order: any) => {
+      // Handle both order.date and product.order_date
+      const dateStr = order.date || order.products?.[0]?.order_date;
+      if (!dateStr) return;
+
+      // Parse date (handling both dd/MM/yyyy and ISO formats)
+      const date = this.parseDate(dateStr);
+      if (!date) return;
+
+      const year = date.getFullYear();
+      if (year < currentYear - 4) return; // Only show last 5 years
+
+      // Sum totals for the year
+      order.products?.forEach((product: any) => {
+        const total = parseFloat(product.total) || 0;
+        yearMap[year] = (yearMap[year] || 0) + total;
+      });
+    });
+
+    // 2. Prepare Chart Data
+    const years = Object.keys(yearMap).sort();
+    const totals = years.map(year => yearMap[year]);
+
+    // Color scheme (blue and green)
+    const backgroundColors = years.map((_, i) => 
+      i % 2 === 0 ? 'rgba(15, 30, 239, 0.6)' : 'rgba(15, 239, 59, 0.6)'
+    );
+    const borderColors = years.map((_, i) => 
+      i % 2 === 0 ? 'rgba(15, 30, 239, 1)' : 'rgba(15, 239, 59, 1)'
+    );
+
+    console.log('Processed Chart Data:', { years, totals }); // Debug log
+
+    return { years, totals, colors: backgroundColors, borderColors };
+  }
+
+  private parseDate(dateStr: string): Date | null {
+    try {
+      // Handle dd/MM/yyyy format
+      if (dateStr.includes('/')) {
+        const [day, month, year] = dateStr.split('/').map(Number);
+        return new Date(year, month - 1, day);
+      }
+      // Fallback to ISO format
+      return new Date(dateStr);
+    } catch (e) {
+      console.error('Error parsing date:', dateStr, e);
+      return null;
+    }
+  }
+
+  showdata(years: string[], totals: number[], colors: string[], borderColors: string[]) {
+    // Destroy existing charts if they exist
+    Chart.getChart("mychart")?.destroy();
+    Chart.getChart("barchart")?.destroy();
+
     // Pie Chart
     new Chart("mychart", {
       type: 'pie',
       data: {
-        labels: year,
+        labels: years,
         datasets: [{
-          label: 'Total',
-          data: amount,
-          backgroundColor: color,
-          borderColor: borderColor,
+          label: 'Total Revenue (AED)',
+          data: totals,
+          backgroundColor: colors,
+          borderColor: borderColors,
           borderWidth: 1
         }]
       },
@@ -99,7 +125,13 @@ export class ChartsComponent implements OnInit {
         responsive: true,
         plugins: {
           legend: { position: 'top' },
-          tooltip: { enabled: true }
+          tooltip: {
+            callbacks: {
+              label: (context) => {
+                return `AED ${context.raw?.toLocaleString()}`;
+              }
+            }
+          }
         }
       }
     });
@@ -108,22 +140,33 @@ export class ChartsComponent implements OnInit {
     new Chart("barchart", {
       type: 'bar',
       data: {
-        labels: year,
+        labels: years,
         datasets: [{
-          label: 'Total Sales per Year',
-          data: amount,
-          backgroundColor: color,
-          borderColor: borderColor,
+          label: 'Total Revenue (AED)',
+          data: totals,
+          backgroundColor: colors,
+          borderColor: borderColors,
           borderWidth: 1
         }]
       },
       options: {
         responsive: true,
         scales: {
-          y: { beginAtZero: true }
+          y: {
+            beginAtZero: true,
+            ticks: {
+              callback: (value) => `AED ${value}`
+            }
+          }
         },
         plugins: {
-          legend: { position: 'bottom' }
+          tooltip: {
+            callbacks: {
+              label: (context) => {
+                return `AED ${context.raw?.toLocaleString()}`;
+              }
+            }
+          }
         }
       }
     });

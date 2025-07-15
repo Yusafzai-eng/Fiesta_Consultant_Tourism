@@ -23,7 +23,10 @@ interface Product {
   tourService: string;
   duration: string;
   price: number;
+  adultBaseprice: number;
   pickUp: number;
+  discountPercentage: number;
+  discountedTotal: number;
   cityImage: string;
   imageUrl: string;
   citydescription: string;
@@ -93,6 +96,9 @@ export class CitydetailsComponent implements OnInit {
         cityName: product.cityName,
         price: product.price,
         citydescription: product.citydescription,
+        adultBaseprice: product.adultBaseprice,
+        discountedTotal: product.discountedTotal,
+        discountPercentage: product.discountPercentage,
         productdescription: product.productdescription,
         producttitle: product.producttitle,
         categorie: product.categorie,

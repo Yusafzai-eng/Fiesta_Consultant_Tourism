@@ -46,7 +46,10 @@ fetchDepartmentData() {
                 : '/assets/fallback-image-url.jpg',
         price: item.price,
         cityName: item.cityName,
+        adultBaseprice: item.adultBaseprice,
+        discountedTotal: item.discountedTotal,
         duration: item.duration,
+        discountPercentage: item.discountPercentage,
         discription: item.productdescription,
       }));
 

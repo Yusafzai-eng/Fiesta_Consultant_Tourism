@@ -41,8 +41,10 @@ export class ProducttableComponent implements OnInit {
       country: ['', Validators.required],
       expiry: ['', [Validators.required, Validators.pattern(/^(0[1-9]|1[0-2])\/\d{2}$/)]],
       cvv: ['', [Validators.required, Validators.pattern(/^\d{3}$/)]],
-      NoofAdult: ['', Validators.required],
-      NoofChild: ['', Validators.required],
+      NoofAdult: [''],
+      NoofChild: [''],
+      privateAdult: [''],
+      privateChild: [''],
       Transfer: ['', Validators.required],
       Total: ['', Validators.required],
       productId: ['']
@@ -56,10 +58,25 @@ export class ProducttableComponent implements OnInit {
     this.personalDetailsForm.patchValue({
       NoofAdult: this.formData?.NoofAdult || '',
       NoofChild: this.formData?.NoofChild || '',
+      privateAdult: this.formData?.privateAdult || '',
+      privateChild: this.formData?.privateChild || '',
       Transfer: this.formData?.Transfer || '',
       Total: this.formData?.Total || '',
       productId: this.productData?._id || ''
     });
+
+    const selectedData = {
+      NoofAdult: this.formData?.NoofAdult || 0,
+      NoofChild: this.formData?.NoofChild || 0,
+      privateAdult: this.formData?.privateAdult || 0,
+      privateChild: this.formData?.privateChild || 0,
+      Transfer: this.formData?.Transfer || '',
+      Total: this.formData?.Total || 0,
+      producttitle: this.productData?.producttitle || '',
+      thumbnail: this.productData?.thumbnail?.[1] || ''
+    };
+
+    localStorage.setItem('bookingSummary', JSON.stringify(selectedData));
 
     const productId = this.activatedRoute.snapshot.paramMap.get('_id');
     if (productId) {
@@ -81,16 +98,18 @@ export class ProducttableComponent implements OnInit {
     // this.router.navigate(['/main']);
   }
 
-  onSubmit(): void {
-    if (!this.productData || !this.productData._id) {
-      alert('Product is not loaded. Please wait and try again.');
-      return;
-    }
+onSubmit(): void {
+  if (!this.productData || !this.productData._id) {
+    alert('Product is not loaded. Please wait and try again.');
+    return;
+  }
 
-    if (this.personalDetailsForm.valid) {
-      const form = this.personalDetailsForm.value;
+  if (this.personalDetailsForm.valid) {
+    const form = this.personalDetailsForm.value;
+    let productsArray = [];
 
-      const productsArray = [{
+    if (form.Transfer === 'Private') {
+      productsArray = [{
         productId: this.productData._id,
         producttitle: this.productData.producttitle,
         productdescription: this.productData.productdescription,
@@ -110,46 +129,84 @@ export class ProducttableComponent implements OnInit {
         categorie: this.productData.categorie,
         translatelanguage: this.productData.translatelanguage,
         wifi: this.productData.wifi,
-        adults_no: form.NoofAdult,
-        kids_no: form.NoofChild,
-        total: form.Total,
+
+        // ✅ Private fields
+        privateAdult: form.privateAdult,
+        privateChild: form.privateChild,
+        transfertype: 'Private',
+        privatetransferprice: this.productData.privatetransferprice,  // ✅ Make sure backend sends this field
+        total: this.productData.privatetransferprice,                 // ✅ Total equals to private transfer price
+
         order_date: new Date().toLocaleDateString()
       }];
-
-      const payload = {
-        first_name: form.firstName,
-        last_name: form.lastName,
-        address: form.address,
-        payment_Method: form.paymentMethod,
-        city: form.city,
-        state: form.state,
-        country: form.country,
-        name_On_Card: form.nameOnCard,
-        card_Number: form.cardNumber,
-        zip: Number(form.zip),
-        expiry: form.expiry,
-        cvv: form.cvv,
-        products: productsArray,
-        date: new Date().toLocaleDateString()
-      };
-
-      console.log("Payload to be sent:", payload);
-
-      this.http.post('http://localhost:4000/api/cart', payload, { withCredentials: true }).subscribe({
-        next: (res) => {
-          alert('Booking Successful!');
-          // this.router.navigate(['/navbar']);
-        },
-        error: (err) => {
-          console.error('Error posting data:', err);
-          alert('Something went wrong. Please try again.');
-        }
-      });
     } else {
-      console.log('Form is invalid');
-      this.logValidationErrors();
+      productsArray = [{
+        productId: this.productData._id,
+        producttitle: this.productData.producttitle,
+        productdescription: this.productData.productdescription,
+        cityName: this.productData.cityName,
+        citydescription: this.productData.citydescription,
+        cityImage: this.productData.cityImage,
+        tourService: this.productData.tourService,
+        duration: this.productData.duration,
+        transportService: this.productData.transportService,
+        pickUp: this.productData.pickUp,
+        price: this.productData.price,
+        discountedTotal: this.productData.discountedTotal,
+        adultBaseprice: this.productData.adultBaseprice,
+        kidsBaseprice: this.productData.kidsBaseprice,
+        quantity: this.productData.quantity,
+        thumbnail: this.productData.thumbnail,
+        categorie: this.productData.categorie,
+        translatelanguage: this.productData.translatelanguage,
+        wifi: this.productData.wifi,
+
+        // ✅ Shared fields
+        adults_no: form.NoofAdult,
+        kids_no: form.NoofChild,
+        transfertype: 'Shared',
+        transferPrice: this.productData.sharedTransferPrice,
+        total: form.Total,  // ✅ Total from calculated shared price
+
+        order_date: new Date().toLocaleDateString()
+      }];
     }
+
+    const payload = {
+      first_name: form.firstName,
+      last_name: form.lastName,
+      address: form.address,
+      payment_Method: form.paymentMethod,
+      city: form.city,
+      state: form.state,
+      country: form.country,
+      name_On_Card: form.nameOnCard,
+      card_Number: form.cardNumber,
+      zip: Number(form.zip),
+      expiry: form.expiry,
+      cvv: form.cvv,
+      products: productsArray,
+      date: new Date().toLocaleDateString()
+    };
+
+    console.log("Payload to be sent:", payload);
+
+    this.http.post('http://localhost:4000/api/cart', payload, { withCredentials: true }).subscribe({
+      next: (res) => {
+        alert('Booking Successful!');
+        // this.router.navigate(['/navbar']);
+      },
+      error: (err) => {
+        console.error('Error posting data:', err);
+        alert('Something went wrong. Please try again.');
+      }
+    });
+  } else {
+    console.log('Form is invalid');
+    this.logValidationErrors();
   }
+}
+
 
   logValidationErrors(): void {
     Object.keys(this.personalDetailsForm.controls).forEach((key) => {

@@ -116,7 +116,7 @@ export class NavbarComponent {
     { label: 'NEW YEAR EVENTS', path:'/city?cityName=NEW%20YEAR%20EVENTS' },
     { label: 'SAFARI TOURS', path: '/city?cityName=SAFARI%20TOURS' },
     { label: 'COMBO DEALS', path: '/city?cityName=COMBO%20DEALS' },
-    { label: 'SEA ADVENTURES', path: '/city?cityName=CITY%20TOURS' },
+    { label: 'SEA ADVENTURES', path: '/city?cityName=SEA%20ADVENTURES' },
     { label: 'CITY TOURS', path: '/city?cityName=CITY%20TOURS' },
     { label: 'DHOW CRUISE', path: '/city?cityName=DHOW%20CRUISE' },
   ];

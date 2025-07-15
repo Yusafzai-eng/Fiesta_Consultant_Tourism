@@ -36,10 +36,17 @@ export class AddProductService {
   });
 }
 
-  // ✅ Update product API
- updateProduct(id: string, formData: FormData): Observable<any> {
-  return this.http.post(`http://localhost:4000/api/productupdate?_id=${id}`, formData, {
-    withCredentials: true
-  });
+
+updateOrderProduct(orderId: string, productId: string, updatedData: any): Observable<any> {
+  return this.http.patch(
+    `http://localhost:4000/api/updateOrderProduct/${orderId}/${productId}`,
+    updatedData,
+    { withCredentials: true }
+  );
 }
+
+
+
+
+
 }

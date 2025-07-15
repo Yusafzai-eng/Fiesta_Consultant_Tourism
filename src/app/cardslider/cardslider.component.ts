@@ -45,6 +45,7 @@ export class CardsliderComponent implements OnInit, AfterViewInit {
             price: item.price,
             cityName: item.cityName,
             duration: item.duration,
+            discountPercentage: item.discountPercentage,
             discription: item.productdescription,
           }));
         }

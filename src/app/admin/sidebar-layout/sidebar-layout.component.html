@@ -2,10 +2,21 @@
 <nav class="fixed top-0 left-0 right-0 h-14 bg-slate-200 flex items-center px-4 justify-between z-50 border-none shadow-sm text-gray-800">
 
   <div class="flex items-center gap-4">
-    <button (click)="toggleSidebar()" class="text-gray-700 focus:outline-none">
-      <i [class]="isSidebarOpen ? 'fas fa-times text-xl' : 'fas fa-bars text-xl'"></i>
-    </button>
-    <span class="font-bold text-lg">Expinova</span>
+<button (click)="toggleSidebar()" class="text-gray-700 focus:outline-none">
+  <!-- Mobile Icon: only visible below md -->
+  <i 
+    [class]="isSidebarOpen ? 'fas fa-times text-xl' : 'fas fa-bars text-xl'" 
+    class="block md:hidden">
+  </i>
+
+  <!-- Desktop Icon: only visible md and above -->
+  <i 
+    [class]="isSidebarOpen ? 'fas fa-bars text-xl' : 'fas fa-times text-xl'" 
+    class="hidden md:block">
+  </i>
+</button>
+
+    <span class="font-bold text-lg">Yallah Dubai</span>
   </div>
 
   <div class="flex-1 mx-4 max-w-md hidden sm:flex">
@@ -63,7 +74,7 @@
           <svg *ngIf="!adminInfo?.profileImage"
                class="rounded-full border-2 border-gray-300 bg-gray-200 text-gray-500 transition"
                [ngClass]="{
-                 'w-20 h-20 p-3': isSidebarOpen,
+                 'w-16 h-16 p-3': isSidebarOpen,
                  'w-10 h-10 p-1': !isSidebarOpen
                }"
                fill="currentColor" viewBox="0 0 24 24">
@@ -76,27 +87,38 @@
 
       <hr class="my-4 border-gray-200" />
 
-      <div class="mb-6">
-        <h3 class="text-xs font-semibold text-slate-200 uppercase tracking-wider px-2 mb-2" *ngIf="isSidebarOpen">My View</h3>
-        <ul class="space-y-1 font-medium text-sm">
-          <li *ngFor="let link of menuLinks">
-            <a [routerLink]="link.path" 
-               routerLinkActive="bg-blue-100"
-               class="flex items-center p-2 rounded-lg hover:bg-blue-800 group transition">
-              <i class="fas {{link.icon}} text-slate-600 w-5 h-5 group-hover:text-blue-100"></i>
-              <span class="ms-3 group-hover:text-blue-100" *ngIf="isSidebarOpen">{{link.text}}</span>
-            </a>
-          </li>
-        </ul>
-      </div>
+     <div class="mb-6 ">
+  <h3 class="text-xs font-semibold text-slate-200 uppercase tracking-wider px-2 mb-2" *ngIf="isSidebarOpen">
+    My View
+  </h3>
+
+  <ul class="space-y-1 font-medium text-sm">
+    <li *ngFor="let link of menuLinks">
+      <a [routerLink]="link.path" 
+         routerLinkActive="bg-blue-100"
+         class="flex items-center gap-3 p-2 rounded-lg hover:bg-blue-800 group transition">
+         
+        <!-- Icon -->
+        <i class="fas {{ link.icon }} text-slate-600 text-base group-hover:text-blue-100"></i>
+
+        <!-- Text -->
+        <span class="group-hover:text-blue-100" *ngIf="isSidebarOpen">{{ link.text }}</span>
+      </a>
+    </li>
+  </ul>
+</div>
+
 
       <div>
-        <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider px-2 mb-2" *ngIf="isSidebarOpen">Admin View</h3>
-        <ul class="space-y-1 font-medium text-sm">
+        <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider  px-2 mb-2" *ngIf="isSidebarOpen">Admin View</h3>
+        <div class="border-t-2 border-slate-300 px-4">
+
+        </div>
+        <ul class="space-y-1 font-medium text-sm ">
           <li>
-         <a (click)="logout()" class="flex items-center p-2 rounded-lg hover:bg-slate-300 group transition cursor-pointer">
-  <i class="fa-solid fa-user w-5 h-5 group-hover:text-slate-800"></i>
-  <span class="ms-3 group-hover:text-slate-800" *ngIf="isSidebarOpen">Log Out</span>
+         <a (click)="logout()" class="flex items-center p-2 rounded-lg hover:bg-blue-800 group transition cursor-pointer">
+  <i class="fa-solid fa-user w-5 h-5 group-hover:text-slate-100"></i>
+  <span class="ms-3 group-hover:text-slate-100" *ngIf="isSidebarOpen">Log Out</span>
 </a>
 
           </li>

@@ -64,7 +64,15 @@
             <span *ngIf="item.label === 'PickUp'">{{ productDetails.pickUp }}</span>
             <span *ngIf="item.label === 'Lang'">: {{productDetails.translatelanguage}}</span>
             <span *ngIf="item.label === 'Free'">Wifi Available</span>
-            <span *ngIf="item.label === 'Adult'">{{ productDetails.adultBaseprice }}</span>
+<span *ngIf="item.label === 'Adult'">
+  <ng-container *ngIf="productDetails.discountPercentage > 0; else showBasePrice">
+    {{ productDetails.discountedTotal }}
+  </ng-container>
+  <ng-template #showBasePrice>
+    {{ productDetails.adultBaseprice }}
+  </ng-template>
+</span>
+
             <span *ngIf="item.label === 'Child'">{{ productDetails.kidsBaseprice}}</span>
           </h1>
           
@@ -74,10 +82,53 @@
       
       </div>
       <hr class="text-slate-500">
-      <div class="flex justify-between mt-3">
-        <p>Start From</p>
-        <p class="text-xl font-bold text-pink-600">AED {{productDetails.price}}</p>
+     <!-- 👇 Wrapper Row -->
+<div class="flex justify-between mt-3 items-center flex-wrap gap-2">
+
+  <!-- ✅ Agar discountPercentage > 0 hai toh show discounted block -->
+  <ng-container *ngIf="productDetails.discountPercentage > 0; else normalPriceBlock">
+    <div class="w-full flex justify-center">
+      <div class="flex flex-wrap items-center justify-center gap-4 text-sm">
+
+        <!-- Discounted Price -->
+        <p class="text-xl font-bold text-pink-700">
+          AED {{ productDetails.discountedTotal || productDetails.adultBaseprice }}
+        </p>
+
+        <!-- Divider Line -->
+        <span class="text-pink-600 font-bold">|</span>
+
+        <!-- Original Price (Striked) -->
+        <p class="line-through text-gray-500 text-xs">
+          AED {{ productDetails.adultBaseprice }}
+        </p>
+
+        <!-- Discount Percent -->
+        <p class="text-red-600 font-bold">
+          {{ productDetails.discountPercentage }} % OFF
+        </p>
+
+        <!-- Validity Date -->
+       <p class="text-pink-800 font-semibold">
+  Till : {{ productDetails.discountend | date: 'yyyy-MM-dd' }}
+</p>
+
+
       </div>
+    </div>
+  </ng-container>
+
+  <!-- ❌ ELSE block: Jab discount nahi hai -->
+  <ng-template #normalPriceBlock>
+    <p class="text-sm font-medium text-gray-600">Start From</p>
+    <p class="text-xl font-bold text-pink-600">
+      AED {{ productDetails.adultBaseprice }}
+    </p>
+  </ng-template>
+
+</div>
+
+
       
       <div>
         <!-- Conditional Rendering Based on isLoading -->
@@ -85,7 +136,7 @@
           <button
             (click)="onBooknow()"
             type="button"
-            class="bg-gradient-to-r from-pink-600 to-pink-500 text-white font-semibold py-2 px-24 w-full rounded-lg shadow-lg hover:from-pink-700 hover:to-pink-600 transition duration-150 ease-in-out"
+            class="bg-gradient-to-r from-pink-600 to-pink-500 text-white font-semibold py-2 px-24 w-full rounded-lg shadow-lg mt-3 hover:from-pink-700 hover:to-pink-600 transition duration-150 ease-in-out"
           >
             Book Now
           </button>
@@ -109,103 +160,182 @@
           alt=""
         />
       </div>
-      
-
-
+<!-- FORM MODAL -->
 <div *ngIf="form" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center z-50 transition-opacity duration-500 opacity-0" [ngClass]="{ 'opacity-100': form }">
-  <div class="bg-white p-6 rounded-xl shadow-xl w-full max-w-sm relative ">
-  
+  <div class="bg-white p-6 rounded-xl shadow-xl w-full max-w-sm relative">
     <h2 class="text-2xl font-semibold text-center text-white mb-4 rounded-md bg-pink-700">Welcome to YallahDubai</h2>
+
     <button
-    (click)="form = false"
-    class="absolute top-2 rounded-md right-2 mt-4 text-white text-2xl font-bold bg-pink-700  h-8 w-8 flex justify-center items-center hover:bg-pink-800 transition duration-150 ease-in-out"
-    aria-label="Close"
-  >
-    &times;
-  </button>
-    <form class="space-y-4">
-      <!-- Form fields -->
+      (click)="form = false"
+      class="absolute top-2 right-2 mt-4 text-white text-2xl font-bold bg-pink-700 h-8 w-8 flex justify-center items-center hover:bg-pink-800 transition duration-150 ease-in-out"
+      aria-label="Close"
+    >&times;</button>
+
+    <!-- SHARED TRANSFER FORM -->
+    <form *ngIf="!showPrivateForm" class="space-y-4">
       <div class="mb-4">
-        <label for="Date" class="text-sm text-black mb-1 block">Select Date</label>
+        <label class="text-sm text-black mb-1 block">Select Date</label>
         <input
-          id="Date"
-          name="Date"
           [(ngModel)]="userobj.Date"
           [min]="minDate"
-          placeholder="Enter your Date"
-          class="bg-gray-100 text-gray-800 border border-gray-300 rounded-md p-1 w-full focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-150 ease-in-out"
+          name="Date"
           type="date"
           required
+          class="bg-gray-100 border border-gray-300 rounded-md p-1 w-full"
         />
       </div>
-      
 
       <div class="mb-4">
-        <label for="NoofAdult" class="text-sm text-black mb-1 block">No of Adults</label>
+        <label class="text-sm text-black mb-1 block">No of Adults</label>
         <input
-          id="NoofAdult"
-          name="NoofAdult"
           [(ngModel)]="userobj.NoofAdult"
           (ngModelChange)="onBookNow()"
-          placeholder="Enter number of adults"
-          class="bg-gray-100 text-slate-600 border border-gray-300 rounded-md p-1 w-full focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-150 ease-in-out"
+          name="NoofAdult"
           type="number"
           required
+          class="bg-gray-100 border border-gray-300 rounded-md p-1 w-full"
         />
       </div>
 
       <div class="mb-4">
-        <label for="NoofChild" class="text-sm text-black mb-1 block">No of Children</label>
+        <label class="text-sm text-black mb-1 block">No of Children</label>
         <input
-          id="NoofChild"
-          name="NoofChild"
           [(ngModel)]="userobj.NoofChild"
-          (ngModelChange)="onBookNow()" 
-          placeholder="Enter number of children"
-          class="bg-gray-100 text-gray-800 border border-gray-300 rounded-md p-1 w-full focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-150 ease-in-out"
+          (ngModelChange)="onBookNow()"
+          name="NoofChild"
           type="number"
           required
+          class="bg-gray-100 border border-gray-300 rounded-md p-1 w-full"
         />
       </div>
 
       <div class="mb-4">
-        <label for="TotalBill" class="text-sm text-black mb-1 block">Total Bill</label>
-        <div class="border-2 border-slate-300 rounded-md h-10 w-full flex items-center">
-          <p *ngIf="result !== null" class="text-xl text-gray-700 mx-4">{{ result }}</p>
+        <label class="text-sm text-black mb-1 block">Total Bill</label>
+        <div class="border border-slate-300 rounded-md h-10 w-full flex items-center">
+          <p *ngIf="result !== null" class="mx-4 text-md text-gray-700">AED: {{ result }}</p>
         </div>
       </div>
 
-      <div class="mb-4">
-        <label for="Transfer" class="text-sm text-black mb-1 block">Transfer Type</label>
-        <select
-          id="Transfer"
-          name="Transfer"
-          [(ngModel)]="userobj.Transfer"
-          class="bg-gray-100 text-gray-800 border border-gray-300 rounded-md p-1 w-full focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-150 ease-in-out"
-          required
-        >
-          <option value="" disabled>Select Transfer Type</option>
-          <option value="Private">Private</option>
-          <option value="Shared">Shared</option>
-        </select>
+      <div *ngIf="showError" class="text-sm text-red-600 font-medium mt-2">
+        {{ errorMessage }}
       </div>
 
-      <div class="mb-4 flex justify-between">
+      <div class="mb-4">
+        <label class="text-sm text-black mb-1 block">Transfer Type</label>
+        <div class="border border-slate-300 rounded-md h-10 w-full flex items-center">
+          <p class="mx-4 text-md text-gray-700">Shared</p>
+        </div>
+      </div>
+
+      <div class="flex justify-between space-x-4">
+        <!-- ✅ Only show if backend says private: true -->
         <button
-          (click)="onsignup()"
+          *ngIf="productDetails?.private"
+          (click)="showPrivateForm = true"
           type="button"
-          class="bg-gradient-to-r from-pink-800 to-pink-700 text-white font-semibold py-2 w-full rounded-lg shadow-lg hover:from-pink-500 hover:bg-pink-900 transition duration-150 ease-in-out"
-        >
-          Book Now
-        </button>
-    
+          class="bg-gradient-to-r from-gray-700 to-gray-600 text-white font-semibold py-2 w-1/2 rounded-lg shadow-lg hover:from-gray-600 hover:to-gray-500"
+        >Private Transfer</button>
+
+     <button
+  (click)="onsignup()"
+  type="button"
+  [disabled]="!userobj.NoofAdult || showError"
+  [ngClass]="{
+    'w-full': !productDetails?.private,
+    'w-1/2': productDetails?.private
+  }"
+  class="bg-gradient-to-r from-pink-800 to-pink-700 text-white font-semibold py-2 rounded-lg shadow-lg hover:from-pink-500 hover:bg-pink-900 disabled:opacity-50"
+>
+  Book Now
+</button>
+
       </div>
     </form>
 
+    <!-- ✅ PRIVATE TRANSFER FORM -->
+ <!-- ✅ PRIVATE TRANSFER FORM -->
+<form *ngIf="showPrivateForm && productDetails?.private" class="space-y-4">
+  <div class="mb-4">
+    <label class="text-sm text-black mb-1 block">Select Date</label>
+    <input
+      [(ngModel)]="userobj.Date"
+      [min]="minDate"
+      name="privateDate"
+      type="date"
+      required
+      class="bg-gray-100 border border-gray-300 rounded-md p-1 w-full"
+    />
+  </div>
 
+  <div class="mb-4">
+    <label class="text-sm text-black mb-1 block">No of Adults</label>
+    <input
+      [(ngModel)]="userobj.privateAdult"
+      name="privateAdult"
+      type="number"
+      [readonly]="true"
+      class="bg-gray-100 border border-gray-300 rounded-md p-1 w-full text-gray-500"
+    />
+  </div>
+
+  <div class="mb-4">
+    <label class="text-sm text-black mb-1 block">No of Children</label>
+    <input
+      [(ngModel)]="userobj.privateChild"
+      name="privateChild"
+      type="number"
+      [readonly]="true"
+      class="bg-gray-100 border border-gray-300 rounded-md p-1 w-full text-gray-500"
+    />
+  </div>
+
+  <div class="mb-4">
+    <label class="text-sm text-black mb-1 block">Private Transfer Price</label>
+    <div class="border border-slate-300 rounded-md h-10 w-full flex items-center">
+      <p class="mx-4 text-md text-gray-700">AED: {{ productDetails?.privatetransferprice }}</p>
+    </div>
+  </div>
+
+  <div class="mb-4">
+    <label class="text-sm text-black mb-1 block">Transfer Type</label>
+    <div class="border border-slate-300 rounded-md h-10 w-full flex items-center">
+      <p class="mx-4 text-md text-gray-700">Private</p>
+    </div>
+  </div>
+
+  <div class="flex justify-between space-x-4">
+    <button
+      (click)="showPrivateForm = false"
+      type="button"
+      class="bg-gradient-to-r from-gray-700 to-gray-600 text-white font-semibold py-2 w-1/2 rounded-lg shadow-lg hover:from-gray-600 hover:to-gray-500"
+    >Back</button>
+
+    <button
+      (click)="onPrivateBookNow()"
+      type="button"
+      [disabled]="!userobj.Date"
+      class="bg-gradient-to-r from-pink-800 to-pink-700 text-white font-semibold py-2 w-1/2 rounded-lg shadow-lg hover:from-pink-500 hover:bg-pink-900 disabled:opacity-50"
+    >Book Now</button>
+  </div>
+</form>
 
   </div>
 </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
       
@@ -228,13 +358,12 @@
 
 
 <div class="grid place-content-center">
-  
 <div class="flex justify-center w-[95vw] flex-col md:flex-row gap-6 p-6 ">
   <!-- Main Content Section -->
   <div class="md:w-[80vw] bg-white p-6 shadow-lg rounded-lg ">
     <h1 class="text-2xl font-bold text-pink-700 mb-4">{{productDetails.producttitle}}</h1>
  
-<p class="text-gray-700 mb-4 text-justify" [ngClass]="{'line-clamp-8': !showMore}">
+<p class="text-gray-700 mb-4 text-justify" [ngClass]="{'line-clamp-5': !showMore}">
   {{ productDetails.citydescription }}
 </p>
 <button
@@ -263,7 +392,7 @@
   </div>
   
 </div>
-</div>
+</div> 
 
   
     

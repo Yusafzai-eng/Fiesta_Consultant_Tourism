@@ -2,44 +2,39 @@ import { Component } from '@angular/core';
 import { DataService } from '../box/data.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+
 interface User {
   id?: string;
   name?: string;
   email?: string;
-  // Add more user fields as needed
 }
 
 interface ProductInOrder {
   total: number;
-  // Add more fields if needed
 }
 
 interface Order {
-  date: string;
-  products: ProductInOrder[];
-  // Add more fields if needed
+  date: string; // in "dd/MM/yyyy" format
+  products: any[]; // actual products have total directly
 }
 
 interface Product {
   id?: string;
   name?: string;
-  // Add more product fields as needed
 }
 
 @Component({
   selector: 'app-boxes',
   standalone: true,
-  imports: [CommonModule,FormsModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './boxes.component.html',
   styleUrl: './boxes.component.css'
 })
 export class BoxesComponent {
 
- cards: any[] = [];
+  cards: any[] = [];
   selectedMonth: string = 'all';
-ngOnInit(): void {
-  
-}
+
   months = [
     { name: 'January', value: '01' },
     { name: 'February', value: '02' },
@@ -59,95 +54,100 @@ ngOnInit(): void {
     this.loadData();
   }
 
-  loadData() {
-    this.admin.Total().subscribe({
-      next: (res) => {
-        const users: User[] = res.users ?? [];
-        const allOrders: Order[] = res.order ?? [];
-        const products: Product[] = res.products ?? [];
+loadData() {
+  this.admin.Total().subscribe({
+    next: (res) => {
+      const users: User[] = res.users ?? [];
+      const allOrders: any[] = res.order ?? []; // Changed from Order[] to any[]
+      const products: Product[] = res.products ?? [];
 
-        // ✅ Filter orders by selected month
-        const filteredOrders = this.selectedMonth === 'all'
-          ? allOrders
-          : allOrders.filter((order: Order) => {
-              const date = new Date(order.date);
-              const month = String(date.getMonth() + 1).padStart(2, '0');
-              return month === this.selectedMonth;
-            });
+      const currentYear = new Date().getFullYear().toString();
 
-        // ✅ Calculate total cashed
-        let totalCash = 0;
-        for (let order of filteredOrders) {
-          if (Array.isArray(order.products)) {
-            for (let product of order.products) {
-              totalCash += Number(product.total ?? 0);
-            }
-          }
+      // Filter orders by selectedMonth and currentYear
+      const filteredOrders = allOrders.filter((order: any) => {
+        // Parse date from "dd/MM/yyyy" format
+        const [day, month, year] = order.date.split('/');
+        
+        const isCurrentYear = year === currentYear;
+
+        // If "all" or empty month is selected, return all orders from current year
+        if (!this.selectedMonth || this.selectedMonth === 'all') {
+          return isCurrentYear;
         }
 
-        // ✅ Cards with real data
-   this.cards = [
-  {
-    title: 'Total Service',
-    value: products.length,
-    tag: 'Tourism',
-    tagBg: 'bg-red-100',
-    tagText: 'text-red-600',
-    chartColor: '#fca5a5',
-    icon: 'fa-solid fa-hotel',
-    iconColor: '#fca5a5'  // 🔴 light red
-  },
-  {
-    title: 'Total Client',
-    value: users.length,
-    tag: 'Tourism',
-    tagBg: 'bg-red-100',
-    tagText: 'text-red-600',
-    chartColor: '#fca5a5',
-    icon: 'fa-solid fa-users',
-    iconColor: '#fca5a5'  // 🔴 light red
-  },
-  {
-    title: 'Total Order',
-    value: filteredOrders.length,
-    tag: 'Tourism',
-    tagBg: 'bg-green-100',
-    tagText: 'text-green-700',
-    chartColor: '#4EE94E',
-    icon: 'fa-brands fa-first-order',
-    iconColor: '#4EE94E'  // 🟢 light green
-  },
-  {
-    title: 'Total Cashed',
-    value: this.formatCash(totalCash),
-    tag: 'Tourism',
-    tagBg: 'bg-green-100',
-    tagText: 'text-green-700',
-    chartColor: '#4EE94E',
-    icon: 'fa-solid fa-money-bill-wave',
-    iconColor: '#4EE94E'  // 🟢 light green
-  }
-];
+        // If specific month selected, match both month and current year
+        return month === this.selectedMonth && isCurrentYear;
+      });
 
-
-      },
-      error: (err) => {
-        console.error('❌ Error fetching totals:', err);
+      // Calculate total cash for filtered orders
+      let totalCash = 0;
+      for (let order of filteredOrders) {
+        if (Array.isArray(order.products)) {
+          for (let product of order.products) {
+            totalCash += Number(product.total ?? 0);
+          }
+        }
       }
-    });
-  }
 
-  // ✅ Format currency values
+      this.cards = [
+        {
+          title: 'Total Service',
+          value: products.length,
+          tag: 'Tourism',
+          tagBg: 'bg-red-100',
+          tagText: 'text-red-600',
+          chartColor: '#fca5a5',
+          icon: 'fa-solid fa-hotel',
+          iconColorClass: 'text-[#fca5a5]'
+        },
+        {
+          title: 'Total Client',
+          value: users.length,
+          tag: 'Tourism',
+          tagBg: 'bg-red-100',
+          tagText: 'text-red-600',
+          chartColor: '#fca5a5',
+          icon: 'fa-solid fa-users',
+          iconColorClass: 'text-[#fca5a5]'
+        },
+        {
+          title: 'Total Order',
+          value: filteredOrders.length,
+          tag: 'Tourism',
+          tagBg: 'bg-green-100',
+          tagText: 'text-green-700',
+          chartColor: '#4EE94E',
+          icon: 'fa-brands fa-first-order',
+          iconColorClass: 'text-[#4EE94E]'
+        },
+        {
+          title: 'Total Cashed',
+          value: this.formatCash(totalCash),
+          tag: 'Tourism',
+          tagBg: 'bg-green-100',
+          tagText: 'text-green-700',
+          chartColor: '#4EE94E',
+          icon: 'fa-solid fa-money-bill-wave',
+          iconColorClass: 'text-[#4EE94E]'
+        }
+      ];
+    },
+    error: (err) => {
+      console.error('❌ Error fetching totals:', err);
+    }
+  });
+}
+
+
   formatCash(amount: number): string {
     if (amount >= 10000000) {
-      return `Rs. ${(amount / 10000000).toFixed(1)}Cr`;
+      return `AED. ${(amount / 10000000).toFixed(1)}Cr`;
     } else if (amount >= 100000) {
-      return `Rs. ${(amount / 100000).toFixed(1)}L`;
+      return `AED. ${(amount / 100000).toFixed(1)}L`;
     } else if (amount >= 1000) {
-      return `Rs. ${(amount / 1000).toFixed(1)}K`;
+      return `AED. ${(amount / 1000).toFixed(1)}K`;
     } else {
-      return `Rs. ${amount}`;
+      return `AED. ${amount}`;
     }
   }
 }
-

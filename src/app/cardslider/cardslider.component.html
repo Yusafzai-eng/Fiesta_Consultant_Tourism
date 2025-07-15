@@ -44,6 +44,35 @@
           </div>
         </article>
       </ng-template>
+
+
+
+
+       <!-- <ng-template #showCards>
+  <article
+    *ngFor="let item of deplist"
+    class="card__article shadow-2xl swiper-slide transition-transform duration-300 hover:-translate-y-2 w-[200px] md:w-[220px] lg:w-[230px] relative" 
+  >
+    <div class="card__image relative">
+      <a [routerLink]="['/products', item?.id]">
+        <img
+          [src]="item.image"
+          alt="image"
+          class="card__img w-full h-[200px] ring-1 ring-white object-cover" 
+        />
+      </a>
+      <div *ngIf="item.discountPercentage" class="absolute top-1 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-md shadow-lg z-10">
+        {{item.discountPercentage}}%OFF
+      </div>
+      <div class="card__shadow absolute"></div>
+    </div>
+    <div class="card__data">
+      <p class="card__description text-pink-800 font-medium mx-1 text-sm">
+        {{ item.title }}
+      </p>
+    </div>
+  </article>
+</ng-template> -->
     </div>
 
     <!-- Navigation buttons -->
