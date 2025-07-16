@@ -5,6 +5,7 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { Router, RouterLink } from '@angular/router';
 import { LoginService } from '../loginapi/login.service';
 import { HttpClient } from '@angular/common/http'; // ✅ ADD
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-login',
@@ -56,34 +57,42 @@ export class LoginComponent implements OnInit { // ✅ implements OnInit
   });
 
   login(data: any): void {
-    if (this.loginform.valid) {
-      this.LoginService.submitform(data).subscribe(
-        (res: any) => {
-          console.warn('Full Response:', res);
-          alert('Login successful');
+  if (this.loginform.valid) {
+    this.LoginService.submitform(data).subscribe({
+      next: (res: any) => {
+        console.warn('Full Response:', res);
+        alert('Login successful');
 
-          const returnUrl = localStorage.getItem('returnUrl');
-          localStorage.removeItem('returnUrl');
+        const returnUrl = localStorage.getItem('returnUrl');
+        localStorage.removeItem('returnUrl');
 
-          if (returnUrl) {
-            this.router.navigateByUrl(returnUrl);
+        if (returnUrl) {
+          this.router.navigateByUrl(returnUrl);
+        } else {
+          if (res.role === 'admin') {
+            this.router.navigate(['/admin']);
+          } else if (res.role === 'user') {
+            this.router.navigate(['/main']);
           } else {
-            if (res.role === 'admin') {
-              this.router.navigate(['/admin']);
-            } else if (res.role === 'user') {
-              this.router.navigate(['/main']);
-            } else {
-              alert('Unknown role');
-            }
+            alert('Unknown role');
           }
-        },
-        (error) => {
-          alert('Login failed');
-          console.error('Error:', error);
         }
-      );
-    } else {
-      alert('Form sahi se fill karo');
-    }
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error('Error:', error);
+
+       if (error.status === 404) {
+          this.router.navigate(['/invalid']);
+        } else if (error.status === 500) {
+          alert('Server down, try again later');
+        } else {
+          alert('Login failed');
+        }
+      }
+    });
+  } else {
+    alert('Form sahi se fill karo');
   }
+}
+
 }

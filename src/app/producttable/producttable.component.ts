@@ -135,7 +135,7 @@ onSubmit(): void {
         privateChild: form.privateChild,
         transfertype: 'Private',
         privatetransferprice: this.productData.privatetransferprice,  // ✅ Make sure backend sends this field
-        total: this.productData.privatetransferprice,                 // ✅ Total equals to private transfer price
+        // total: this.productData.privatetransferprice,                 // ✅ Total equals to private transfer price
 
         order_date: new Date().toLocaleDateString()
       }];
@@ -153,6 +153,7 @@ onSubmit(): void {
         pickUp: this.productData.pickUp,
         price: this.productData.price,
         discountedTotal: this.productData.discountedTotal,
+        discountPercentage: this.productData.discountPercentage,
         adultBaseprice: this.productData.adultBaseprice,
         kidsBaseprice: this.productData.kidsBaseprice,
         quantity: this.productData.quantity,

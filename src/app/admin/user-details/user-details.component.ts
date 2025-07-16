@@ -137,18 +137,39 @@ onTransferTypeChange() {
     this.showDeleteConfirmation = true;
   }
 
-  confirmDelete() {
-    this.showDeleteConfirmation = false;
-    this.addservice.deleteProductorder(this.orderToDelete, this.productToDelete).subscribe({
-      next: () => {
-        alert('Product deleted successfully!');
-        this.getUserOrders();
-      },
-      error: (err) => {
-        console.error('❌ Failed to delete product:', err);
+confirmDelete() {
+  this.showDeleteConfirmation = false;
+  this.addservice.deleteProductorder(this.orderToDelete, this.productToDelete).subscribe({
+    next: () => {
+      // Step 1: remove the product locally (optional)
+      const orderIndex = this.userOrders.findIndex(order => order._id === this.orderToDelete);
+      if (orderIndex > -1) {
+        const productIndex = this.userOrders[orderIndex].products.findIndex((p: any) => p._id === this.productToDelete);
+        if (productIndex > -1) {
+          this.userOrders[orderIndex].products.splice(productIndex, 1);
+        }
+
+        // Step 2: agar is order ke products empty ho gaye
+        if (this.userOrders[orderIndex].products.length === 0) {
+          this.userOrders.splice(orderIndex, 1);
+        }
       }
-    });
-  }
+
+      // Step 3: agar sare orders hi khatam ho gaye
+      if (this.userOrders.length === 0) {
+        alert('Last product deleted. Redirecting to all orders.');
+        this.router.navigate(['/admin/Orders']);
+      } else {
+        // Agar kuch orders bache hain to refresh karo
+        this.getUserOrders();
+      }
+    },
+    error: (err) => {
+      console.error('❌ Failed to delete product:', err);
+    }
+  });
+}
+
 
   cancelDelete() {
     this.showDeleteConfirmation = false;
@@ -156,6 +177,33 @@ onTransferTypeChange() {
     this.productToDelete = '';
   }
 
+
+recalculateSharedTotal(product: any) {
+  const adultCount = Number(product.adults_no) || 0;
+  const childCount = Number(product.kids_no) || 0;
+
+  const rateAdult = product.adultBaseprice || 0;
+  const rateChild = product.kidsBaseprice || 0;
+  const discountPercentage = product.discountPercentage || 0;
+  const maxQuantity = Number(product.quantity) || 0;
+
+  const totalPeople = adultCount + childCount;
+
+  if (maxQuantity && totalPeople > maxQuantity) {
+    product.quantityError = `❌ Only ${maxQuantity} people allowed. You selected ${totalPeople}.`;
+  } else {
+    product.quantityError = '';
+  }
+
+  const totalAdult = adultCount * rateAdult;
+  const totalChild = childCount * rateChild;
+  const total = totalAdult + totalChild;
+
+  const discount = (total * discountPercentage) / 100;
+  const finalTotal = total - discount;
+
+  product.total = Math.round(finalTotal);
+}
 
 
   closeEditModal() {
@@ -181,29 +229,39 @@ saveEdit() {
     return;
   }
 
-  // Prepare the data based on transfer type
+  // ✅ Format order_date
+  const rawDate = this.editingProduct.order_date;
+  let formattedDate = rawDate;
+  if (rawDate && rawDate.includes('/')) {
+    const parts = rawDate.split('/');
+    if (parts.length === 3) {
+      formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
+    }
+  }
+
+  // ✅ Build payload
   const updatedData: any = {
     transfertype: this.editingProduct.transfertype,
-    order_date: this.editingProduct.order_date
+    order_date: formattedDate
   };
 
   if (this.editingProduct.transfertype === 'Private') {
-    // Include private transfer specific fields
-    updatedData.privateAdult = this.editingProduct.privateAdult;
-    updatedData.privateChild = this.editingProduct.privateChild;
-    updatedData.privatetransferprice = this.editingProduct.privatetransferprice;
-    
-    // Clear shared transfer fields (optional, backend should handle this)
+    // Set Private fields
+    updatedData.privateAdult = this.editingProduct.privateAdult || 0;
+    updatedData.privateChild = this.editingProduct.privateChild || 0;
+    updatedData.privatetransferprice = this.editingProduct.privatetransferprice || 0;
+
+    // Force reset Shared fields
     updatedData.adults_no = 0;
     updatedData.kids_no = 0;
-    updatedData.total = 0;
+    updatedData.total = 0; // total not used for private, but you can reset it too
   } else {
-    // Include shared transfer specific fields
-    updatedData.adults_no = this.editingProduct.adults_no;
-    updatedData.kids_no = this.editingProduct.kids_no;
-    updatedData.total = this.editingProduct.total;
-    
-    // Clear private transfer fields (optional, backend should handle this)
+    // Set Shared fields
+    updatedData.adults_no = this.editingProduct.adults_no || 0;
+    updatedData.kids_no = this.editingProduct.kids_no || 0;
+    updatedData.total = this.editingProduct.total || 0;
+
+    // Force reset Private fields
     updatedData.privateAdult = 0;
     updatedData.privateChild = 0;
     updatedData.privatetransferprice = 0;
@@ -216,18 +274,22 @@ saveEdit() {
     this.editingProduct._id,
     updatedData
   ).subscribe({
-    next: (res) => {
+    next: () => {
       alert('✅ Product updated successfully!');
-      this.getUserOrders(); // Refresh list
-      this.editingProduct = null; // Close modal
+      this.getUserOrders();
+      this.editingProduct = null;
       this.showEditLoader = false;
     },
     error: (err) => {
       console.error('❌ Error while updating product:', err);
-      alert('Failed to update product. Please try again.');
+      alert('Failed to update product.');
       this.showEditLoader = false;
     }
   });
 }
+
+
+
+
 
 }

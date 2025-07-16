@@ -48,7 +48,7 @@
     <!-- Table Headings -->
     <thead class="text-[11px] uppercase bg-slate-800 text-white tracking-wider">
       <tr>
-        <th class="px-3 py-3">Name</th>
+        <th class="px-3 py-3">Namesd</th>
         <th class="px-2 py-3">Address</th>
         <th class="px-2 py-3">City</th>
         <th class="px-2 py-3">Date</th>
@@ -100,7 +100,9 @@
 
         <!-- Total -->
         <td class="px-2 py-2 text-green-700 dark:text-green-400 font-semibold">
-         AED: {{ user.total | number }}
+         AED:{{ (user.total || 0) + (user.privatetransferprice || 0) }}
+
+
         </td>
       </tr>
     </tbody>

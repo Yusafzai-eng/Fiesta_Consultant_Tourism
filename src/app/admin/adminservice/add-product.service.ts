@@ -46,7 +46,11 @@ updateOrderProduct(orderId: string, productId: string, updatedData: any): Observ
 }
 
 
-
+ updateProduct(id: string, formData: FormData): Observable<any> {
+  return this.http.post(`http://localhost:4000/api/productupdate?_id=${id}`, formData, {
+    withCredentials: true
+  });
+}
 
 
 }

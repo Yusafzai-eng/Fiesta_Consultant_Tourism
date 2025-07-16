@@ -51,40 +51,38 @@ export class ChartsComponent implements OnInit {
     const yearMap: { [year: string]: number } = {};
     const currentYear = new Date().getFullYear();
 
-    // 1. Process Orders Data
+    // ✅ Loop through each order
     res.order?.forEach((order: any) => {
-      // Handle both order.date and product.order_date
       const dateStr = order.date || order.products?.[0]?.order_date;
       if (!dateStr) return;
 
-      // Parse date (handling both dd/MM/yyyy and ISO formats)
       const date = this.parseDate(dateStr);
       if (!date) return;
 
       const year = date.getFullYear();
-      if (year < currentYear - 4) return; // Only show last 5 years
+      if (year < currentYear - 4) return; // Only include last 5 years
 
-      // Sum totals for the year
+      // ✅ Add product.total + privatetransferprice
       order.products?.forEach((product: any) => {
-        const total = parseFloat(product.total) || 0;
-        yearMap[year] = (yearMap[year] || 0) + total;
+        const shared = parseFloat(product.total) || 0;
+        const privateTransfer = parseFloat(product.privatetransferprice) || 0;
+        const combined = shared + privateTransfer;
+
+        yearMap[year] = (yearMap[year] || 0) + combined;
       });
     });
 
-    // 2. Prepare Chart Data
     const years = Object.keys(yearMap).sort();
     const totals = years.map(year => yearMap[year]);
 
-    // Color scheme (blue and green)
-    const backgroundColors = years.map((_, i) => 
+    const backgroundColors = years.map((_, i) =>
       i % 2 === 0 ? 'rgba(15, 30, 239, 0.6)' : 'rgba(15, 239, 59, 0.6)'
     );
-    const borderColors = years.map((_, i) => 
+    const borderColors = years.map((_, i) =>
       i % 2 === 0 ? 'rgba(15, 30, 239, 1)' : 'rgba(15, 239, 59, 1)'
     );
 
-    console.log('Processed Chart Data:', { years, totals }); // Debug log
-
+    console.log('Processed Chart Data:', { years, totals });
     return { years, totals, colors: backgroundColors, borderColors };
   }
 

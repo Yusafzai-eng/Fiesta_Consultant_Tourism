@@ -40,6 +40,7 @@ export const routes: Routes = [
       { path: 'card', component: CardsComponent 
  },
       { path: 'login', component: LoginComponent },
+      { path: 'invalid', component: InvalidComponent },
       { path: 'sinup', component: SinupComponent },
       { path: 'main', component: MainComponent },
       { path: 'citytour', component: NavTourComponent },

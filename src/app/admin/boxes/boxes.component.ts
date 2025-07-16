@@ -9,15 +9,6 @@ interface User {
   email?: string;
 }
 
-interface ProductInOrder {
-  total: number;
-}
-
-interface Order {
-  date: string; // in "dd/MM/yyyy" format
-  products: any[]; // actual products have total directly
-}
-
 interface Product {
   id?: string;
   name?: string;
@@ -54,90 +45,86 @@ export class BoxesComponent {
     this.loadData();
   }
 
-loadData() {
-  this.admin.Total().subscribe({
-    next: (res) => {
-      const users: User[] = res.users ?? [];
-      const allOrders: any[] = res.order ?? []; // Changed from Order[] to any[]
-      const products: Product[] = res.products ?? [];
+  loadData() {
+    this.admin.Total().subscribe({
+      next: (res) => {
+        const users: User[] = res.users ?? [];
+        const allOrders: any[] = res.order ?? [];
+        const products: Product[] = res.products ?? [];
 
-      const currentYear = new Date().getFullYear().toString();
+        const currentYear = new Date().getFullYear().toString();
 
-      // Filter orders by selectedMonth and currentYear
-      const filteredOrders = allOrders.filter((order: any) => {
-        // Parse date from "dd/MM/yyyy" format
-        const [day, month, year] = order.date.split('/');
-        
-        const isCurrentYear = year === currentYear;
+        const filteredOrders = allOrders.filter((order: any) => {
+          const [day, month, year] = order.date.split('/');
+          const isCurrentYear = year === currentYear;
 
-        // If "all" or empty month is selected, return all orders from current year
-        if (!this.selectedMonth || this.selectedMonth === 'all') {
-          return isCurrentYear;
-        }
+          if (!this.selectedMonth || this.selectedMonth === 'all') {
+            return isCurrentYear;
+          }
 
-        // If specific month selected, match both month and current year
-        return month === this.selectedMonth && isCurrentYear;
-      });
+          return month === this.selectedMonth && isCurrentYear;
+        });
 
-      // Calculate total cash for filtered orders
-      let totalCash = 0;
-      for (let order of filteredOrders) {
-        if (Array.isArray(order.products)) {
-          for (let product of order.products) {
-            totalCash += Number(product.total ?? 0);
+        // ✅ Calculate totalCash with total + privatetransferprice
+        let totalCash = 0;
+        for (let order of filteredOrders) {
+          if (Array.isArray(order.products)) {
+            for (let product of order.products) {
+              const total = Number(product.total ?? 0);
+              const privateTransfer = Number(product.privatetransferprice ?? 0);
+              totalCash += total + privateTransfer;
+            }
           }
         }
+
+        this.cards = [
+          {
+            title: 'Total Service',
+            value: products.length,
+            tag: 'Tourism',
+            tagBg: 'bg-red-100',
+            tagText: 'text-red-600',
+            chartColor: '#fca5a5',
+            icon: 'fa-solid fa-hotel',
+            iconColorClass: 'text-[#fca5a5]'
+          },
+          {
+            title: 'Total Client',
+            value: users.length,
+            tag: 'Tourism',
+            tagBg: 'bg-red-100',
+            tagText: 'text-red-600',
+            chartColor: '#fca5a5',
+            icon: 'fa-solid fa-users',
+            iconColorClass: 'text-[#fca5a5]'
+          },
+          {
+            title: 'Total Order',
+            value: filteredOrders.length,
+            tag: 'Tourism',
+            tagBg: 'bg-green-100',
+            tagText: 'text-green-700',
+            chartColor: '#4EE94E',
+            icon: 'fa-brands fa-first-order',
+            iconColorClass: 'text-[#4EE94E]'
+          },
+          {
+            title: 'Total Cashed',
+            value: this.formatCash(totalCash),
+            tag: 'Tourism',
+            tagBg: 'bg-green-100',
+            tagText: 'text-green-700',
+            chartColor: '#4EE94E',
+            icon: 'fa-solid fa-money-bill-wave',
+            iconColorClass: 'text-[#4EE94E]'
+          }
+        ];
+      },
+      error: (err) => {
+        console.error('❌ Error fetching totals:', err);
       }
-
-      this.cards = [
-        {
-          title: 'Total Service',
-          value: products.length,
-          tag: 'Tourism',
-          tagBg: 'bg-red-100',
-          tagText: 'text-red-600',
-          chartColor: '#fca5a5',
-          icon: 'fa-solid fa-hotel',
-          iconColorClass: 'text-[#fca5a5]'
-        },
-        {
-          title: 'Total Client',
-          value: users.length,
-          tag: 'Tourism',
-          tagBg: 'bg-red-100',
-          tagText: 'text-red-600',
-          chartColor: '#fca5a5',
-          icon: 'fa-solid fa-users',
-          iconColorClass: 'text-[#fca5a5]'
-        },
-        {
-          title: 'Total Order',
-          value: filteredOrders.length,
-          tag: 'Tourism',
-          tagBg: 'bg-green-100',
-          tagText: 'text-green-700',
-          chartColor: '#4EE94E',
-          icon: 'fa-brands fa-first-order',
-          iconColorClass: 'text-[#4EE94E]'
-        },
-        {
-          title: 'Total Cashed',
-          value: this.formatCash(totalCash),
-          tag: 'Tourism',
-          tagBg: 'bg-green-100',
-          tagText: 'text-green-700',
-          chartColor: '#4EE94E',
-          icon: 'fa-solid fa-money-bill-wave',
-          iconColorClass: 'text-[#4EE94E]'
-        }
-      ];
-    },
-    error: (err) => {
-      console.error('❌ Error fetching totals:', err);
-    }
-  });
-}
-
+    });
+  }
 
   formatCash(amount: number): string {
     if (amount >= 10000000) {

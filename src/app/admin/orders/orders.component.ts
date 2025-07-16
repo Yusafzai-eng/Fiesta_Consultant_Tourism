@@ -36,7 +36,7 @@ export class OrdersComponent {
     this.skeletonArray = Array(count).fill(0);
   }
 
- fetchData(): void {
+fetchData(): void {
   this.isloader = true;
   this.generateSkeletons(5);
 
@@ -53,10 +53,17 @@ export class OrdersComponent {
         const name = order.userName;
         const address = order.address;
         const products: any[] = order.products ?? [];
-        const total = products.reduce((sum: number, p: any) => sum + (p.total || 0), 0);
+
+        // ✅ TOTAL = shared total + private transfer price
+        const total = products.reduce((sum: number, p: any) => {
+          const shared = p.total || 0;
+          const privateTransfer = p.privatetransferprice || 0;
+          return sum + shared + privateTransfer;
+        }, 0);
+
         const orderDate = new Date(order.date);
 
-        // ✅ Thumbnail fallback logic: check 1st, 2nd, 3rd product
+        // ✅ Thumbnail logic
         let firstThumbnail = null;
         for (let i = 0; i < products.length; i++) {
           if (products[i]?.thumbnail?.[0]) {
@@ -78,12 +85,18 @@ export class OrdersComponent {
           });
         } else {
           const existing = userMap.get(key);
-          existing.total += total;
+
+          // ✅ Add to existing total
+          const extraTotal = products.reduce((sum: number, p: any) => {
+            return sum + (p.total || 0) + (p.privatetransferprice || 0);
+          }, 0);
+
+          existing.total += extraTotal;
           existing.products.push(...products);
+
           if (orderDate > existing.latestDate) {
             existing.latestDate = orderDate;
 
-            // ✅ Update thumbnail only if previous one was null
             if (!existing.thumbnail && firstThumbnail) {
               existing.thumbnail = firstThumbnail;
             }
@@ -91,7 +104,7 @@ export class OrdersComponent {
         }
       }
 
-      // ✅ Filter out users with total = 0 and sort by latest date
+      // ✅ Filter out users with total = 0 and sort by date
       this.userSummaries = Array.from(userMap.values())
         .filter(u => u.total > 0)
         .sort((a, b) => b.latestDate - a.latestDate);
@@ -105,6 +118,7 @@ export class OrdersComponent {
     }
   });
 }
+
 
 
   showUserDetails(user: any) {

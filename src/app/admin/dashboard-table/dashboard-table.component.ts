@@ -30,7 +30,7 @@ export class DashboardTableComponent implements OnInit {
     this.skeletonArray = Array(count).fill(0);
   }
 
- fetchData(): void {
+fetchData(): void {
   this.isloader = true;
   this.generateSkeletons(5);
 
@@ -52,7 +52,7 @@ export class DashboardTableComponent implements OnInit {
             userEmail: order.userEmail,
             city: order.city,
             address: order.address,
-            total: product.total,
+            total: (Number(product.total ?? 0) + Number(product.privatetransferprice ?? 0)), // ✅ Updated
             thumbnail: product.thumbnail?.[0] || null,
             order_date: product.order_date
           });
@@ -64,9 +64,6 @@ export class DashboardTableComponent implements OnInit {
       );
 
       this.userSummaries = allProducts.slice(0, 4);
-
-      // ✅ Add a delay to keep skeleton visible for a short time
-     
     },
     error: (err) => {
       console.error('❌ Error:', err);
