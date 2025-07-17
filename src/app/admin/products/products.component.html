@@ -79,24 +79,9 @@
       <div *ngIf="filteredProducts.length > 0; else noProducts">
         <table class="lg:w-[95vw] text-xs bg-white border border-slate-300 rounded-lg shadow-md">
           <thead class="bg-slate-800 text-white">
-            <tr>
-              <th class="px-2 py-2">Img</th>
-              <th class="px-2 py-2">Title</th>
-              <th class="px-2 py-2">City</th>
-              <th class="px-2 py-2">Cat</th>
-              <th class="px-2 py-2">Price</th>
-              <th class="px-2 py-2">Adult</th>
-              <th class="px-2 py-2">Kids</th>
-              <th class="px-2 py-2">Disc %</th>
-              <th class="px-2 py-2">Final</th>
-              <th class="px-2 py-2">Transfer</th>
-              <th class="px-2 py-2">Tour</th>
-              <th class="px-2 py-2">Lang</th>
-              <th class="px-2 py-2">City Desc</th>
-              <th class="px-2 py-2">Product Desc</th>
-              <th class="px-2 py-2">Private</th>
-              <th class="px-2 py-2">Edit</th>
-              <th class="px-2 py-2">Delete</th>
+            <tr >
+              <th class="px-2 py-2" *ngFor="let head of tableheader">{{head.label}}</th>
+          
             </tr>
           </thead>
           <tbody>

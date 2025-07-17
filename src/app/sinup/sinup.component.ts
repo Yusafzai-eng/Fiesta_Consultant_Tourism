@@ -13,7 +13,7 @@ import { SingupService } from '../api/singup.service';
 })
 export class SinupComponent {
   constructor(private router: Router, private singupService: SingupService) {}
-
+  errorMessage: string = '';
   passwordVisible = false;
 
   togglePasswordVisibility() {
@@ -27,12 +27,33 @@ export class SinupComponent {
   });
 
   signup() {
+    console.log("Signup button clicked");
+
     if (this.signupForm.valid) {
       const data = this.signupForm.value;
-      this.singupService.submitForm(data);
-      console.log(data);
-      this.router.navigateByUrl("/login")
-      
+      console.log("Form Data:", data);
+
+      this.singupService.submitForm(data).subscribe({
+        next: (res: any) => {
+          console.warn('Signup Success:', res);
+          alert(res.message || "Signup successful!");
+          this.router.navigateByUrl("/login");
+        },
+        error: (err) => {
+          console.error('Signup Error:', err);
+          if (err.status === 409) {
+            this.errorMessage="Email already exists. Try another one.";
+          } else if (err.status === 500) {
+            this.errorMessage ="Server error occurred. Please try later.";
+          }
+           else if (err.status === 0) {
+            this.errorMessage ="Server is closed:please try again later";
+          } else {
+            this.errorMessage ="Signup failed. Please check your input.";
+          }
+        }
+      });
+
     } else {
       this.signupForm.markAllAsTouched();
     }

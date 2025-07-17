@@ -195,4 +195,33 @@ export class ProductsComponent implements OnInit, OnDestroy {
   onEdit(id: string): void {
     this.router.navigate(['/admin/edit', id]);
   }
+
+
+
+
+
+
+
+
+tableheader = [
+  { label: 'Image' },
+  { label: 'Title' },
+  { label: 'City' },
+  { label: 'Category' },
+  { label: 'Price' },
+  { label: 'Adult ' },
+  { label: 'Kids' },
+  { label: 'Dis' },
+  { label: 'Final' },
+  { label: 'Transfer' },
+  { label: 'Tour ' },
+  { label: 'Language ' },
+  { label: 'City disc' },
+  { label: 'Product Des' },
+  { label: 'Tour Type' },
+  { label: 'Edit' },
+  { label: 'Delete' }
+];
+
+
 }

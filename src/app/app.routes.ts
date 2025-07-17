@@ -26,6 +26,7 @@ import { SidebarComponent } from './admin/sidebar/sidebar.component';
 import { CardsComponent } from './cards/cards.component';
 import { authGuard } from './guards/auth.guard'; // ✅ path ko sahi adjust karo
 import { UserUpdateProductsComponent } from './admin/user-update-products/user-update-products.component';
+import { AuthGuard } from './auth.guard';
 
 // Make sure this is 'export const routes'
 export const routes: Routes = [
@@ -56,19 +57,21 @@ export const routes: Routes = [
 
 {
   path: 'admin',
-  component: SidebarLayoutComponent,  // sidebar with router-outlet
+  component: SidebarLayoutComponent,
+  canActivate: [AuthGuard], // ✅ Add this line
   children: [
-    { path: '', component: AllComComponent },               // /admin
-    { path: 'Users', component: UsersComponent },           // /admin/Users
-    { path: 'Orders', component: OrdersComponent },         // /admin/Orders
-    { path: 'Add-Products', component: AddProductsComponent }, // /admin/Add-Products
-    { path: 'products', component: ProductsComponent },     // /admin/products
-    { path: 'edit/:id', component: EditComponent },         // /admin/edit/123
-    { path: 'user-details/:userId', component: UserDetailsComponent },
-    { path: 'user-Order-details/:userId', component: UserUpdateProductsComponent },
-    { path: 'carddetails/:userId', component: CardsDetilsComponent }
+    { path: '', component: AllComComponent,canActivate: [AuthGuard], },
+    { path: 'Users', component: UsersComponent,canActivate: [AuthGuard], },
+    { path: 'Orders', component: OrdersComponent,canActivate: [AuthGuard], },
+    { path: 'Add-Products', component: AddProductsComponent,canActivate: [AuthGuard], },
+    { path: 'products', component: ProductsComponent,canActivate: [AuthGuard], },
+    { path: 'edit/:id', component: EditComponent,canActivate: [AuthGuard], },
+    { path: 'user-details/:userId', component: UserDetailsComponent,canActivate: [AuthGuard], },
+    { path: 'user-Order-details/:userId', component: UserUpdateProductsComponent,canActivate: [AuthGuard], },
+    { path: 'carddetails/:userId', component: CardsDetilsComponent,canActivate: [AuthGuard], }
   ]
 }
+
 
 
 

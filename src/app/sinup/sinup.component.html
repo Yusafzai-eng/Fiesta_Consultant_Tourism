@@ -109,6 +109,9 @@
                         <p>Already have an account?  
                             <a routerLink="/login" class="text-blue-500 hover:text-blue-700 cursor-pointer">Login</a>
                         </p>
+                         <div *ngIf="errorMessage" class="text-red-400 text-sm mb-3">
+      {{ errorMessage }}
+    </div>
                     </div>
                 </div>
             </div>

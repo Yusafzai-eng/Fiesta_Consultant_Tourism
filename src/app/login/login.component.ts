@@ -56,7 +56,7 @@ export class LoginComponent implements OnInit { // ✅ implements OnInit
     password: new FormControl('', [Validators.required, Validators.minLength(3)]),
   });
 
-  login(data: any): void {
+login(data: any): void {
   if (this.loginform.valid) {
     this.LoginService.submitform(data).subscribe({
       next: (res: any) => {
@@ -66,13 +66,14 @@ export class LoginComponent implements OnInit { // ✅ implements OnInit
         const returnUrl = localStorage.getItem('returnUrl');
         localStorage.removeItem('returnUrl');
 
+        // ✅ Use hard reload (with window.location.href)
         if (returnUrl) {
-          this.router.navigateByUrl(returnUrl);
+          window.location.href = returnUrl;
         } else {
           if (res.role === 'admin') {
-            this.router.navigate(['/admin']);
+            window.location.href = '/admin';
           } else if (res.role === 'user') {
-            this.router.navigate(['/main']);
+            window.location.href = '/main';
           } else {
             alert('Unknown role');
           }
@@ -80,10 +81,9 @@ export class LoginComponent implements OnInit { // ✅ implements OnInit
       },
       error: (error: HttpErrorResponse) => {
         console.error('Error:', error);
-
-       if (error.status === 404) {
+        if (error.status === 404) {
           this.router.navigate(['/invalid']);
-        } else if (error.status === 500) {
+        } else if (error.status === 500 || error.status === 0) {
           alert('Server down, try again later');
         } else {
           alert('Login failed');
@@ -94,5 +94,6 @@ export class LoginComponent implements OnInit { // ✅ implements OnInit
     alert('Form sahi se fill karo');
   }
 }
+
 
 }

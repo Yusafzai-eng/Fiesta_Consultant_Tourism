@@ -290,6 +290,9 @@ saveEdit() {
 
 
 
-
+resetSearch() {
+  this.searchQuery = '';
+  this.filterProducts(); // Optional: refresh list to show all items
+}
 
 }
