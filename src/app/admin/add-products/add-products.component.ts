@@ -143,7 +143,6 @@ export class AddProductsComponent implements OnInit {
 
     this.postproduct.postProduct(formData).subscribe(
       (res) => {
-        console.log('✅ Product posted successfully:', res);
         alert('✅ Product has been added successfully!');
         this.AddproductForm.reset();
         this.thumbnailFiles = [];

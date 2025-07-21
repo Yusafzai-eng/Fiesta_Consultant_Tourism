@@ -1,55 +1,60 @@
 <h1 class="text-2xl font-bold p-5">Orders</h1>
-<ng-container *ngIf="!isloader">
+<div class="p-3">
+  <ng-container *ngIf="!isloader" class="">
   <div class="text-xs">
     <!-- 🔍 Filters -->
-    <div class="mb-4 flex p-3 flex-col sm:flex-row flex-wrap items-start sm:items-center gap-4">
-      <!-- 🌆 Filter by City -->
-      <div class="flex items-center gap-2">
-        <label class="text-sm font-semibold">Filter by City:</label>
-        <select
-          [(ngModel)]="selectedCity"
-          (change)="applyFilter()"
-          class="border px-2 py-1 rounded text-sm bg-white text-black">
-          <option value="">All</option>
-          <option value="NEW YEAR EVENTS">NEW YEAR EVENTS</option>
-          <option value="SAFARI TOURS">SAFARI TOURS</option>
-          <option value="COMBO DEALS">COMBO DEALS</option>
-          <option value="SEA ADVENTURES">SEA ADVENTURES</option>
-          <option value="CITY TOURS">CITY TOURS</option>
-          <option value="DHOW CRUISE">DHOW CRUISE</option>
-        </select>
-      </div>
+ <!-- 🔍 Filters -->
+<div class="mb-4 flex flex-col sm:flex-row flex-wrap items-start sm:items-center gap-4">
+  <!-- 🌆 Filter by City -->
+  <div class="flex items-center gap-2">
+    <label class="text-sm font-semibold">Filter by City:</label>
+    <select
+      [(ngModel)]="selectedCity"
+      (change)="applyFilter()"
+      class="border px-2 py-1 rounded text-sm bg-white text-black">
+      <option value="">All Cities</option>
+      <option value="NEW YEAR EVENTS">NEW YEAR EVENTS</option>
+      <option value="SAFARI TOURS">SAFARI TOURS</option>
+      <option value="COMBO DEALS">COMBO DEALS</option>
+      <option value="SEA ADVENTURES">SEA ADVENTURES</option>
+      <option value="CITY TOURS">CITY TOURS</option>
+      <option value="DHOW CRUISE">DHOW CRUISE</option>
+    </select>
+  </div>
 
-      <!-- 📅 Filter by Date -->
-      <div class="flex items-center gap-2">
-        <label class="text-sm font-semibold">Filter by Date:</label>
-        <input
-          type="date"
-          [(ngModel)]="selectedDate"
-          (change)="applyFilter()"
-          class="border px-2 py-1 rounded text-sm bg-white text-black w-[140px]" />
-      </div>
+  <!-- 📅 Filter by Date -->
+  <!-- <div class="flex items-center gap-2">
+    <label class="text-sm font-semibold">Filter by Date:</label>
+    <input
+      type="date"
+      [(ngModel)]="selectedDate"
+      (change)="applyFilter()"
+      class="border px-2 py-1 rounded text-sm bg-white text-black w-[140px]"
+      [max]="today | date:'MM-dd-yyyy'" />
+  </div> -->
 
-      <!-- 🔄 Reset Button -->
-      <button
-        (click)="resetFilters()"
-        class="px-3 py-1 bg-gray-700 text-white text-xs rounded hover:bg-gray-800">
-        Reset Filters
-      </button>
-    </div>
+  <!-- 🔄 Reset Button -->
+  <button
+    (click)="resetFilters()"
+    class="px-3 py-1 bg-gray-700 text-white text-xs rounded hover:bg-gray-800">
+    Reset Filters
+  </button>
+</div>
 
     <!-- 📋 Orders Table -->
     <div class="overflow-x-auto rounded-xl">
       <table class="min-w-[700px] w-full text-left text-[#273F4F] bg-white">
         <thead class="text-[11px] uppercase bg-slate-800 text-white tracking-wider">
           <tr>
-            <th class="px-3 py-3">Namesd</th>
+            <th class="px-3 py-3">Name</th>
             <th class="px-2 py-3">Address</th>
             <th class="px-2 py-3">City</th>
             <th class="px-2 py-3">Date</th>
-            <th class="px-2 py-3">Action</th>
+            <!-- <th class="px-2 py-3">Time</th> -->
             <th class="px-2 py-3">Total</th>
-          </tr>
+           <th class="px-2 py-3">Action</th>
+
+          </tr> 
         </thead>
         <tbody>
           <tr *ngFor="let user of userSummaries"
@@ -63,17 +68,27 @@
                 <div class="text-[11px] text-slate-500 group-hover:text-white">{{ user.userEmail }}</div>
               </div>
             </td>
-            <td class="px-2 py-2 text-slate-600 group-hover:text-white">{{ user.address }}</td>
-            <td class="px-2 py-2 text-slate-600 group-hover:text-white">{{ user.products[0]?.cityName }}</td>
-            <td class="px-2 py-2 text-slate-600 group-hover:text-white">{{ user.products[0]?.order_date }}</td>
-            <td class="px-2 py-2">
+            <td class="px-2 py-2 text-slate-600 group-hover:text-white">
+              {{ user.address }}
+            </td>
+           <td class="px-2 py-2 text-slate-600 group-hover:text-white">
+  {{ user.products[user.products.length - 1]?.cityName }}
+</td>
+           <td class="px-2 py-2 text-slate-600 group-hover:text-white">
+  {{ user.products[user.products.length - 1]?.order_date }}
+</td>
+<!-- <td class="px-2 py-2 text-slate-600 group-hover:text-white">
+{{ user.latestOrderTime | date:'hh:mm a' }}</td> -->
+
+           
+            <td class="px-2 py-2 text-green-700 font-semibold">
+              AED:{{ (user.total || 0) + (user.privatetransferprice || 0) }}
+            </td>
+             <td class="px-2 py-2">
               <a [routerLink]="['/admin/user-details', user.userId]"
                  class="text-[11px] font-semibold text-blue-600 group-hover:text-white hover:underline">
                 View Details
               </a>
-            </td>
-            <td class="px-2 py-2 text-green-700 font-semibold">
-              AED:{{ (user.total || 0) + (user.privatetransferprice || 0) }}
             </td>
           </tr>
         </tbody>
@@ -108,6 +123,36 @@
     </div>
   </div>
 </ng-container>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 <!-- Skeleton Loader -->
 <ng-container *ngIf="isloader">

@@ -39,7 +39,7 @@ export const routes: Routes = [
       { path: 'city', component: CitydetailsComponent,canActivate: [authGuard]
  },
       { path: 'card', component: CardsComponent 
- },
+},
       { path: 'login', component: LoginComponent },
       { path: 'invalid', component: InvalidComponent },
       { path: 'sinup', component: SinupComponent },
@@ -50,7 +50,7 @@ export const routes: Routes = [
       { path: 'corporate', component: CorporateComponent },
       { path: 'local', component: LocalGuideComponent },
       { path: 'Product_details', component: ReasonBookComponent },
-      { path: 'producttable/:_id', component: ProducttableComponent },
+      { path: 'producttable', component: ProducttableComponent },
     ]
   },
 
@@ -58,7 +58,7 @@ export const routes: Routes = [
 {
   path: 'admin',
   component: SidebarLayoutComponent,
-  canActivate: [AuthGuard], // ✅ Add this line
+  canActivate: [AuthGuard], 
   children: [
     { path: '', component: AllComComponent,canActivate: [AuthGuard], },
     { path: 'Users', component: UsersComponent,canActivate: [AuthGuard], },

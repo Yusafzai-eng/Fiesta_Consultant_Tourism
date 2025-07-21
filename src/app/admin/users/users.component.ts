@@ -19,7 +19,7 @@ export class UsersComponent {
   isloader: boolean = true; //
   searchTerm: string = '';
   currentPage = 1;
-  itemsPerPage = 5;
+  itemsPerPage = 8;
   totalPages = 0;
 
   constructor(private http: HttpClient) {}

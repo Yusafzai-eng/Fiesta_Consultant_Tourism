@@ -54,29 +54,41 @@ export class UserDetailsComponent implements OnInit {
     });
   }
 
-  getUserOrders() {
-    this.isLoading = true;
-    this.error = null;
+getUserOrders() {
+  this.isLoading = true;
+  this.error = null;
 
-    this.http.get<any>(`http://localhost:4000/api/userordersdetails?userId=${this.userId}`, {
-      withCredentials: true
-    }).subscribe({
-      next: (res) => {
-        this.userOrders = res.orders || [];
-        this.filteredOrders = [...this.userOrders];
-        if (this.userOrders.length > 0) {
-          this.userName = this.userOrders[0].userName || '';
-        } else {
-          this.error = "No orders found for this user";
-        }
-        this.isLoading = false;
-      },
-      error: (err) => {
-        this.error = err.message || "Failed to load orders";
-        this.isLoading = false;
+  this.http.get<any>(`http://localhost:4000/api/userordersdetails?userId=${this.userId}`, {
+    withCredentials: true
+  }).subscribe({
+    next: (res) => {
+      this.userOrders = res.orders || [];
+
+      this.userOrders.forEach((order: any) => {
+        const orderCreatedAt = order.createdAt ? new Date(order.createdAt) : null;
+
+        order.products.forEach((product: any) => {
+          product.createdAt = orderCreatedAt; // ✅ Inject order's time into product
+        });
+      });
+
+      this.filteredOrders = [...this.userOrders];
+
+      if (this.userOrders.length > 0) {
+        this.userName = this.userOrders[0].userName || '';
+      } else {
+        this.error = "No orders found for this user";
       }
-    });
-  }
+
+      this.isLoading = false;
+    },
+    error: (err) => {
+      this.error = err.message || "Failed to load orders";
+      this.isLoading = false;
+    }
+  });
+}
+
 
   filterProducts() {
     if (!this.searchQuery) {

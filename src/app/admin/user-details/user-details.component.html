@@ -58,15 +58,17 @@
 
 
     <div class="overflow-x-auto w-full">
-      <table class="w-full text-sm text-left text-gray-800 shadow rounded">
+      <table class="w-[100vw] text-sm text-left text-gray-800 shadow rounded">
         <thead class="bg-slate-200 text-slate-800 uppercase text-xs">
           <tr>
             <th class="p-2">Images</th>
             <th class="p-2 w-36">Title</th>
             <th class="p-2">Transfer</th>
+            <th class="p-2">City</th>
             <th class="p-2">Kids</th>
             <th class="p-2">Adults</th>
             <th class="p-2">Order Date</th>
+            <th class="p-2">Time</th>
             <th class="p-2">Category</th>
             <th class="p-2">Total</th>
             <th class="p-2">Dis</th>
@@ -106,7 +108,11 @@
                 <td class="p-2 text-center">
                   {{ product.transfertype === 'Private' ? product.privateAdult : product.adults_no }}
                 </td>
+                <td class="p-2">{{ product.cityName }}</td>
                 <td class="p-2">{{ product.order_date }}</td>
+<td class="p-2">{{ product.createdAt | date:'hh:mm a' }}</td>
+
+
                 <td class="p-2">{{ product.categorie }}</td>
                 <td class="p-2 text-center">
                   {{ product.transfertype === 'Private' ? product.privatetransferprice : product.total }}
@@ -188,6 +194,14 @@
           <div>
             <p class="text-slate-400">Payment</p>
             <p class="font-medium">{{ selectedOrder.payment_Method }}</p>
+          </div>
+          <div>
+            <p class="text-slate-400">Adress</p>
+            <p class="font-medium">{{ selectedOrder.address}}</p>
+          </div>
+          <div>
+            <p class="text-slate-400">City</p>
+            <p class="font-medium">{{ selectedOrder.city}}</p>
           </div>
           <div>
             <p class="text-slate-400">State</p>

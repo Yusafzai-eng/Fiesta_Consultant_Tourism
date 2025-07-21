@@ -8,7 +8,6 @@ interface User {
   name?: string;
   email?: string;
 }
-
 interface Product {
   id?: string;
   name?: string;
@@ -22,24 +21,14 @@ interface Product {
   styleUrl: './boxes.component.css'
 })
 export class BoxesComponent {
-
   cards: any[] = [];
-  selectedMonth: string = 'all';
 
-  months = [
-    { name: 'January', value: '01' },
-    { name: 'February', value: '02' },
-    { name: 'March', value: '03' },
-    { name: 'April', value: '04' },
-    { name: 'May', value: '05' },
-    { name: 'June', value: '06' },
-    { name: 'July', value: '07' },
-    { name: 'August', value: '08' },
-    { name: 'September', value: '09' },
-    { name: 'October', value: '10' },
-    { name: 'November', value: '11' },
-    { name: 'December', value: '12' }
+  monthOptions: string[] = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
   ];
+
+  selectedMonth: string = ''; // 🔁 default: no month filter
 
   constructor(private admin: DataService) {
     this.loadData();
@@ -52,30 +41,32 @@ export class BoxesComponent {
         const allOrders: any[] = res.order ?? [];
         const products: Product[] = res.products ?? [];
 
-        const currentYear = new Date().getFullYear().toString();
+        const currentYear = new Date().getFullYear();
+        const selectedMonthIndex = this.monthOptions.indexOf(this.selectedMonth);
 
-        const filteredOrders = allOrders.filter((order: any) => {
-          const [day, month, year] = order.date.split('/');
-          const isCurrentYear = year === currentYear;
-
-          if (!this.selectedMonth || this.selectedMonth === 'all') {
-            return isCurrentYear;
-          }
-
-          return month === this.selectedMonth && isCurrentYear;
-        });
-
-        // ✅ Calculate totalCash with total + privatetransferprice
         let totalCash = 0;
-        for (let order of filteredOrders) {
+
+        for (let order of allOrders) {
           if (Array.isArray(order.products)) {
             for (let product of order.products) {
+              const dateStr = product.order_date || order.date;
+              const orderDate = this.parseDate(dateStr);
+
+              if (!orderDate || orderDate.getFullYear() !== currentYear) continue;
+
+              // ✅ Filter by month if selected
+              if (this.selectedMonth && orderDate.getMonth() !== selectedMonthIndex) continue;
+
               const total = Number(product.total ?? 0);
               const privateTransfer = Number(product.privatetransferprice ?? 0);
               totalCash += total + privateTransfer;
             }
           }
         }
+
+        const label = this.selectedMonth
+          ? `Cashed in ${this.selectedMonth} ${currentYear}`
+          : `Cashed in ${currentYear}`;
 
         this.cards = [
           {
@@ -85,8 +76,7 @@ export class BoxesComponent {
             tagBg: 'bg-red-100',
             tagText: 'text-red-600',
             chartColor: '#fca5a5',
-            icon: 'fa-solid fa-hotel',
-            iconColorClass: 'text-[#fca5a5]'
+            icon: 'fa-solid fa-hotel'
           },
           {
             title: 'Total Client',
@@ -95,28 +85,25 @@ export class BoxesComponent {
             tagBg: 'bg-red-100',
             tagText: 'text-red-600',
             chartColor: '#fca5a5',
-            icon: 'fa-solid fa-users',
-            iconColorClass: 'text-[#fca5a5]'
+            icon: 'fa-solid fa-users'
           },
           {
-            title: 'Total Order',
-            value: filteredOrders.length,
+            title: 'Total Orders',
+            value: allOrders.length,
             tag: 'Tourism',
             tagBg: 'bg-green-100',
             tagText: 'text-green-700',
             chartColor: '#4EE94E',
-            icon: 'fa-brands fa-first-order',
-            iconColorClass: 'text-[#4EE94E]'
+            icon: 'fa-brands fa-first-order'
           },
           {
-            title: 'Total Cashed',
+            title: label,
             value: this.formatCash(totalCash),
             tag: 'Tourism',
             tagBg: 'bg-green-100',
             tagText: 'text-green-700',
             chartColor: '#4EE94E',
-            icon: 'fa-solid fa-money-bill-wave',
-            iconColorClass: 'text-[#4EE94E]'
+            icon: 'fa-solid fa-money-bill-wave'
           }
         ];
       },
@@ -136,5 +123,29 @@ export class BoxesComponent {
     } else {
       return `AED. ${amount}`;
     }
+  }
+
+parseDate(dateStr: string): Date | null {
+  try {
+    if (!dateStr) return null;
+
+    if (dateStr.includes('/') && dateStr.split('/').length === 3) {
+      const [day, month, year] = dateStr.split('/').map(Number);
+      return new Date(year, month - 1, day);
+    }
+
+    // Handle ISO (yyyy-mm-dd) or timestamps
+    const parsed = new Date(dateStr);
+    return isNaN(parsed.getTime()) ? null : parsed;
+  } catch (e) {
+    console.error('Error parsing date:', dateStr, e);
+    return null;
+  }
+}
+
+
+  // 🔁 Called when user selects a month
+  onMonthChange(): void {
+    this.loadData(); // reload with new month filter
   }
 }

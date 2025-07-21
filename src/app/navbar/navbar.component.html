@@ -62,11 +62,19 @@
             </button>
           </ng-template>
         </li>
-        <li class="p-2 group rounded md:hover:bg-white md:border md:border-white lg:border-none lg:hover:bg-transparent">
-          <button class="font-medium text-sm px-2 py-1 rounded-full block md:group-hover:text-pink-700 md:text-white lg:bg-pink-700 lg:text-white" (click)="menuOpen = false">
-            <i class="fas fa-shopping-cart"></i>
-          </button>
-        </li>
+  <li class="p-2 group rounded md:hover:bg-white md:border md:border-white lg:border-none">
+  <a
+    [routerLink]="['/producttable']"
+    (click)="menuOpen = false"
+    class="font-medium text-sm px-2 py-1 rounded-full block 
+           md:group-hover:text-pink-700 md:text-white 
+           lg:bg-pink-700 lg:text-white"
+  >
+    <i class="fas fa-shopping-cart"></i>
+  </a>
+</li>
+
+
       </ul>
     </nav>
   </div>

@@ -56,7 +56,7 @@
       <div class="flex flex-wrap justify-between text-center mt-">
         <div class="flex items-center mb-4" *ngFor="let item of button">
           <i [ngClass]="item.icon" class=""></i>
-          <h1 class="mx-4 font-base text-xs md:text-base " [ngClass]="item.textClass">
+          <h1 class="mx-4 font-base text-xs md:text-base " >
             {{ item.label }}
             <span *ngIf="item.label === 'TourService'">: {{ productDetails.tourService }}</span>
             <span *ngIf="item.label === 'Duration'">{{ productDetails.duration }} Hour</span>

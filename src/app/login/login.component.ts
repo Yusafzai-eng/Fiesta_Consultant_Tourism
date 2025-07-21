@@ -24,12 +24,12 @@ export class LoginComponent implements OnInit { // ✅ implements OnInit
 
   // ✅ RUN THIS ON LOAD
   ngOnInit(): void {
-    console.log('ngOnInit triggered'); // for testing
+    // console.log('ngOnInit triggered'); // for testing
     this.http.get('http://localhost:4000/api/verify-token', {
       withCredentials: true
     }).subscribe({
       next: (res: any) => {
-        console.log('Token valid:', res);
+        // console.log('Token valid:', res);
         if (res.role === 'admin') {
           this.router.navigate(['/admin']);
         } else if (res.role === 'user') {
@@ -39,7 +39,7 @@ export class LoginComponent implements OnInit { // ✅ implements OnInit
         }
       },
       error: (error: any) => {
-        console.log('Token invalid or expired:', error);
+        // console.log('Token invalid or expired:', error);
         // token not valid, stay on login page
       }
     });
@@ -60,8 +60,8 @@ login(data: any): void {
   if (this.loginform.valid) {
     this.LoginService.submitform(data).subscribe({
       next: (res: any) => {
-        console.warn('Full Response:', res);
-        alert('Login successful');
+        // console.warn('Full Response:', res);
+        // alert('Login successful');
 
         const returnUrl = localStorage.getItem('returnUrl');
         localStorage.removeItem('returnUrl');
@@ -80,7 +80,7 @@ login(data: any): void {
         }
       },
       error: (error: HttpErrorResponse) => {
-        console.error('Error:', error);
+        // console.error('Error:', error);
         if (error.status === 404) {
           this.router.navigate(['/invalid']);
         } else if (error.status === 500 || error.status === 0) {

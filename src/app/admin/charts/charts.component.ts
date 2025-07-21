@@ -12,6 +12,7 @@ import {
 } from 'chart.js';
 import { ChartssService } from '../chartsservice/chartss.service';
 
+// Register required Chart.js components
 Chart.register(
   PieController,
   BarController,
@@ -35,7 +36,7 @@ export class ChartsComponent implements OnInit {
 
   ngOnInit(): void {
     this.chardata.getChartData().subscribe((res: any) => {
-      console.log('Raw API Data:', res); // Debug log
+      console.log('Raw API Data:', res);
 
       const yearData = this.processChartData(res);
       this.showdata(yearData.years, yearData.totals, yearData.colors, yearData.borderColors);
@@ -49,21 +50,19 @@ export class ChartsComponent implements OnInit {
     borderColors: string[]
   } {
     const yearMap: { [year: string]: number } = {};
-    const currentYear = new Date().getFullYear();
 
     // ✅ Loop through each order
     res.order?.forEach((order: any) => {
-      const dateStr = order.date || order.products?.[0]?.order_date;
-      if (!dateStr) return;
-
-      const date = this.parseDate(dateStr);
-      if (!date) return;
-
-      const year = date.getFullYear();
-      if (year < currentYear - 4) return; // Only include last 5 years
-
-      // ✅ Add product.total + privatetransferprice
+      // ✅ Loop through each product
       order.products?.forEach((product: any) => {
+        const dateStr = product.order_date || order.date;
+        if (!dateStr) return;
+
+        const date = this.parseDate(dateStr);
+        if (!date) return;
+
+        const year = date.getFullYear();
+
         const shared = parseFloat(product.total) || 0;
         const privateTransfer = parseFloat(product.privatetransferprice) || 0;
         const combined = shared + privateTransfer;
@@ -72,8 +71,16 @@ export class ChartsComponent implements OnInit {
       });
     });
 
-    const years = Object.keys(yearMap).sort();
-    const totals = years.map(year => yearMap[year]);
+    // 🔥 Get all years sorted (as string array)
+    let allYears = Object.keys(yearMap).map(y => Number(y)).sort((a, b) => a - b);
+
+    // 🔥 Keep only the last 5 years
+    if (allYears.length > 5) {
+      allYears = allYears.slice(allYears.length - 5); // last 5 years only
+    }
+
+    const years = allYears.map(y => y.toString());
+    const totals = allYears.map(year => yearMap[year]);
 
     const backgroundColors = years.map((_, i) =>
       i % 2 === 0 ? 'rgba(15, 30, 239, 0.6)' : 'rgba(15, 239, 59, 0.6)'
@@ -82,7 +89,8 @@ export class ChartsComponent implements OnInit {
       i % 2 === 0 ? 'rgba(15, 30, 239, 1)' : 'rgba(15, 239, 59, 1)'
     );
 
-    console.log('Processed Chart Data:', { years, totals });
+    console.log('Processed Chart Data (Last 5 Years):', { years, totals });
+
     return { years, totals, colors: backgroundColors, borderColors };
   }
 
@@ -93,7 +101,7 @@ export class ChartsComponent implements OnInit {
         const [day, month, year] = dateStr.split('/').map(Number);
         return new Date(year, month - 1, day);
       }
-      // Fallback to ISO format
+      // Fallback to ISO or other valid formats
       return new Date(dateStr);
     } catch (e) {
       console.error('Error parsing date:', dateStr, e);
@@ -102,11 +110,11 @@ export class ChartsComponent implements OnInit {
   }
 
   showdata(years: string[], totals: number[], colors: string[], borderColors: string[]) {
-    // Destroy existing charts if they exist
+    // Destroy existing charts if already rendered
     Chart.getChart("mychart")?.destroy();
     Chart.getChart("barchart")?.destroy();
 
-    // Pie Chart
+    // ✅ Pie Chart
     new Chart("mychart", {
       type: 'pie',
       data: {
@@ -125,16 +133,14 @@ export class ChartsComponent implements OnInit {
           legend: { position: 'top' },
           tooltip: {
             callbacks: {
-              label: (context) => {
-                return `AED ${context.raw?.toLocaleString()}`;
-              }
+              label: (context) => `AED ${context.raw?.toLocaleString()}`
             }
           }
         }
       }
     });
 
-    // Bar Chart
+    // ✅ Bar Chart
     new Chart("barchart", {
       type: 'bar',
       data: {
@@ -160,9 +166,7 @@ export class ChartsComponent implements OnInit {
         plugins: {
           tooltip: {
             callbacks: {
-              label: (context) => {
-                return `AED ${context.raw?.toLocaleString()}`;
-              }
+              label: (context) => `AED ${context.raw?.toLocaleString()}`
             }
           }
         }

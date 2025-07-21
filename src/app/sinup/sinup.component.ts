@@ -27,15 +27,15 @@ export class SinupComponent {
   });
 
   signup() {
-    console.log("Signup button clicked");
+    // console.log("Signup button clicked");
 
     if (this.signupForm.valid) {
       const data = this.signupForm.value;
-      console.log("Form Data:", data);
+      // console.log("Form Data:", data);
 
       this.singupService.submitForm(data).subscribe({
         next: (res: any) => {
-          console.warn('Signup Success:', res);
+          // console.warn('Signup Success:', res);
           alert(res.message || "Signup successful!");
           this.router.navigateByUrl("/login");
         },

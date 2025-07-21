@@ -10,7 +10,6 @@
               <th class="px-2 py-2">Title</th>
               <th class="px-2 py-2">City</th>
               <th class="px-2 py-2">Cat</th>
-              <th class="px-2 py-2">Price</th>
               <th class="px-2 py-2">Adult</th>
               <th class="px-2 py-2">Private</th>
             </tr>
@@ -35,6 +34,23 @@
     </div>
   </ng-container>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
   <!-- Content State -->
   <ng-container *ngIf="(!isloader || filteredProducts.length) && !errorMessage">
     <div class="p-3 overflow-y-auto">
@@ -102,7 +118,6 @@
               </td>
               <td class="px-2 py-2 text-slate-600">{{ p.cityName }}</td>
               <td class="px-2 py-2 text-slate-600">{{ p.categorie }}</td>
-              <td class="px-2 py-2 text-green-700 font-semibold">AED: {{ p.price }}</td>
               <td class="px-2 py-2">{{ p.adultBaseprice }}</td>
               <td class="px-2 py-2">{{ p.kidsBaseprice }}</td>
               <td class="px-2 py-2 text-red-600">{{ p.discountPercentage }}%</td>

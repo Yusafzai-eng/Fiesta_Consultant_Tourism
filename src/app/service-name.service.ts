@@ -3,18 +3,22 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Product } from './adminservice.service';
 
-
 export interface ProductResponse {
-  product?: Product; // The 'product' property may or may not exist
-  products?: Product[]; // Or 'products' which would be an array of products
+  product?: Product;
+  products?: Product[];
 }
-
-
 
 @Injectable({
   providedIn: 'root'
 })
 export class ServiceNameService {
+  private formDataSubject = new BehaviorSubject<any>(null);
+  private productDataSubject = new BehaviorSubject<any>(null);
+  private cartDataSubject = new BehaviorSubject<any>(null);
+
+  formData$ = this.formDataSubject.asObservable();
+  productData$ = this.productDataSubject.asObservable();
+  cartData$ = this.cartDataSubject.asObservable();
 
   constructor(private http: HttpClient) { }
 
@@ -25,48 +29,34 @@ export class ServiceNameService {
       return this.http.get<ProductResponse>(`http://localhost:4000/api/home`);
     }
   }
-  
-
-
 
   getproductDepartment2() {
     return this.http.get("https://api.escuelajs.co/api/v1/products");
   }
 
-
-  private formDataSubject = new BehaviorSubject<any>(null);  
-  formData$ = this.formDataSubject.asObservable(); 
-
-  updateFormData(data: any) {
-    this.formDataSubject.next(data);  // Emit new data
+  setFormData(data: any) {
+    this.formDataSubject.next(data);
   }
 
-          // form
+  getFormData() {
+    return this.formDataSubject.value;
+  }
 
- private formData: any = {};  
- 
-// private formData: any;
-private productData: any; 
+  setProductData(data: any) {
+    this.productDataSubject.next(data);
+  }
 
-setFormData(data: any) {
-  this.formData = data;
-}
+  getProductData() {
+    return this.productDataSubject.value;
+  }
 
-getFormData() {
-  return this.formData;
-}
+  setCartData(data: any) {
+    this.cartDataSubject.next(data);
+  }
 
-setProductData(data: any) {
-  this.productData = data;
-}
-
-getProductData() {
-  return this.productData;
-}
-
-
-
-
+  getCartData() {
+    return this.cartDataSubject.value;
+  }
 
   private savedProducts: any[] = [];
   private savedCount: number = 8;
@@ -86,14 +76,4 @@ getProductData() {
   getCount() {
     return this.savedCount;
   }
-
-
-
-
-
-
-
-
-
-
 }

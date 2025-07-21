@@ -1,113 +1,144 @@
 <div class="mt-32">
-  <img src="undefined" data-srcset="https://imagedelivery.net/SwMP4f7rTNZkFOn4O9xPmg/c4281d45-5ad9-45a0-01d2-2bcd7ae04700/public" width="100%" class="object-fit" alt="Leading Tour Operator &amp; Destination Management Company" srcset="https://imagedelivery.net/SwMP4f7rTNZkFOn4O9xPmg/c4281d45-5ad9-45a0-01d2-2bcd7ae04700/public">         
+  <img src="https://imagedelivery.net/SwMP4f7rTNZkFOn4O9xPmg/c4281d45-5ad9-45a0-01d2-2bcd7ae04700/public" width="100%" class="object-fit" alt="Leading Tour Operator &amp; Destination Management Company">         
 </div>
 
+<!-- Cart Table -->
 <div class="lg:flex md:items-center md:space-x-3 justify-center">
   <div class="grid place-content-center items-center mt-10 overflow-x-auto">
     <!-- Table Container -->
-    <div class="min-w-[80vw] overflow-x-auto rounded-lg bg-white shadow-lg">
+    <div class="min-w-[80vw] overflow-x-auto rounded-lg bg-white shadow-lg" *ngIf="cartItems.length > 0 || formData">
       <table class="w-full">
-        <!-- Table Header -->
-        <!-- <thead class="bg-pink-700 text-white">
+        <thead class="bg-pink-700 text-white">
           <tr>
             <th class="px-6 py-4 text-left font-semibold">ID</th>
             <th class="px-6 py-4 text-left font-semibold">Image</th>
             <th class="px-6 py-4 text-left font-semibold">Title</th>
-            <th class="px-6 py-4 text-left font-semibold" *ngIf="formData?.Transfer === 'Private'">No.of Private Adults</th>
-            <th class="px-6 py-4 text-left font-semibold" *ngIf="formData?.Transfer !== 'Private'">No.of Adults</th>
-            <th class="px-6 py-4 text-left font-semibold" *ngIf="formData?.Transfer === 'Private'">No.of Private Children</th>
-            <th class="px-6 py-4 text-left font-semibold" *ngIf="formData?.Transfer !== 'Private'">No.of Children</th>
+            <th class="px-6 py-4 text-left font-semibold">Adults</th>
+            <th class="px-6 py-4 text-left font-semibold">Children</th>
             <th class="px-6 py-4 text-left font-semibold">Transfer</th>
             <th class="px-6 py-4 text-left font-semibold">Total</th>
             <th class="px-6 py-4 text-left font-semibold">Actions</th>
           </tr>
-        </thead> -->
-        <!-- Table Body -->
-
-
-<thead class="bg-pink-700 text-white">
-  <tr>
-    <th class="px-6 py-4 text-left font-semibold">ID</th>
-    <th class="px-6 py-4 text-left font-semibold">Image</th>
-    <th class="px-6 py-4 text-left font-semibold">Title</th>
-    <th class="px-6 py-4 text-left font-semibold">Adults</th>
-    <th class="px-6 py-4 text-left font-semibold">Children</th>
-    <th class="px-6 py-4 text-left font-semibold">Transfer</th>
-    <th class="px-6 py-4 text-left font-semibold">Total</th>
-    <th class="px-6 py-4 text-left font-semibold">Actions</th>
-  </tr>
-</thead>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        </thead>
         <tbody>
-          <tr class="border-t border-gray-200 hover:bg-gray-50 transition-colors">
-            <!-- ID -->
+          <!-- Display cart items -->
+          <tr *ngFor="let item of cartItems; let i = index" class="border-t border-gray-200 hover:bg-gray-50 transition-colors">
+            <td class="px-6 py-4 border-2 border-slate-200">{{ i + 1 }}</td>
+            <td class="px-4 py-4 border-2 border-slate-200">
+              <div *ngIf="item.thumbnail" class="w-20 h-20 flex items-center justify-center">
+              <img [src]="'http://localhost:4000/uploads/' + item.thumbnail[0]" 
+           alt="{{ item.thumbnail }}"
+                     class="max-w-full max-h-full object-contain">
+              </div>
+            </td>
+            <td class="px-6 py-4 text-indigo-600 border-2 border-slate-200 max-w-[300px] truncate">
+              <a [routerLink]="['/products', item.productId]">
+                {{ item.producttitle }}
+              </a>
+            </td>
+            <td class="px-6 py-4 text-center border-2 border-slate-200">
+              {{ item.transfertype === 'Private' ? item.privateAdult : item.adults_no }}
+            </td>
+            <td class="px-6 py-4 text-center border-2 border-slate-200">
+              {{ item.transfertype === 'Private' ? item.privateChild : item.kids_no }}
+            </td>
+            <td class="px-6 py-4 text-center border-2 border-slate-200">
+              {{ item.transfertype }}
+            </td>
+            <td class="px-6 py-4 text-center border-2 border-slate-200">
+              <span class="text-xs">AED:</span>
+             <span>
+               {{ item.total || item.privatetransferprice  }}
+             </span>
+            </td>
+            <!-- trash button -->
+<td class="px-6 py-4 text-center border-2 border-slate-200">
+  <button (click)="confirmDelete(item)" class="text-red-600 hover:text-red-800 transition-colors">
+    <i class="fa-solid fa-trash-can"></i>
+  </button>
+</td>
+
+<!-- Delete Confirmation Modal -->
+<div
+  *ngIf="showModal"
+  class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50"
+>
+  <div class="bg-white rounded shadow-lg w-[320px]">
+    <div class="bg-pink-800 text-white px-4 py-2 flex justify-between items-center">
+      <span class="font-bold">Delete Confirmation</span>
+      <button (click)="closeModal()" class="text-white hover:text-gray-200">
+        ✕
+      </button>
+    </div>
+    <div class="px-4 py-6 text-center text-gray-800 font-semibold">
+      Are You Sure You Want Delete ?
+    </div>
+    <div class="flex justify-center gap-4 pb-4">
+      <button
+        (click)="deleteConfirmed()"
+        class="bg-pink-700 hover:bg-pink-800 text-white px-4 py-2 rounded shadow"
+      >
+        Yes Delete
+      </button>
+      <button
+        (click)="closeModal()"
+        class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow"
+      >
+        Cancel
+      </button>
+    </div>
+  </div>
+</div>
+
+          </tr>
+          
+          <!-- Display form data if no cart items -->
+          <tr *ngIf="cartItems.length === 0 && formData" class="border-t border-gray-200 hover:bg-gray-50 transition-colors">
             <td class="px-6 py-4 border-2 border-slate-200">1</td>
-            <!-- Image -->
             <td class="px-4 py-4 border-2 border-slate-200">
               <div *ngIf="productData?.thumbnail?.length > 0" class="w-20">
                 <img [src]="'http://localhost:4000/uploads/' + productData.thumbnail[1]">
               </div>
             </td>
-           
-            <!-- Title -->
             <td class="px-6 py-4 text-indigo-600 border-2 border-slate-200 max-w-[300px] truncate">
               <a [routerLink]="['/products', productData?._id]">
                 {{ productData.producttitle }}
               </a>
             </td>
-            
-            <!-- No. of Adults -->
             <td class="px-6 py-4 text-center border-2 border-slate-200">
               {{ formData?.Transfer === 'Private' ? formData?.privateAdult : formData?.NoofAdult }}
             </td>
-            
-            <!-- No. of Children -->
             <td class="px-6 py-4 text-center border-2 border-slate-200">
               {{ formData?.Transfer === 'Private' ? formData?.privateChild : formData?.NoofChild }}
             </td>
-            
-            <!-- Transfer -->
             <td class="px-6 py-4 text-center border-2 border-slate-200">
               {{ formData?.Transfer }}
             </td>
-            
-            <!-- Total -->
             <td class="px-6 py-4 text-center border-2 border-slate-200">
-              {{ formData?.Total }}
+             AED:{{ formData?.Total }}
             </td>
-            
-            <!-- Actions -->
-            <td class="px-6 py-4 text-center border-2 border-slate-200">
-              <button class="text-red-600 hover:text-red-800 transition-colors">
-                <i class="fa-solid fa-trash-can"></i>
-              </button>
-            </td>
-          </tr>
+         <tr *ngFor="let item of cartItems; let i = index" class="border-t border-gray-200 hover:bg-gray-50 transition-colors">
+  <!-- other table cells -->
+  <!-- <td class="px-6 py-4 text-center border-2 border-slate-200">
+    <button (click)="removeFromCart(item)" class="text-red-600 hover:text-red-800 transition-colors">
+      <i class="fa-solid fa-trash-can"></i>
+    </button>
+  </td> -->
+</tr>
         </tbody>
       </table>
     </div>
+
+    <!-- Empty Cart Message -->
+    <div *ngIf="!cartItems.length && !formData" class="text-center p-8">
+      <p class="text-xl">Your cart is empty</p>
+      <button (click)="navigateToPage()" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+        Continue Shopping
+      </button>
+    </div>
   
     <!-- Continue Shopping Button -->
-    <div class="flex justify-center mt-5">
+    <div class="flex justify-center mt-5" *ngIf="cartItems.length > 0 || formData">
       <button
         type="button"
         (click)="navigateToPage()"
@@ -129,7 +160,7 @@
   </div>       
 </div>             
 
-<!-- payment card -->
+<!-- Payment Form -->
 <div class="grid place-content-center">
   <div class="mt-7 w-[100%] flex flex-col bg-white rounded-lg p-4 shadow-sm">
     <h2 class="text-[#e050c1] font-bold text-2xl text-center md:text-start mx-6">Personal Information</h2>
@@ -215,7 +246,9 @@
 
       <!-- Submit Button -->
       <div class="mt-4 flex justify-center">
-        <button type="submit" class="w-[95%] bg-[#c72066] text-white rounded-md px-8 py-2 hover:bg-[#e747e7] hover:text-white transition-all duration-200">Submit</button>
+        <button type="submit" class="w-[95%] bg-[#c72066] text-white rounded-md px-8 py-2 hover:bg-[#e747e7] hover:text-white transition-all duration-200">
+          Complete Booking
+        </button>
       </div>
     </form>
   </div>
