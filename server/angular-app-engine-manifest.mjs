@@ -1,6 +1,6 @@
 
 export default {
-  basePath: 'https://yusafzai-eng.github.io/Yallah-Dubai-Tourism-Angular',
+  basePath: 'https://yusafzai-eng.github.io/YallahDubaiTourism',
   supportedLocales: {
   "en-US": ""
 },

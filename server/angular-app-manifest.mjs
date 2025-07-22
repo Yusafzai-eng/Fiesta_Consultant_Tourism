@@ -2,106 +2,106 @@
 export default {
   bootstrap: () => import('./main.server.mjs').then(m => m.default),
   inlineCriticalCss: true,
-  baseHref: 'https://yusafzai-eng.github.io/Yallah-Dubai-Tourism-Angular/',
+  baseHref: 'https://yusafzai-eng.github.io/YallahDubaiTourism/',
   locale: undefined,
   routes: [
   {
     "renderMode": 0,
-    "route": "/Yallah-Dubai-Tourism-Angular"
+    "route": "/YallahDubaiTourism"
   },
   {
     "renderMode": 0,
-    "route": "/Yallah-Dubai-Tourism-Angular/products/*"
+    "route": "/YallahDubaiTourism/products/*"
   },
   {
     "renderMode": 0,
-    "route": "/Yallah-Dubai-Tourism-Angular/city"
+    "route": "/YallahDubaiTourism/city"
   },
   {
     "renderMode": 0,
-    "route": "/Yallah-Dubai-Tourism-Angular/card"
+    "route": "/YallahDubaiTourism/card"
   },
   {
     "renderMode": 0,
-    "route": "/Yallah-Dubai-Tourism-Angular/login"
+    "route": "/YallahDubaiTourism/login"
   },
   {
     "renderMode": 0,
-    "route": "/Yallah-Dubai-Tourism-Angular/invalid"
+    "route": "/YallahDubaiTourism/invalid"
   },
   {
     "renderMode": 0,
-    "route": "/Yallah-Dubai-Tourism-Angular/sinup"
+    "route": "/YallahDubaiTourism/sinup"
   },
   {
     "renderMode": 0,
-    "route": "/Yallah-Dubai-Tourism-Angular/main"
+    "route": "/YallahDubaiTourism/main"
   },
   {
     "renderMode": 0,
-    "route": "/Yallah-Dubai-Tourism-Angular/citytour"
+    "route": "/YallahDubaiTourism/citytour"
   },
   {
     "renderMode": 0,
-    "route": "/Yallah-Dubai-Tourism-Angular/aboutus"
+    "route": "/YallahDubaiTourism/aboutus"
   },
   {
     "renderMode": 0,
-    "route": "/Yallah-Dubai-Tourism-Angular/corporate"
+    "route": "/YallahDubaiTourism/corporate"
   },
   {
     "renderMode": 0,
-    "route": "/Yallah-Dubai-Tourism-Angular/local"
+    "route": "/YallahDubaiTourism/local"
   },
   {
     "renderMode": 0,
-    "route": "/Yallah-Dubai-Tourism-Angular/Product_details"
+    "route": "/YallahDubaiTourism/Product_details"
   },
   {
     "renderMode": 0,
-    "route": "/Yallah-Dubai-Tourism-Angular/producttable"
+    "route": "/YallahDubaiTourism/producttable"
   },
   {
     "renderMode": 0,
-    "route": "/Yallah-Dubai-Tourism-Angular/admin"
+    "route": "/YallahDubaiTourism/admin"
   },
   {
     "renderMode": 0,
-    "route": "/Yallah-Dubai-Tourism-Angular/admin/Users"
+    "route": "/YallahDubaiTourism/admin/Users"
   },
   {
     "renderMode": 0,
-    "route": "/Yallah-Dubai-Tourism-Angular/admin/Orders"
+    "route": "/YallahDubaiTourism/admin/Orders"
   },
   {
     "renderMode": 0,
-    "route": "/Yallah-Dubai-Tourism-Angular/admin/Add-Products"
+    "route": "/YallahDubaiTourism/admin/Add-Products"
   },
   {
     "renderMode": 0,
-    "route": "/Yallah-Dubai-Tourism-Angular/admin/products"
+    "route": "/YallahDubaiTourism/admin/products"
   },
   {
     "renderMode": 0,
-    "route": "/Yallah-Dubai-Tourism-Angular/admin/edit/*"
+    "route": "/YallahDubaiTourism/admin/edit/*"
   },
   {
     "renderMode": 0,
-    "route": "/Yallah-Dubai-Tourism-Angular/admin/user-details/*"
+    "route": "/YallahDubaiTourism/admin/user-details/*"
   },
   {
     "renderMode": 0,
-    "route": "/Yallah-Dubai-Tourism-Angular/admin/user-Order-details/*"
+    "route": "/YallahDubaiTourism/admin/user-Order-details/*"
   },
   {
     "renderMode": 0,
-    "route": "/Yallah-Dubai-Tourism-Angular/admin/carddetails/*"
+    "route": "/YallahDubaiTourism/admin/carddetails/*"
   }
 ],
   entryPointToBrowserMapping: undefined,
   assets: {
-    'index.csr.html': {size: 1257, hash: '85f0372fcdc369a4262ea1aaba3288dbb3f613fd604a9c92e962e9006e3b2c58', text: () => import('./assets-chunks/index_csr_html.mjs').then(m => m.default)},
-    'index.server.html': {size: 1575, hash: 'ce4ebccd6d3b4ea23162774aa71298ddf33daa66179132d191516b46e93dce96', text: () => import('./assets-chunks/index_server_html.mjs').then(m => m.default)},
+    'index.csr.html': {size: 1247, hash: 'd0ac77c16e00730e9ac6d5d891bc683531f1ece661ed2972761850a2ba84906b', text: () => import('./assets-chunks/index_csr_html.mjs').then(m => m.default)},
+    'index.server.html': {size: 1565, hash: 'ab2e90a5073d8408624f7998ee07702d954023fae28dc17d82ffc1194853678d', text: () => import('./assets-chunks/index_server_html.mjs').then(m => m.default)},
     'styles-HPNLQLSF.css': {size: 17997, hash: 'pu6pG6Clk88', text: () => import('./assets-chunks/styles-HPNLQLSF_css.mjs').then(m => m.default)}
   },
 };

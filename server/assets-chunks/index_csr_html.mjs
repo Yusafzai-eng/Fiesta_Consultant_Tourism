@@ -10,7 +10,7 @@ export default `<!doctype html>
   <link rel="stylesheet" href="https://unpkg.com/swiper@11.1.14/swiper-bundle.min.css">
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
   
-  <base href="https://yusafzai-eng.github.io/Yallah-Dubai-Tourism-Angular/">
+  <base href="https://yusafzai-eng.github.io/YallahDubaiTourism/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>:root{--swiper-theme-color:#007aff}:root{--swiper-navigation-size:44px}</style><link rel="stylesheet" href="styles-HPNLQLSF.css" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="styles-HPNLQLSF.css"></noscript></head>
 <body ngcm="">
