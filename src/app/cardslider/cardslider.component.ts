@@ -1,5 +1,11 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { Component, OnInit, AfterViewInit, Inject, PLATFORM_ID } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  AfterViewInit,
+  Inject,
+  PLATFORM_ID,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ServiceNameService } from '../service-name.service';
 import Swiper from 'swiper';

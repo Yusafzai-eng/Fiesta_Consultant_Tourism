@@ -12,7 +12,7 @@ import { Subject, takeUntil } from 'rxjs';
   standalone: true,
   imports: [CommonModule, FormsModule, NgxSkeletonLoaderModule],
   templateUrl: './products.component.html',
-  styleUrls: ['./products.component.css']
+  styleUrls: ['./products.component.css'],
 })
 export class ProductsComponent implements OnInit, OnDestroy {
   private destroyed$ = new Subject<void>();
@@ -39,7 +39,8 @@ export class ProductsComponent implements OnInit, OnDestroy {
   uniqueCities: string[] = [];
 
   // Modal
-  modalType: 'text' | 'images' | 'description' | 'private-transfer' | null = null;
+  modalType: 'text' | 'images' | 'description' | 'private-transfer' | null =
+    null;
   modalData: any;
 
   constructor(
@@ -66,19 +67,18 @@ export class ProductsComponent implements OnInit, OnDestroy {
     this.isloader = true;
     this.errorMessage = null;
 
-    this.http.get<any>('http://localhost:4000/api/admin', {
-      withCredentials: true
-    }).pipe(
-      takeUntil(this.destroyed$)
-    ).subscribe({
-      next: (res) => this.handleSuccess(res),
-      error: (err) => this.handleError(err)
-    });
+    this.http
+      .get<any>('http://localhost:4000/api/admin', {
+        withCredentials: true,
+      })
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe({
+        next: (res) => this.handleSuccess(res),
+        error: (err) => this.handleError(err),
+      });
   }
 
   private handleSuccess(res: any): void {
-    console.log('API Response:', res);
-    
     if (!res?.products) {
       this.handleError(new Error('Invalid API response structure'));
       return;
@@ -87,10 +87,14 @@ export class ProductsComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       this.allProducts = res.products;
       this.filteredProducts = [...this.allProducts];
-      
-      this.uniqueCategories = [...new Set(this.allProducts.map(p => p.categorie || 'Uncategorized'))];
-      this.uniqueCities = [...new Set(this.allProducts.map(p => p.cityName || 'Unknown'))];
-      
+
+      this.uniqueCategories = [
+        ...new Set(this.allProducts.map((p) => p.categorie || 'Uncategorized')),
+      ];
+      this.uniqueCities = [
+        ...new Set(this.allProducts.map((p) => p.cityName || 'Unknown')),
+      ];
+
       this.calculatePagination();
       this.isloader = false;
     });
@@ -98,10 +102,11 @@ export class ProductsComponent implements OnInit, OnDestroy {
 
   private handleError(error: HttpErrorResponse | Error): void {
     console.error('Error:', error);
-    this.errorMessage = error instanceof HttpErrorResponse 
-      ? `Server error: ${error.status} - ${error.message}`
-      : error.message;
-    
+    this.errorMessage =
+      error instanceof HttpErrorResponse
+        ? `Server error: ${error.status} - ${error.message}`
+        : error.message;
+
     this.allProducts = [];
     this.filteredProducts = [];
     this.calculatePagination();
@@ -109,12 +114,14 @@ export class ProductsComponent implements OnInit, OnDestroy {
   }
 
   applyFilters(): void {
-    this.filteredProducts = this.allProducts.filter(product => {
-      const matchesCategory = !this.selectedCategory || product.categorie === this.selectedCategory;
-      const matchesCity = !this.selectedCity || product.cityName === this.selectedCity;
+    this.filteredProducts = this.allProducts.filter((product) => {
+      const matchesCategory =
+        !this.selectedCategory || product.categorie === this.selectedCategory;
+      const matchesCity =
+        !this.selectedCity || product.cityName === this.selectedCity;
       return matchesCategory && matchesCity;
     });
-    
+
     this.resetToFirstPage();
   }
 
@@ -126,7 +133,8 @@ export class ProductsComponent implements OnInit, OnDestroy {
   }
 
   private calculatePagination(): void {
-    this.totalPages = Math.ceil(this.filteredProducts.length / this.itemsPerPage) || 1;
+    this.totalPages =
+      Math.ceil(this.filteredProducts.length / this.itemsPerPage) || 1;
     this.updatePagedProducts();
   }
 
@@ -169,7 +177,7 @@ export class ProductsComponent implements OnInit, OnDestroy {
     this.modalData = {
       privateAdult: product.privateAdult,
       privateChild: product.privateChild,
-      privatetransferprice: product.privatetransferprice
+      privatetransferprice: product.privatetransferprice,
     };
   }
 
@@ -180,15 +188,16 @@ export class ProductsComponent implements OnInit, OnDestroy {
 
   deleteProduct(productId: string): void {
     if (confirm('Are you sure you want to delete this product?')) {
-      this.productService.deleteProduct(productId).pipe(
-        takeUntil(this.destroyed$)
-      ).subscribe({
-        next: () => this.loadProducts(),
-        error: (err) => {
-          console.error('Delete failed:', err);
-          alert('Failed to delete product');
-        }
-      });
+      this.productService
+        .deleteProduct(productId)
+        .pipe(takeUntil(this.destroyed$))
+        .subscribe({
+          next: () => this.loadProducts(),
+          error: (err) => {
+            console.error('Delete failed:', err);
+            alert('Failed to delete product');
+          },
+        });
     }
   }
 
@@ -196,31 +205,22 @@ export class ProductsComponent implements OnInit, OnDestroy {
     this.router.navigate(['/admin/edit', id]);
   }
 
-
-
-
-
-
-
-
-tableheader = [
-  { label: 'Image' },
-  { label: 'Title' },
-  { label: 'City' },
-  { label: 'Category' },
-  { label: 'Adult ' },
-  { label: 'Kids' },
-  { label: 'Dis' },
-  { label: 'Final' },
-  { label: 'TransportService' },
-  { label: 'Tour ' },
-  { label: 'Language ' },
-  { label: 'City disc' },
-  { label: 'Product Des' },
-  { label: 'Tour Type' },
-  { label: 'Edit' },
-  { label: 'Delete' }
-];
-
-
+  tableheader = [
+    { label: 'Image' },
+    { label: 'Title' },
+    { label: 'City' },
+    { label: 'Category' },
+    { label: 'Adult ' },
+    { label: 'Kids' },
+    { label: 'Dis' },
+    { label: 'Final' },
+    { label: 'TransportService' },
+    { label: 'Tour ' },
+    { label: 'Language ' },
+    { label: 'City disc' },
+    { label: 'Product Des' },
+    { label: 'Tour Type' },
+    { label: 'Edit' },
+    { label: 'Delete' },
+  ];
 }

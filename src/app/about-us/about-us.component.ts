@@ -5,12 +5,17 @@ import { Component } from '@angular/core';
   selector: 'app-about-us',
   imports: [CommonModule],
   templateUrl: './about-us.component.html',
-  styleUrl: './about-us.component.css'
+  styleUrl: './about-us.component.css',
 })
 export class AboutUsComponent {
-
-
-  visibleModal: 'onSite' | 'preConference' | 'postConference' | 'corporate' | 'corporate2' | 'corporate3' | null = null;
+  visibleModal:
+    | 'onSite'
+    | 'preConference'
+    | 'postConference'
+    | 'corporate'
+    | 'corporate2'
+    | 'corporate3'
+    | null = null;
 
   openModal(type: typeof this.visibleModal) {
     this.visibleModal = type;
@@ -22,22 +27,33 @@ export class AboutUsComponent {
 
   getModalTitle(): string {
     switch (this.visibleModal) {
-      case 'onSite': return 'On-Site';
-      case 'preConference': return 'Pre-Conference';
-      case 'postConference': return 'Post-Conference';
-      case 'corporate': return 'Corporate Events';
-      case 'corporate2': return 'Conference & Seminar Management';
-      case 'corporate3': return 'Product Launches & Brand Activation';
-      default: return '';
+      case 'onSite':
+        return 'On-Site';
+      case 'preConference':
+        return 'Pre-Conference';
+      case 'postConference':
+        return 'Post-Conference';
+      case 'corporate':
+        return 'Corporate Events';
+      case 'corporate2':
+        return 'Conference & Seminar Management';
+      case 'corporate3':
+        return 'Product Launches & Brand Activation';
+      default:
+        return '';
     }
   }
 
   getListItems(): string[] {
     switch (this.visibleModal) {
-      case 'onSite': return this.services1;
-      case 'preConference': return this.services;
-      case 'postConference': return this.services2;
-      default: return [];
+      case 'onSite':
+        return this.services1;
+      case 'preConference':
+        return this.services;
+      case 'postConference':
+        return this.services2;
+      default:
+        return [];
     }
   }
 
@@ -49,17 +65,17 @@ export class AboutUsComponent {
         return `We understand every little details and importance of your conference and seminars. So our team makes sure to work efficiently and pull out the successful event, whether its launch of a new brand to target potential client or to retain old clients, annual conference or any kind of informal meeting our team is ready to manage everything competently with no glitches.`;
       case 'corporate3':
         return `We become the major part for the existence of your brand, starting with the promotional activities to ensure that products reach out to a maximum number of targeted people. Brand activation and product launch purpose are to showcase their product, and to introduce them successfully in the market. We work efficiently to bring different ideas for your product, and to make sure that your brand stands out in the market with super hit image.`;
-      default: return '';
+      default:
+        return '';
     }
   }
 
- 
   services: string[] = [
     'Overview of the requirement. Do the study on the same and come up with the most suitable venues and destination',
     'Explore the different travel essentials and the practice',
     'Providing support for people travelling internationally & domestically',
     'Offer insurance service if needed',
-    'Coaching guide facility'
+    'Coaching guide facility',
   ];
 
   services1: string[] = [
@@ -68,7 +84,7 @@ export class AboutUsComponent {
     'Signage: Indicating sign board, Placards/Standees, Registration sign up counters',
     'Audio visual is a must',
     'Customization as per client preference.',
-    'Menu designing'
+    'Menu designing',
   ];
 
   services2: string[] = [
@@ -78,6 +94,6 @@ export class AboutUsComponent {
     'Winding up the entire setup',
     'Full & Final billing settlement',
     'Provide final presentation to clients, so they may review the bills later on',
-    'Overview program along with relevant details to the clients'
+    'Overview program along with relevant details to the clients',
   ];
 }

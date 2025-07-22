@@ -5,16 +5,16 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { RouterLink } from '@angular/router';
 import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
 
-
 @Component({
   selector: 'app-city',
   standalone: true,
-  imports: [RouterLink, CommonModule,NgxSkeletonLoaderModule],
+  imports: [RouterLink, CommonModule, NgxSkeletonLoaderModule],
   templateUrl: './city.component.html',
-  styleUrls: ['./city.component.css'] // ⬅️ style**Urls** (not `styleUrl`)
+  styleUrls: ['./city.component.css'], // ⬅️ style**Urls** (not `styleUrl`)
 })
 export class CityComponent implements OnInit {
-  cities: Array<{ id: number, name: string, imageUrl: any, cityName: string }> = [];
+  cities: Array<{ id: number; name: string; imageUrl: any; cityName: string }> =
+    [];
   skeletonArray: number[] = [];
   isloader: boolean = false;
 
@@ -32,14 +32,18 @@ export class CityComponent implements OnInit {
   fetchProductData() {
     this.isloader = true;
     this.generateSkeletons(12); // Optional: show 6 skeletons while loading
-    this.http.get<any>('http://localhost:4000/api/home').subscribe(response => {
-      this.cities = response.distinctCities.map((product: any) => ({
-        id: product.id,
-        name: product.cityName,
-        imageUrl: this.sanitizer.bypassSecurityTrustUrl(`http://localhost:4000/uploads/${product.cityImage}`),
-        cityName: product.cityName
-      }));
-      this.isloader = false;
-    });
+    this.http
+      .get<any>('http://localhost:4000/api/home')
+      .subscribe((response) => {
+        this.cities = response.distinctCities.map((product: any) => ({
+          id: product.id,
+          name: product.cityName,
+          imageUrl: this.sanitizer.bypassSecurityTrustUrl(
+            `http://localhost:4000/uploads/${product.cityImage}`
+          ),
+          cityName: product.cityName,
+        }));
+        this.isloader = false;
+      });
   }
 }

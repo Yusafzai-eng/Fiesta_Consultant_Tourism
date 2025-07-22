@@ -93,20 +93,17 @@ export class LocalStorageService {
     try {
       return Object.keys(localStorage);
     } catch (error) {
-      console.error('Error getting localStorage keys', error);
       return [];
     }
   }
 
   /**
-   * Gets the number of items in localStorage
    * @returns The number of items stored
    */
   getLength(): number {
     try {
       return localStorage.length;
     } catch (error) {
-      console.error('Error getting localStorage length', error);
       return 0;
     }
   }

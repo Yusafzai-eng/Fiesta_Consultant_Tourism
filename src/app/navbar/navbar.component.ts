@@ -8,7 +8,7 @@ import { HttpClient } from '@angular/common/http';
   standalone: true,
   imports: [CommonModule, RouterModule, RouterLink],
   templateUrl: './navbar.component.html',
-  styleUrls: ['./navbar.component.css']
+  styleUrls: ['./navbar.component.css'],
 })
 export class NavbarComponent {
   email: string = 'inquiry@dubaitraveltourism.com';
@@ -28,18 +28,20 @@ export class NavbarComponent {
   }
 
   checkLoginStatus(): void {
-    this.http.get('http://localhost:4000/api/verify-token', {
-      withCredentials: true
-    }).subscribe({
-      next: (res: any) => {
-        this.isLoggedIn = true;
-        this.updateMenuItems();
-      },
-      error: () => {
-        this.isLoggedIn = false;
-        this.updateMenuItems();
-      }
-    });
+    this.http
+      .get('http://localhost:4000/api/verify-token', {
+        withCredentials: true,
+      })
+      .subscribe({
+        next: (res: any) => {
+          this.isLoggedIn = true;
+          this.updateMenuItems();
+        },
+        error: () => {
+          this.isLoggedIn = false;
+          this.updateMenuItems();
+        },
+      });
   }
 
   // Call this method after successful login
@@ -51,7 +53,8 @@ export class NavbarComponent {
   }
 
   logout() {
-    this.http.post('http://localhost:4000/api/logout', {}, { withCredentials: true })
+    this.http
+      .post('http://localhost:4000/api/logout', {}, { withCredentials: true })
       .subscribe({
         next: () => {
           this.isLoggedIn = false;
@@ -62,7 +65,7 @@ export class NavbarComponent {
         error: (err) => {
           console.error('Logout failed:', err);
           window.location.href = '/login';
-        }
+        },
       });
   }
 
@@ -72,9 +75,16 @@ export class NavbarComponent {
       { label: 'About', action: () => this.closeMenu(), href: 'aboutus' },
       this.isLoggedIn
         ? { label: 'Log Out', action: () => this.logout(), href: '' }
-        : { label: 'Log In', action: () => { this.closeMenu(); this.router.navigate(['/login']); }, href: 'login' },
+        : {
+            label: 'Log In',
+            action: () => {
+              this.closeMenu();
+              this.router.navigate(['/login']);
+            },
+            href: 'login',
+          },
       { label: 'Corporate', action: () => this.closeMenu(), href: 'corporate' },
-      { label: 'Local Guide', action: () => this.closeMenu(), href: 'local' }
+      { label: 'Local Guide', action: () => this.closeMenu(), href: 'local' },
     ];
 
     this.menuLinks = [
@@ -83,8 +93,15 @@ export class NavbarComponent {
       { name: 'Corporate', href: 'corporate' },
       this.isLoggedIn
         ? { name: 'Log Out', href: '', action: () => this.logout() }
-        : { name: 'LogIn', href: 'login', action: () => { this.closeMenu(); this.router.navigate(['/login']); } },
-      { name: 'Local Guide', href: 'local' }
+        : {
+            name: 'LogIn',
+            href: 'login',
+            action: () => {
+              this.closeMenu();
+              this.router.navigate(['/login']);
+            },
+          },
+      { name: 'Local Guide', href: 'local' },
     ];
   }
 
@@ -105,15 +122,35 @@ export class NavbarComponent {
   }
 
   socialLinks = [
-    { href: 'https://pk.linkedin.com/company/fiesta-consultants', bgColor: 'bg-blue-700', iconClass: 'fab fa-linkedin-in' },
-    { href: 'https://www.facebook.com/FiestaConsultants/', bgColor: 'bg-blue-500', iconClass: 'fab fa-facebook-f' },
-    { href: 'https://x.com/i/flow/login?redirect_after_login=%2Fsearch%3Fq%3D%2523HospitalityConsultant%26src%3Dhashtag_click', bgColor: 'bg-blue-400', iconClass: 'fab fa-twitter' },
-    { href: 'https://www.youtube.com/results?search_query=fiesta+consultant', bgColor: 'bg-red-600', iconClass: 'fab fa-youtube' },
-    { href: 'https://wa.me/971545404171', bgColor: 'bg-green-500', iconClass: 'fab fa-whatsapp' },
+    {
+      href: 'https://pk.linkedin.com/company/fiesta-consultants',
+      bgColor: 'bg-blue-700',
+      iconClass: 'fab fa-linkedin-in',
+    },
+    {
+      href: 'https://www.facebook.com/FiestaConsultants/',
+      bgColor: 'bg-blue-500',
+      iconClass: 'fab fa-facebook-f',
+    },
+    {
+      href: 'https://x.com/i/flow/login?redirect_after_login=%2Fsearch%3Fq%3D%2523HospitalityConsultant%26src%3Dhashtag_click',
+      bgColor: 'bg-blue-400',
+      iconClass: 'fab fa-twitter',
+    },
+    {
+      href: 'https://www.youtube.com/results?search_query=fiesta+consultant',
+      bgColor: 'bg-red-600',
+      iconClass: 'fab fa-youtube',
+    },
+    {
+      href: 'https://wa.me/971545404171',
+      bgColor: 'bg-green-500',
+      iconClass: 'fab fa-whatsapp',
+    },
   ];
 
   links = [
-    { label: 'NEW YEAR EVENTS', path:'/city?cityName=NEW%20YEAR%20EVENTS' },
+    { label: 'NEW YEAR EVENTS', path: '/city?cityName=NEW%20YEAR%20EVENTS' },
     { label: 'SAFARI TOURS', path: '/city?cityName=SAFARI%20TOURS' },
     { label: 'COMBO DEALS', path: '/city?cityName=COMBO%20DEALS' },
     { label: 'SEA ADVENTURES', path: '/city?cityName=SEA%20ADVENTURES' },
@@ -128,7 +165,8 @@ export class NavbarComponent {
     {
       icon: 'fa-solid fa-phone rotate-45 text-xs text-pink-600',
       label: '+971 54 540 4171',
-      class: 'text-pink-700 font-bold text-xs sm:text-sm mt-1 hover:text-indigo-950',
+      class:
+        'text-pink-700 font-bold text-xs sm:text-sm mt-1 hover:text-indigo-950',
     },
     {
       icon: 'fa-brands fa-whatsapp text-green-700 text-lg',
@@ -148,7 +186,8 @@ export class NavbarComponent {
       iconCount: 5,
     },
     {
-      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSduKfXoMWOmScspj3hXVYULnzXNvRbWiKV-Q&s',
+      image:
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSduKfXoMWOmScspj3hXVYULnzXNvRbWiKV-Q&s',
       class: 'mt- w-28',
     },
   ];

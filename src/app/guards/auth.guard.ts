@@ -10,15 +10,16 @@ export const authGuard: CanActivateFn = (route, state) => {
   const http = inject(HttpClient);
   const router = inject(Router);
 
-  return http.get('http://localhost:4000/api/verify-token', {
-    withCredentials: true
-  }).pipe(
-    map(() => true),
-    catchError(() => {
-      // Store the attempted URL for redirecting after login
-      localStorage.setItem('returnUrl', state.url);
-      router.navigate(['/login']);
-      return of(false);
+  return http
+    .get('http://localhost:4000/api/verify-token', {
+      withCredentials: true,
     })
-  );
+    .pipe(
+      map(() => true),
+      catchError(() => {
+        localStorage.setItem('returnUrl', state.url);
+        router.navigate(['/login']);
+        return of(false);
+      })
+    );
 };

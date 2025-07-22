@@ -1,6 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  Validators,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { AddProductService } from '../adminservice/add-product.service';
 
 @Component({
@@ -8,7 +13,7 @@ import { AddProductService } from '../adminservice/add-product.service';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './add-products.component.html',
-  styleUrls: ['./add-products.component.css']
+  styleUrls: ['./add-products.component.css'],
 })
 export class AddProductsComponent implements OnInit {
   constructor(private postproduct: AddProductService) {}
@@ -19,7 +24,10 @@ export class AddProductsComponent implements OnInit {
     thumbnail: new FormControl(null, Validators.required),
     tourService: new FormControl('Daily', Validators.required),
     duration: new FormControl('', Validators.required),
-    transportService: new FormControl('Pick up & Drop Back', Validators.required),
+    transportService: new FormControl(
+      'Pick up & Drop Back',
+      Validators.required
+    ),
     pickUp: new FormControl('', Validators.required),
     translatelanguage: new FormControl('English/Urdu', Validators.required),
     wifi: new FormControl('available', Validators.required),
@@ -28,7 +36,10 @@ export class AddProductsComponent implements OnInit {
     quantity: new FormControl('', Validators.required),
     discountend: new FormControl('', Validators.required),
     discountPercentage: new FormControl('', Validators.required),
-    discountedTotal: new FormControl({ value: '', disabled: true }, Validators.required),
+    discountedTotal: new FormControl(
+      { value: '', disabled: true },
+      Validators.required
+    ),
     private: new FormControl(false), // New toggle
     privateAdult: new FormControl(''),
     privateChild: new FormControl(''),
@@ -52,44 +63,59 @@ export class AddProductsComponent implements OnInit {
       this.updateDiscountedTotal();
     });
 
-    this.AddproductForm.get('discountPercentage')?.valueChanges.subscribe(() => {
-      this.updateDiscountedTotal();
-    });
+    this.AddproductForm.get('discountPercentage')?.valueChanges.subscribe(
+      () => {
+        this.updateDiscountedTotal();
+      }
+    );
   }
 
   updateDiscountedTotal(): void {
-    const adultBaseprice = parseFloat(this.AddproductForm.get('adultBaseprice')?.value);
-    const discount = parseFloat(this.AddproductForm.get('discountPercentage')?.value);
+    const adultBaseprice = parseFloat(
+      this.AddproductForm.get('adultBaseprice')?.value
+    );
+    const discount = parseFloat(
+      this.AddproductForm.get('discountPercentage')?.value
+    );
 
     if (!isNaN(adultBaseprice) && !isNaN(discount)) {
-      const discountedTotal = adultBaseprice - (adultBaseprice * discount / 100);
+      const discountedTotal =
+        adultBaseprice - (adultBaseprice * discount) / 100;
       const rounded = Math.round(discountedTotal);
-      this.AddproductForm.get('discountedTotal')?.setValue(rounded, { emitEvent: false });
+      this.AddproductForm.get('discountedTotal')?.setValue(rounded, {
+        emitEvent: false,
+      });
     } else {
-      this.AddproductForm.get('discountedTotal')?.setValue('', { emitEvent: false });
+      this.AddproductForm.get('discountedTotal')?.setValue('', {
+        emitEvent: false,
+      });
     }
   }
 
   handlePrivateToggle(): void {
-    this.AddproductForm.get('private')?.valueChanges.subscribe((isPrivate: boolean) => {
-      const privateAdult = this.AddproductForm.get('privateAdult');
-      const privateChild = this.AddproductForm.get('privateChild');
-      const privatetransferprice = this.AddproductForm.get('privatetransferprice');
+    this.AddproductForm.get('private')?.valueChanges.subscribe(
+      (isPrivate: boolean) => {
+        const privateAdult = this.AddproductForm.get('privateAdult');
+        const privateChild = this.AddproductForm.get('privateChild');
+        const privatetransferprice = this.AddproductForm.get(
+          'privatetransferprice'
+        );
 
-      if (isPrivate) {
-        privateAdult?.setValidators(Validators.required);
-        privateChild?.setValidators(Validators.required);
-        privatetransferprice?.setValidators(Validators.required);
-      } else {
-        privateAdult?.clearValidators();
-        privateChild?.clearValidators();
-        privatetransferprice?.clearValidators();
+        if (isPrivate) {
+          privateAdult?.setValidators(Validators.required);
+          privateChild?.setValidators(Validators.required);
+          privatetransferprice?.setValidators(Validators.required);
+        } else {
+          privateAdult?.clearValidators();
+          privateChild?.clearValidators();
+          privatetransferprice?.clearValidators();
+        }
+
+        privateAdult?.updateValueAndValidity();
+        privateChild?.updateValueAndValidity();
+        privatetransferprice?.updateValueAndValidity();
       }
-
-      privateAdult?.updateValueAndValidity();
-      privateChild?.updateValueAndValidity();
-      privatetransferprice?.updateValueAndValidity();
-    });
+    );
   }
 
   onThumbnailChange(event: Event): void {
@@ -133,12 +159,12 @@ export class AddProductsComponent implements OnInit {
       formData.append('cityImage', this.cityImageFile);
     }
 
-    this.thumbnailFiles.forEach(file => {
+    this.thumbnailFiles.forEach((file) => {
       formData.append('thumbnail', file);
     });
 
     for (const [key, value] of formData.entries()) {
-      console.log(`${key}:`, value);
+      // console.log(`${key}:`, value);
     }
 
     this.postproduct.postProduct(formData).subscribe(

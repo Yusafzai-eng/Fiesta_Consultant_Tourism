@@ -5,19 +5,19 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-user-update-products',
-  imports: [CommonModule,FormsModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './user-update-products.component.html',
-  styleUrl: './user-update-products.component.css'
+  styleUrl: './user-update-products.component.css',
 })
 export class UserUpdateProductsComponent implements OnInit {
- userId: string = '';
+  userId: string = '';
   selectedProduct: any = null;
 
   userobj = {
     Date: '',
     NoofAdult: 0,
     NoofChild: 0,
-    Total: 0
+    Total: 0,
   };
 
   result: number = 0;
@@ -32,7 +32,10 @@ export class UserUpdateProductsComponent implements OnInit {
     const navState = this.router.getCurrentNavigation()?.extras.state;
     if (navState?.['product']) {
       this.selectedProduct = navState['product'];
-      localStorage.setItem('selectedProduct', JSON.stringify(this.selectedProduct));
+      localStorage.setItem(
+        'selectedProduct',
+        JSON.stringify(this.selectedProduct)
+      );
     } else {
       const stored = localStorage.getItem('selectedProduct');
       if (stored) {
@@ -51,7 +54,10 @@ export class UserUpdateProductsComponent implements OnInit {
       const backendDate = this.selectedProduct.order_date;
       if (backendDate) {
         const parts = backendDate.split('/');
-        const formatted = `${parts[2]}-${parts[0].padStart(2, '0')}-${parts[1].padStart(2, '0')}`;
+        const formatted = `${parts[2]}-${parts[0].padStart(
+          2,
+          '0'
+        )}-${parts[1].padStart(2, '0')}`;
         this.userobj.Date = formatted;
       }
     }
@@ -71,22 +77,22 @@ export class UserUpdateProductsComponent implements OnInit {
     const adults = Number(this.userobj.NoofAdult) || 0;
     const children = Number(this.userobj.NoofChild) || 0;
 
-    this.result = (adults * rateAdult) + (children * rateChild);
+    this.result = adults * rateAdult + children * rateChild;
     this.userobj.Total = this.result;
   }
 
   onsignup(): void {
     if (!this.userobj.Date) {
-      alert("Please select a date.");
+      alert('Please select a date.');
       return;
     }
 
-    console.log("📤 Submitted Data:", {
-      userId: this.userId,
-      ...this.userobj
-    });
+    // console.log("📤 Submitted Data:", {
+    //   userId: this.userId,
+    //   ...this.userobj
+    // });
 
     localStorage.removeItem('selectedProduct');
-    alert("✅ Form submitted successfully!");
+    alert('✅ Form submitted successfully!');
   }
 }

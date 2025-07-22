@@ -7,12 +7,11 @@ import { FormsModule } from '@angular/forms';
 import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
 @Component({
   selector: 'app-nav-tour',
-  imports: [ CommonModule, RouterLink, FormsModule,NgxSkeletonLoaderModule],
+  imports: [CommonModule, RouterLink, FormsModule, NgxSkeletonLoaderModule],
   templateUrl: './nav-tour.component.html',
-  styleUrl: './nav-tour.component.css'
+  styleUrl: './nav-tour.component.css',
 })
 export class NavTourComponent {
-
   deplist: any[] = [];
   displayedProducts: any[] = [];
   uniqueCities: string[] = [];
@@ -31,23 +30,24 @@ export class NavTourComponent {
   }
   fetchDepartmentData() {
     this.isloader = true;
-    this.generateSkeletons(8); 
+    this.generateSkeletons(8);
     this.depsrv.getproductDepartment().subscribe(
       (res: any) => {
         this.deplist = res.products.map((item: any) => ({
           id: item._id,
           title: item.producttitle,
           // Corrected image path, including the backend URL
-          image: item.thumbnail && item.thumbnail[0]
-                  ? `http://localhost:4000/uploads/${item.thumbnail[0]}`  // Backend image path
-                  : '/assets/fallback-image-url.jpg',  // Fallback image
+          image:
+            item.thumbnail && item.thumbnail[0]
+              ? `http://localhost:4000/uploads/${item.thumbnail[0]}` // Backend image path
+              : '/assets/fallback-image-url.jpg', // Fallback image
           price: item.price,
           cityName: item.cityName,
           duration: item.duration,
           discription: item.productdescription,
         }));
         this.isloader = false;
-  
+
         this.extractUniqueCities();
         this.updateDisplayedProducts();
       },
@@ -56,16 +56,15 @@ export class NavTourComponent {
       }
     );
   }
-  
 
   extractUniqueCities() {
-    const cities = this.deplist.map(item => item.cityName);
+    const cities = this.deplist.map((item) => item.cityName);
     this.uniqueCities = Array.from(new Set(cities)); // Get unique city names
   }
 
   updateDisplayedProducts() {
     if (this.selectedCities.length > 0) {
-      this.displayedProducts = this.deplist.filter(product =>
+      this.displayedProducts = this.deplist.filter((product) =>
         this.selectedCities.includes(product.cityName)
       );
     } else {
@@ -80,13 +79,16 @@ export class NavTourComponent {
     if (checkbox.checked) {
       this.selectedCities.push(value);
     } else {
-      this.selectedCities = this.selectedCities.filter(city => city !== value);
+      this.selectedCities = this.selectedCities.filter(
+        (city) => city !== value
+      );
     }
     this.updateDisplayedProducts();
   }
 
   countProductsByCity(cityName: string): number {
-    return this.deplist.filter(product => product.cityName === cityName).length;
+    return this.deplist.filter((product) => product.cityName === cityName)
+      .length;
   }
 
   icons = [

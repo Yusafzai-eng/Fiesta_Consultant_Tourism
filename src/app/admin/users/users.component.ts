@@ -6,16 +6,15 @@ import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
 @Component({
   selector: 'app-users',
   standalone: true,
-  imports: [CommonModule,FormsModule,NgxSkeletonLoaderModule],
+  imports: [CommonModule, FormsModule, NgxSkeletonLoaderModule],
   templateUrl: './users.component.html',
-  styleUrl: './users.component.css'
+  styleUrl: './users.component.css',
 })
 export class UsersComponent {
-
   usersData: any[] = [];
   filteredUsers: any[] = [];
   paginatedUsers: any[] = [];
- skeletonArray: number[] = [];
+  skeletonArray: number[] = [];
   isloader: boolean = true; //
   searchTerm: string = '';
   currentPage = 1;
@@ -25,33 +24,35 @@ export class UsersComponent {
   constructor(private http: HttpClient) {}
 
   ngOnInit() {
-        this.generateSkeletons(7); // Show 5 skeleton rows initially
+    this.generateSkeletons(7); // Show 5 skeleton rows initially
     this.userdata();
   }
- generateSkeletons(count: number) {
+  generateSkeletons(count: number) {
     this.skeletonArray = Array(count).fill(0);
   }
   userdata() {
     this.isloader = true;
-  this.generateSkeletons(7);
-    this.http.get<any>('http://localhost:4000/api/admin', {
-      withCredentials: true
-    }).subscribe({
-      next: (res) => {
-        this.usersData = res.users;
-        this.filteredUsers = [...this.usersData];
-        this.calculatePagination();
-      },
-      error: (err) => {
-        console.error("❌ Error:", err);
-              this.isloader = false;
-      }
-    });
+    this.generateSkeletons(7);
+    this.http
+      .get<any>('http://localhost:4000/api/admin', {
+        withCredentials: true,
+      })
+      .subscribe({
+        next: (res) => {
+          this.usersData = res.users;
+          this.filteredUsers = [...this.usersData];
+          this.calculatePagination();
+        },
+        error: (err) => {
+          console.error('❌ Error:', err);
+          this.isloader = false;
+        },
+      });
   }
 
   filterUsers() {
     const term = this.searchTerm.trim().toLowerCase();
-    this.filteredUsers = this.usersData.filter(user =>
+    this.filteredUsers = this.usersData.filter((user) =>
       user.email.toLowerCase().includes(term)
     );
     this.currentPage = 1;
@@ -83,18 +84,8 @@ export class UsersComponent {
     }
   }
 
-
-
-
-
-
-
-
-
-
   onItemsPerPageChange() {
-  this.currentPage = 1;
-  this.calculatePagination();
-}
-
+    this.currentPage = 1;
+    this.calculatePagination();
+  }
 }

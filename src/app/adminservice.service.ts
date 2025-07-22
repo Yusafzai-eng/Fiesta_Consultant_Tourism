@@ -3,10 +3,9 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AdminserviceService {
-
   private url: string = 'http://localhost:4000/api/productdetail';
 
   constructor(private http: HttpClient) {}
@@ -19,7 +18,7 @@ export class AdminserviceService {
 export interface Product {
   producttitle: String;
   productdescription: String;
-  thumbnail: String[];  // Change from `string` to `string[]`
+  thumbnail: String[]; // Change from `string` to `string[]`
   tourService: String;
   duration: String;
   transportService: String;
@@ -41,5 +40,3 @@ export interface Product {
   cityImage: String;
   categorie: String;
 }
-
-

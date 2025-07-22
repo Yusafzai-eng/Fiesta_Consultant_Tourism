@@ -43,7 +43,7 @@ interface Product {
   selector: 'app-citydetails',
   imports: [CommonModule, RouterLink, NgxSkeletonLoaderModule],
   templateUrl: './citydetails.component.html',
-  styleUrl: './citydetails.component.css'
+  styleUrl: './citydetails.component.css',
 })
 export class CitydetailsComponent implements OnInit {
   deplist: any[] = [];
@@ -54,7 +54,7 @@ export class CitydetailsComponent implements OnInit {
   skeletonArray: number[] = [];
   isloader: boolean = false;
   cityName: string | null = null;
-  
+
   // Modal properties
   showModal: boolean = false;
   modalTitle: string = '';
@@ -88,46 +88,52 @@ export class CitydetailsComponent implements OnInit {
 
   fetchCityDetails() {
     this.isloader = true;
-    this.generateSkeletons(8); 
-    this.http.get<any>(`http://localhost:4000/api/city?cityName=${this.cityName}`).subscribe((response) => {
-      this.products = response.producte.map((product: Product) => ({
-        id: product.id,
-        _id: product._id,
-        cityName: product.cityName,
-        price: product.price,
-        citydescription: product.citydescription,
-        adultBaseprice: product.adultBaseprice,
-        discountedTotal: product.discountedTotal,
-        discountPercentage: product.discountPercentage,
-        productdescription: product.productdescription,
-        producttitle: product.producttitle,
-        categorie: product.categorie,
-        inclusions: product.inclusions || [
-          "Once you fill out our form online and do the needful you will receive a confirmation on your screens immediately.",
-          "You will also receive an email confirmation from our booking team confirming the details of your trip.",
-          "There would be a follow via phone call (on International Number) before the trips due date, you will also receive text messages via WHATS APP on the developments leading to your visit to the Arabian Deserts."
-        ],
-        timings: product.timings || {
-          duration: product.duration,
-          departurePoint: product.tourService,
-          pickupTime: product.pickUp,
-          wifi:product.wifi,
-        },
-        usefulInfo: product.usefulInfo || 'Not available',
-        imageUrl: this.sanitizer.bypassSecurityTrustUrl(`http://localhost:4000/uploads/${product.thumbnail[0]}`),
-      }));
-      this.isloader = false;
-      this.displayedProducts = [...this.products];
-      this.uniqueCategories = [...new Set(this.products.map(product => product.categorie))];
-    });
+    this.generateSkeletons(8);
+    this.http
+      .get<any>(`http://localhost:4000/api/city?cityName=${this.cityName}`)
+      .subscribe((response) => {
+        this.products = response.producte.map((product: Product) => ({
+          id: product.id,
+          _id: product._id,
+          cityName: product.cityName,
+          price: product.price,
+          citydescription: product.citydescription,
+          adultBaseprice: product.adultBaseprice,
+          discountedTotal: product.discountedTotal,
+          discountPercentage: product.discountPercentage,
+          productdescription: product.productdescription,
+          producttitle: product.producttitle,
+          categorie: product.categorie,
+          inclusions: product.inclusions || [
+            'Once you fill out our form online and do the needful you will receive a confirmation on your screens immediately.',
+            'You will also receive an email confirmation from our booking team confirming the details of your trip.',
+            'There would be a follow via phone call (on International Number) before the trips due date, you will also receive text messages via WHATS APP on the developments leading to your visit to the Arabian Deserts.',
+          ],
+          timings: product.timings || {
+            duration: product.duration,
+            departurePoint: product.tourService,
+            pickupTime: product.pickUp,
+            wifi: product.wifi,
+          },
+          usefulInfo: product.usefulInfo || 'Not available',
+          imageUrl: this.sanitizer.bypassSecurityTrustUrl(
+            `http://localhost:4000/uploads/${product.thumbnail[0]}`
+          ),
+        }));
+        this.isloader = false;
+        this.displayedProducts = [...this.products];
+        this.uniqueCategories = [
+          ...new Set(this.products.map((product) => product.categorie)),
+        ];
+      });
   }
 
   // Modal functions
   openModal(product: Product, type: string) {
     this.currentProduct = product;
     this.modalTitle = type;
-    
-    switch(type) {
+
+    switch (type) {
       case 'Description':
         this.modalContent = product.citydescription;
         break;
@@ -141,14 +147,14 @@ export class CitydetailsComponent implements OnInit {
           duration: product.duration,
           departurePoint: product.tourService,
           pickupTime: product.pickUp,
-          wifi:product.wifi,
+          wifi: product.wifi,
         };
         break;
       case 'Useful Info':
         this.modalContent = product.usefulInfo || 'Not available';
         break;
     }
-    
+
     this.showModal = true;
   }
 
@@ -162,7 +168,9 @@ export class CitydetailsComponent implements OnInit {
     if (event.target.checked) {
       this.selectedCategories.push(category);
     } else {
-      this.selectedCategories = this.selectedCategories.filter(c => c !== category);
+      this.selectedCategories = this.selectedCategories.filter(
+        (c) => c !== category
+      );
     }
     this.applyFilters();
   }
@@ -171,19 +179,22 @@ export class CitydetailsComponent implements OnInit {
     if (this.selectedCategories.length === 0) {
       this.displayedProducts = [...this.products];
     } else {
-      this.displayedProducts = this.products.filter(product => this.selectedCategories.includes(product.categorie));
+      this.displayedProducts = this.products.filter((product) =>
+        this.selectedCategories.includes(product.categorie)
+      );
     }
   }
 
   getCategoryCount(category: string): number {
-    return this.products.filter(product => product.categorie === category).length;
+    return this.products.filter((product) => product.categorie === category)
+      .length;
   }
 
   checkbox: boolean = true;
   toggleCheckbox(): void {
     this.checkbox = !this.checkbox;
   }
-  
+
   checkbox2: boolean = true;
   toggleCheckbox2(): void {
     this.checkbox2 = !this.checkbox2;

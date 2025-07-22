@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
   standalone: true,
   imports: [CommonModule, RouterLink, NgxSkeletonLoaderModule, FormsModule],
   templateUrl: './dashboard-table.component.html',
-  styleUrl: './dashboard-table.component.css'
+  styleUrl: './dashboard-table.component.css',
 })
 export class OrdersComponent {
   skeletonArray: number[] = [];
@@ -37,90 +37,93 @@ export class OrdersComponent {
 
   fetchData(): void {
     this.isloader = true;
-    
+
     // Simulate loading delay for demo purposes
     setTimeout(() => {
-      this.http.get<any>('http://localhost:4000/api/admin', {
-        withCredentials: true
-      }).subscribe({
-        next: (res) => {
-          const orders = res.order ?? [];
-          const userMap = new Map<string, any>();
+      this.http
+        .get<any>('http://localhost:4000/api/admin', {
+          withCredentials: true,
+        })
+        .subscribe({
+          next: (res) => {
+            const orders = res.order ?? [];
+            const userMap = new Map<string, any>();
 
-          for (let order of orders) {
-            const key = order.userEmail;
-            const userId = order.userId;
-            const name = order.userName;
-            const address = order.address;
-            const products: any[] = order.products ?? [];
+            for (let order of orders) {
+              const key = order.userEmail;
+              const userId = order.userId;
+              const name = order.userName;
+              const address = order.address;
+              const products: any[] = order.products ?? [];
 
-            const total = products.reduce((sum: number, p: any) => {
-              const shared = p.total || 0;
-              const privateTransfer = p.privatetransferprice || 0;
-              return sum + shared + privateTransfer;
-            }, 0);
-
-            const orderDate = new Date(order.date);
-            const createdAt = new Date(order.createdAt);
-
-            let firstThumbnail = null;
-            for (let i = 0; i < products.length; i++) {
-              if (products[i]?.thumbnail?.[0]) {
-                firstThumbnail = products[i].thumbnail[0];
-                break;
-              }
-            }
-
-            if (!userMap.has(key)) {
-              userMap.set(key, {
-                userId,
-                userName: name,
-                userEmail: key,
-                address,
-                total,
-                products: [...products],
-                latestDate: orderDate,
-                latestCreatedAt: createdAt,
-                thumbnail: firstThumbnail,
-                createdAt: createdAt
-              });
-            } else {
-              const existing = userMap.get(key);
-              const extraTotal = products.reduce((sum: number, p: any) => {
-                return sum + (p.total || 0) + (p.privatetransferprice || 0);
+              const total = products.reduce((sum: number, p: any) => {
+                const shared = p.total || 0;
+                const privateTransfer = p.privatetransferprice || 0;
+                return sum + shared + privateTransfer;
               }, 0);
-              existing.total += extraTotal;
-              existing.products.push(...products);
 
-              if (createdAt > existing.latestCreatedAt) {
-                existing.latestCreatedAt = createdAt;
-                existing.latestDate = orderDate;
-                if (!existing.thumbnail && firstThumbnail) {
-                  existing.thumbnail = firstThumbnail;
+              const orderDate = new Date(order.date);
+              const createdAt = new Date(order.createdAt);
+
+              let firstThumbnail = null;
+              for (let i = 0; i < products.length; i++) {
+                if (products[i]?.thumbnail?.[0]) {
+                  firstThumbnail = products[i].thumbnail[0];
+                  break;
+                }
+              }
+
+              if (!userMap.has(key)) {
+                userMap.set(key, {
+                  userId,
+                  userName: name,
+                  userEmail: key,
+                  address,
+                  total,
+                  products: [...products],
+                  latestDate: orderDate,
+                  latestCreatedAt: createdAt,
+                  thumbnail: firstThumbnail,
+                  createdAt: createdAt,
+                });
+              } else {
+                const existing = userMap.get(key);
+                const extraTotal = products.reduce((sum: number, p: any) => {
+                  return sum + (p.total || 0) + (p.privatetransferprice || 0);
+                }, 0);
+                existing.total += extraTotal;
+                existing.products.push(...products);
+
+                if (createdAt > existing.latestCreatedAt) {
+                  existing.latestCreatedAt = createdAt;
+                  existing.latestDate = orderDate;
+                  if (!existing.thumbnail && firstThumbnail) {
+                    existing.thumbnail = firstThumbnail;
+                  }
                 }
               }
             }
-          }
 
-         this.userSummaries = Array.from(userMap.values())
-  .filter(u => u.total > 0)
-  .sort((a, b) => {
-    return b.latestCreatedAt.getTime() - a.latestCreatedAt.getTime(); // Newest first
-  })
-  .slice(0,6); // ✅ Only top 3
+            this.userSummaries = Array.from(userMap.values())
+              .filter((u) => u.total > 0)
+              .sort((a, b) => {
+                return (
+                  b.latestCreatedAt.getTime() - a.latestCreatedAt.getTime()
+                ); // Newest first
+              })
+              .slice(0, 6); // ✅ Only top 3
 
-this.originalUserSummaries = [...this.userSummaries];
-this.isloader = false;
+            this.originalUserSummaries = [...this.userSummaries];
+            this.isloader = false;
 
-
-          this.originalUserSummaries = [...this.userSummaries];
-          this.isloader = false;
-        },
-        error: (err) => {
-          console.error('Error:', err);
-          this.isloader = false;
-        }
-      });
+            this.originalUserSummaries = [...this.userSummaries];
+            this.isloader = false;
+          },
+          error: (err) => {
+            console.error('Error:', err);
+            this.isloader = false;
+          },
+        });
     }, 1000); // 1 second delay to show skeleton
   }
 
@@ -140,16 +143,21 @@ this.isloader = false;
       filtered = filtered.filter((user) =>
         user.products.some(
           (p: any) =>
-            p.cityName?.toLowerCase().trim() === this.selectedCity.toLowerCase().trim()
+            p.cityName?.toLowerCase().trim() ===
+            this.selectedCity.toLowerCase().trim()
         )
       );
     }
 
     if (this.selectedDate) {
-      const selectedDateStr = new Date(this.selectedDate).toLocaleDateString('en-US');
+      const selectedDateStr = new Date(this.selectedDate).toLocaleDateString(
+        'en-US'
+      );
       filtered = filtered.filter((user) =>
         user.products.some((p: any) => {
-          const productDateStr = new Date(p.order_date).toLocaleDateString('en-US');
+          const productDateStr = new Date(p.order_date).toLocaleDateString(
+            'en-US'
+          );
           return productDateStr === selectedDateStr;
         })
       );

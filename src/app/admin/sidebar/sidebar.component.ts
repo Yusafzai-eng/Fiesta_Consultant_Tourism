@@ -1,25 +1,29 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, HostListener, OnInit } from '@angular/core';
-import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import {
+  Router,
+  RouterLink,
+  RouterLinkActive,
+  RouterOutlet,
+} from '@angular/router';
 @Component({
   selector: 'app-sidebar',
   standalone: true,
   imports: [CommonModule, RouterLink, RouterLinkActive, RouterOutlet],
   templateUrl: './sidebar.component.html',
-  styleUrl: './sidebar.component.css'
+  styleUrl: './sidebar.component.css',
 })
 export class SidebarComponent {
+  isSidebarOpen = false; // Start closed on mobile by default
 
- isSidebarOpen = false; // Start closed on mobile by default
-  
   ngOnInit(): void {
     this.checkScreenSize();
   }
-  
+
   adminInfo = {
     name: 'Admin',
-    profileImage: ''
+    profileImage: '',
   };
 
   @HostListener('window:resize', ['$event'])
@@ -27,9 +31,7 @@ export class SidebarComponent {
     this.checkScreenSize();
   }
 
-
-
-       constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
   checkScreenSize() {
     if (window.innerWidth < 640) {
@@ -62,14 +64,16 @@ export class SidebarComponent {
       reader.readAsDataURL(file);
     }
   }
-    logout() {
-    this.http.post('http://localhost:4000/api/logout', {}, { withCredentials: true }).subscribe({
-      next: () => {
-        // this.router.navigate(['/login']);
-      },
-      error: (err) => {
-        console.error('Logout failed', err);
-      }
-    });
+  logout() {
+    this.http
+      .post('http://localhost:4000/api/logout', {}, { withCredentials: true })
+      .subscribe({
+        next: () => {
+          // this.router.navigate(['/login']);
+        },
+        error: (err) => {
+          console.error('Logout failed', err);
+        },
+      });
   }
 }

@@ -8,7 +8,7 @@ import {
   Tooltip,
   Legend,
   CategoryScale,
-  LinearScale
+  LinearScale,
 } from 'chart.js';
 import { ChartssService } from '../chartsservice/chartss.service';
 
@@ -29,25 +29,28 @@ Chart.register(
   standalone: true,
   imports: [],
   templateUrl: './charts.component.html',
-  styleUrls: ['./charts.component.css']
+  styleUrls: ['./charts.component.css'],
 })
 export class ChartsComponent implements OnInit {
   constructor(private chardata: ChartssService) {}
 
   ngOnInit(): void {
     this.chardata.getChartData().subscribe((res: any) => {
-      console.log('Raw API Data:', res);
-
       const yearData = this.processChartData(res);
-      this.showdata(yearData.years, yearData.totals, yearData.colors, yearData.borderColors);
+      this.showdata(
+        yearData.years,
+        yearData.totals,
+        yearData.colors,
+        yearData.borderColors
+      );
     });
   }
 
   private processChartData(res: any): {
-    years: string[],
-    totals: number[],
-    colors: string[],
-    borderColors: string[]
+    years: string[];
+    totals: number[];
+    colors: string[];
+    borderColors: string[];
   } {
     const yearMap: { [year: string]: number } = {};
 
@@ -72,15 +75,17 @@ export class ChartsComponent implements OnInit {
     });
 
     // 🔥 Get all years sorted (as string array)
-    let allYears = Object.keys(yearMap).map(y => Number(y)).sort((a, b) => a - b);
+    let allYears = Object.keys(yearMap)
+      .map((y) => Number(y))
+      .sort((a, b) => a - b);
 
     // 🔥 Keep only the last 5 years
     if (allYears.length > 5) {
       allYears = allYears.slice(allYears.length - 5); // last 5 years only
     }
 
-    const years = allYears.map(y => y.toString());
-    const totals = allYears.map(year => yearMap[year]);
+    const years = allYears.map((y) => y.toString());
+    const totals = allYears.map((year) => yearMap[year]);
 
     const backgroundColors = years.map((_, i) =>
       i % 2 === 0 ? 'rgba(15, 30, 239, 0.6)' : 'rgba(15, 239, 59, 0.6)'
@@ -88,8 +93,6 @@ export class ChartsComponent implements OnInit {
     const borderColors = years.map((_, i) =>
       i % 2 === 0 ? 'rgba(15, 30, 239, 1)' : 'rgba(15, 239, 59, 1)'
     );
-
-    console.log('Processed Chart Data (Last 5 Years):', { years, totals });
 
     return { years, totals, colors: backgroundColors, borderColors };
   }
@@ -104,28 +107,34 @@ export class ChartsComponent implements OnInit {
       // Fallback to ISO or other valid formats
       return new Date(dateStr);
     } catch (e) {
-      console.error('Error parsing date:', dateStr, e);
       return null;
     }
   }
 
-  showdata(years: string[], totals: number[], colors: string[], borderColors: string[]) {
+  showdata(
+    years: string[],
+    totals: number[],
+    colors: string[],
+    borderColors: string[]
+  ) {
     // Destroy existing charts if already rendered
-    Chart.getChart("mychart")?.destroy();
-    Chart.getChart("barchart")?.destroy();
+    Chart.getChart('mychart')?.destroy();
+    Chart.getChart('barchart')?.destroy();
 
     // ✅ Pie Chart
-    new Chart("mychart", {
+    new Chart('mychart', {
       type: 'pie',
       data: {
         labels: years,
-        datasets: [{
-          label: 'Total Revenue (AED)',
-          data: totals,
-          backgroundColor: colors,
-          borderColor: borderColors,
-          borderWidth: 1
-        }]
+        datasets: [
+          {
+            label: 'Total Revenue (AED)',
+            data: totals,
+            backgroundColor: colors,
+            borderColor: borderColors,
+            borderWidth: 1,
+          },
+        ],
       },
       options: {
         responsive: true,
@@ -133,25 +142,27 @@ export class ChartsComponent implements OnInit {
           legend: { position: 'top' },
           tooltip: {
             callbacks: {
-              label: (context) => `AED ${context.raw?.toLocaleString()}`
-            }
-          }
-        }
-      }
+              label: (context) => `AED ${context.raw?.toLocaleString()}`,
+            },
+          },
+        },
+      },
     });
 
     // ✅ Bar Chart
-    new Chart("barchart", {
+    new Chart('barchart', {
       type: 'bar',
       data: {
         labels: years,
-        datasets: [{
-          label: 'Total Revenue (AED)',
-          data: totals,
-          backgroundColor: colors,
-          borderColor: borderColors,
-          borderWidth: 1
-        }]
+        datasets: [
+          {
+            label: 'Total Revenue (AED)',
+            data: totals,
+            backgroundColor: colors,
+            borderColor: borderColors,
+            borderWidth: 1,
+          },
+        ],
       },
       options: {
         responsive: true,
@@ -159,18 +170,18 @@ export class ChartsComponent implements OnInit {
           y: {
             beginAtZero: true,
             ticks: {
-              callback: (value) => `AED ${value}`
-            }
-          }
+              callback: (value) => `AED ${value}`,
+            },
+          },
         },
         plugins: {
           tooltip: {
             callbacks: {
-              label: (context) => `AED ${context.raw?.toLocaleString()}`
-            }
-          }
-        }
-      }
+              label: (context) => `AED ${context.raw?.toLocaleString()}`,
+            },
+          },
+        },
+      },
     });
   }
 }

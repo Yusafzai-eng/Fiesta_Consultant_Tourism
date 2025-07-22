@@ -9,7 +9,7 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [FormsModule, CommonModule],
   templateUrl: './edit.component.html',
-  styleUrls: ['./edit.component.css']
+  styleUrls: ['./edit.component.css'],
 })
 export class EditComponent implements OnInit {
   productData: any = {
@@ -18,7 +18,7 @@ export class EditComponent implements OnInit {
     privateAdult: null,
     privateChild: null,
     privatetransferprice: null,
-    thumbnail: []
+    thumbnail: [],
   };
   cityImageFile: File | null = null;
   thumbnailFiles: File[] = [];
@@ -49,7 +49,7 @@ export class EditComponent implements OnInit {
         this.errorMessage = 'Failed to load product data';
         console.error('Loading error:', err);
         this.loading = false;
-      }
+      },
     });
   }
 
@@ -61,7 +61,8 @@ export class EditComponent implements OnInit {
     // Initialize private fields
     this.productData.privateAdult = this.productData.privateAdult || null;
     this.productData.privateChild = this.productData.privateChild || null;
-    this.productData.privatetransferprice = this.productData.privatetransferprice || null;
+    this.productData.privatetransferprice =
+      this.productData.privatetransferprice || null;
 
     // Format date
     if (this.productData.discountend) {
@@ -109,7 +110,7 @@ export class EditComponent implements OnInit {
     const discount = Number(this.productData.discountPercentage);
 
     if (!isNaN(base) && !isNaN(discount)) {
-      const discounted = base - (base * discount / 100);
+      const discounted = base - (base * discount) / 100;
       this.productData.discountedTotal = Math.round(discounted);
     } else {
       this.productData.discountedTotal = null;
@@ -118,12 +119,16 @@ export class EditComponent implements OnInit {
 
   validatePrivateFields(): void {
     if (this.productData.private) {
-      this.productData.privateAdult = this.productData.privateAdult ? 
-        Number(this.productData.privateAdult) : null;
-      this.productData.privateChild = this.productData.privateChild ? 
-        Number(this.productData.privateChild) : null;
-      this.productData.privatetransferprice = this.productData.privatetransferprice ? 
-        Number(this.productData.privatetransferprice) : null;
+      this.productData.privateAdult = this.productData.privateAdult
+        ? Number(this.productData.privateAdult)
+        : null;
+      this.productData.privateChild = this.productData.privateChild
+        ? Number(this.productData.privateChild)
+        : null;
+      this.productData.privatetransferprice = this.productData
+        .privatetransferprice
+        ? Number(this.productData.privatetransferprice)
+        : null;
     } else {
       this.productData.privateAdult = null;
       this.productData.privateChild = null;
@@ -148,9 +153,16 @@ export class EditComponent implements OnInit {
     }
 
     // Append all fields except files and internal fields
-    Object.keys(this.productData).forEach(key => {
+    Object.keys(this.productData).forEach((key) => {
       if (
-        !['_id', '_v', 'createdAt', 'updatedAt', 'thumbnail', 'cityImage'].includes(key) &&
+        ![
+          '_id',
+          '_v',
+          'createdAt',
+          'updatedAt',
+          'thumbnail',
+          'cityImage',
+        ].includes(key) &&
         this.productData[key] !== null &&
         this.productData[key] !== undefined
       ) {
@@ -166,7 +178,7 @@ export class EditComponent implements OnInit {
     }
 
     if (this.thumbnailFiles.length > 0) {
-      this.thumbnailFiles.forEach(file => formData.append('thumbnail', file));
+      this.thumbnailFiles.forEach((file) => formData.append('thumbnail', file));
     }
 
     if (this.productData.thumbnail?.length > 0) {
@@ -183,9 +195,10 @@ export class EditComponent implements OnInit {
       },
       error: (err) => {
         console.error('Update error:', err);
-        this.errorMessage = err.error?.message || 'Update failed. Please try again.';
+        this.errorMessage =
+          err.error?.message || 'Update failed. Please try again.';
         this.loading = false;
-      }
+      },
     });
   }
 
@@ -194,9 +207,12 @@ export class EditComponent implements OnInit {
       this.errorMessage = 'Product title is required';
       return false;
     }
-    
+
     if (this.productData.private) {
-      if (this.productData.privateAdult === null || isNaN(this.productData.privateAdult)) {
+      if (
+        this.productData.privateAdult === null ||
+        isNaN(this.productData.privateAdult)
+      ) {
         this.errorMessage = 'Private adult price is required';
         return false;
       }
