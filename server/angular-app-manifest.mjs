@@ -2,7 +2,7 @@
 export default {
   bootstrap: () => import('./main.server.mjs').then(m => m.default),
   inlineCriticalCss: true,
-  baseHref: 'https://yusafzai-eng.github.io/YallahDubaiTourism/',
+  baseHref: '/YallahDubaiTourism/',
   locale: undefined,
   routes: [
   {
@@ -100,8 +100,8 @@ export default {
 ],
   entryPointToBrowserMapping: undefined,
   assets: {
-    'index.csr.html': {size: 1247, hash: 'd0ac77c16e00730e9ac6d5d891bc683531f1ece661ed2972761850a2ba84906b', text: () => import('./assets-chunks/index_csr_html.mjs').then(m => m.default)},
-    'index.server.html': {size: 1565, hash: 'ab2e90a5073d8408624f7998ee07702d954023fae28dc17d82ffc1194853678d', text: () => import('./assets-chunks/index_server_html.mjs').then(m => m.default)},
+    'index.csr.html': {size: 1217, hash: 'd5f954abdf160e233697e91962637162404cfa252b355ab049fb29f582deb0a4', text: () => import('./assets-chunks/index_csr_html.mjs').then(m => m.default)},
+    'index.server.html': {size: 1535, hash: '8433fc7a7f25f93e38fb7dda5a2f5d3052a2a576c213510a63088a40e9367988', text: () => import('./assets-chunks/index_server_html.mjs').then(m => m.default)},
     'styles-HPNLQLSF.css': {size: 17997, hash: 'pu6pG6Clk88', text: () => import('./assets-chunks/styles-HPNLQLSF_css.mjs').then(m => m.default)}
   },
 };
