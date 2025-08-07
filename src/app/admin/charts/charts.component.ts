@@ -128,7 +128,7 @@ export class ChartsComponent implements OnInit {
         labels: years,
         datasets: [
           {
-            label: 'Total Revenue (AED)',
+            label: 'Total Revenue (PKR)',
             data: totals,
             backgroundColor: colors,
             borderColor: borderColors,
@@ -142,7 +142,7 @@ export class ChartsComponent implements OnInit {
           legend: { position: 'top' },
           tooltip: {
             callbacks: {
-              label: (context) => `AED ${context.raw?.toLocaleString()}`,
+              label: (context) => `PKR ${context.raw?.toLocaleString()}`,
             },
           },
         },
@@ -156,7 +156,7 @@ export class ChartsComponent implements OnInit {
         labels: years,
         datasets: [
           {
-            label: 'Total Revenue (AED)',
+            label: 'Total Revenue (PKR)',
             data: totals,
             backgroundColor: colors,
             borderColor: borderColors,
@@ -170,14 +170,14 @@ export class ChartsComponent implements OnInit {
           y: {
             beginAtZero: true,
             ticks: {
-              callback: (value) => `AED ${value}`,
+              callback: (value) => `PKR ${value}`,
             },
           },
         },
         plugins: {
           tooltip: {
             callbacks: {
-              label: (context) => `AED ${context.raw?.toLocaleString()}`,
+              label: (context) => `PKR ${context.raw?.toLocaleString()}`,
             },
           },
         },

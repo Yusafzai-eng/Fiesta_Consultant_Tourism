@@ -113,24 +113,33 @@ export class ProductsComponent implements OnInit, OnDestroy {
     this.isloader = false;
   }
 
-  applyFilters(): void {
-    this.filteredProducts = this.allProducts.filter((product) => {
-      const matchesCategory =
-        !this.selectedCategory || product.categorie === this.selectedCategory;
-      const matchesCity =
-        !this.selectedCity || product.cityName === this.selectedCity;
-      return matchesCategory && matchesCity;
-    });
+  // Add this to your component properties
+selectedTitle: string = '';
 
-    this.resetToFirstPage();
-  }
+// Update the applyFilters method
+applyFilters(): void {
+  this.filteredProducts = this.allProducts.filter((product) => {
+    const matchesCategory =
+      !this.selectedCategory || product.categorie === this.selectedCategory;
+    const matchesCity =
+      !this.selectedCity || product.cityName === this.selectedCity;
+    const matchesTitle = !this.selectedTitle || 
+      product.producttitle.toLowerCase().includes(this.selectedTitle.toLowerCase());
+    
+    return matchesCategory && matchesCity && matchesTitle;
+  });
 
-  resetFilters(): void {
-    this.selectedCategory = '';
-    this.selectedCity = '';
-    this.filteredProducts = [...this.allProducts];
-    this.resetToFirstPage();
-  }
+  this.resetToFirstPage();
+}
+
+// Update the resetFilters method
+resetFilters(): void {
+  this.selectedCategory = '';
+  this.selectedCity = '';
+  this.selectedTitle = '';
+  this.filteredProducts = [...this.allProducts];
+  this.resetToFirstPage();
+}
 
   private calculatePagination(): void {
     this.totalPages =

@@ -54,64 +54,76 @@ export class UserDetailsComponent implements OnInit {
     });
   }
 
-  getUserOrders() {
-    this.isLoading = true;
-    this.error = null;
+getUserOrders() {
+  this.isLoading = true;
+  this.error = null;
 
-    this.http
-      .get<any>(
-        `http://localhost:4000/api/userordersdetails?userId=${this.userId}`,
-        {
-          withCredentials: true,
-        }
-      )
-      .subscribe({
-        next: (res) => {
-          this.userOrders = res.orders || [];
-
-          this.userOrders.forEach((order: any) => {
-            const orderCreatedAt = order.createdAt
-              ? new Date(order.createdAt)
-              : null;
-
+  this.http
+    .get<any>(
+      `http://localhost:4000/api/userordersdetails?userId=${this.userId}`,
+      { withCredentials: true }
+    )
+    .subscribe({
+      next: (res) => {
+        this.userOrders = (res.orders || [])
+          .sort((a: any, b: any) => {
+            return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+          })
+          .map((order: any) => {
+            const orderCreatedAt = order.createdAt ? new Date(order.createdAt) : null;
             order.products.forEach((product: any) => {
-              product.createdAt = orderCreatedAt; // ✅ Inject order's time into product
+              product.createdAt = orderCreatedAt;
             });
+            return order;
           });
 
-          this.filteredOrders = [...this.userOrders];
+        this.filteredOrders = [...this.userOrders];
 
-          if (this.userOrders.length > 0) {
-            this.userName = this.userOrders[0].userName || '';
-          } else {
-            this.error = 'No orders found for this user';
-          }
+        if (this.userOrders.length > 0) {
+          this.userName = this.userOrders[0].userName || '';
+        } else {
+          this.error = 'No orders found for this user';
+        }
 
-          this.isLoading = false;
-        },
-        error: (err) => {
-          this.error = err.message || 'Failed to load orders';
-          this.isLoading = false;
-        },
+        this.isLoading = false;
+      },
+      error: (err) => {
+        this.error = err.message || 'Failed to load orders';
+        this.isLoading = false;
+      },
+    });
+}
+dateQuery: string = '';
+filterProducts() {
+  if (!this.searchQuery && !this.dateQuery) {
+    this.filteredOrders = [...this.userOrders];
+    return;
+  }
+
+  const titleQuery = this.searchQuery.toLowerCase();
+  const dateQuery = this.dateQuery;
+
+  this.filteredOrders = this.userOrders
+    .map((order) => {
+      const filteredProducts = order.products.filter((product: any) => {
+        const matchesTitle = titleQuery ? 
+          product.producttitle.toLowerCase().includes(titleQuery) : 
+          true;
+        
+        // Convert both dates to same format for comparison
+        let matchesDate = true;
+        if (dateQuery) {
+          const dbDateParts = product.order_date?.split('/');
+          const dbDateFormatted = dbDateParts?.reverse().join('-'); // Convert DD/MM/YYYY to YYYY-MM-DD
+          matchesDate = dbDateFormatted === dateQuery;
+        }
+
+        return matchesTitle && matchesDate;
       });
-  }
-
-  filterProducts() {
-    if (!this.searchQuery) {
-      this.filteredOrders = [...this.userOrders];
-      return;
-    }
-
-    const query = this.searchQuery.toLowerCase();
-    this.filteredOrders = this.userOrders
-      .map((order) => {
-        const filteredProducts = order.products.filter((product: any) =>
-          product.producttitle.toLowerCase().includes(query)
-        );
-        return { ...order, products: filteredProducts };
-      })
-      .filter((order) => order.products.length > 0);
-  }
+      return { ...order, products: filteredProducts };
+    })
+    .filter((order) => order.products.length > 0);
+}
 
   onTransferTypeChange() {
     if (this.editingProduct.transfertype === 'Private') {
@@ -318,7 +330,8 @@ export class UserDetailsComponent implements OnInit {
   }
 
   resetSearch() {
-    this.searchQuery = '';
-    this.filterProducts(); // Optional: refresh list to show all items
-  }
+  this.searchQuery = '';
+  this.dateQuery = '';
+  this.filterProducts();
+}
 }

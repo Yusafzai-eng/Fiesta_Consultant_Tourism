@@ -1,5 +1,5 @@
 <div class="mt-32">
-  <img src="https://imagedelivery.net/SwMP4f7rTNZkFOn4O9xPmg/c4281d45-5ad9-45a0-01d2-2bcd7ae04700/public" width="100%" class="object-fit" alt="Leading Tour Operator &amp; Destination Management Company">         
+  <img src='/assets/nature2.jpg' width="100%" class="object-fit" alt="Leading Tour Operator &amp; Destination Management Company">         
 </div>
 
 <!-- Cart Table -->
@@ -8,7 +8,7 @@
     <!-- Table Container -->
     <div class="min-w-[80vw] overflow-x-auto rounded-lg bg-white shadow-lg" *ngIf="cartItems.length > 0 || formData">
       <table class="w-full">
-        <thead class="bg-pink-700 text-white">
+        <thead class="bg-[#004030] text-white">
           <tr>
             <th class="px-6 py-4 text-left font-semibold">ID</th>
             <th class="px-6 py-4 text-left font-semibold">Image</th>
@@ -46,7 +46,7 @@
               {{ item.transfertype }}
             </td>
             <td class="px-6 py-4 text-center border-2 border-slate-200">
-              <span class="text-xs">AED:</span>
+              <span class="text-xs">Pkr:</span>
              <span>
                {{ item.total || item.privatetransferprice  }}
              </span>
@@ -64,7 +64,7 @@
   class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50"
 >
   <div class="bg-white rounded shadow-lg w-[320px]">
-    <div class="bg-pink-800 text-white px-4 py-2 flex justify-between items-center">
+    <div class="bg-[#004030]  text-white px-4 py-2 flex justify-between items-center">
       <span class="font-bold">Delete Confirmation</span>
       <button (click)="closeModal()" class="text-white hover:text-gray-200">
         ✕
@@ -76,7 +76,7 @@
     <div class="flex justify-center gap-4 pb-4">
       <button
         (click)="deleteConfirmed()"
-        class="bg-pink-700 hover:bg-pink-800 text-white px-4 py-2 rounded shadow"
+        class="bg-[#004030] hover:bg-[#3E5F44] text-white px-4 py-2 rounded shadow"
       >
         Yes Delete
       </button>
@@ -132,7 +132,7 @@
     <!-- Empty Cart Message -->
     <div *ngIf="!cartItems.length && !formData" class="text-center p-8">
       <p class="text-xl">Your cart is empty</p>
-      <button (click)="navigateToPage()" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+      <button (click)="navigateToPage()" class="mt-4 bg-[#004030] text-white px-4 py-2 rounded ">
         Continue Shopping
       </button>
     </div>
@@ -142,7 +142,7 @@
       <button
         type="button"
         (click)="navigateToPage()"
-        class="focus:outline-none text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 transition-colors"
+        class="focus:outline-none text-white bg-[#004030] hover:bg-indigo-800 focus:ring-4 focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 transition-colors"
       >
         Continue Shopping
       </button>
@@ -153,7 +153,7 @@
     <div class="border-2  w-48 h-48 flex items-center justify-center">
       <div class="text-center">
         <h1 class="text-xl font-normal">Need Help?</h1>
-        <h1 class="text-xl font-bold text-pink-800">+971 54 540 4171</h1>
+        <h1 class="text-xl font-bold text-[#004030]">+971 54 540 4171</h1>
         <h1 class="text-base font-light">Available 24/7</h1>
       </div>
     </div>
@@ -163,7 +163,7 @@
 <!-- Payment Form -->
 <div class="grid place-content-center">
   <div class="mt-7 w-[100%] flex flex-col bg-white rounded-lg p-4 shadow-sm">
-    <h2 class="text-[#e050c1] font-bold text-2xl text-center md:text-start mx-6">Personal Information</h2>
+    <h2 class="text-[#004030] font-bold text-2xl text-center md:text-start mx-6">Personal Information</h2>
 
     <!-- Form Group -->
     <form [formGroup]="personalDetailsForm" (ngSubmit)="onSubmit()">
@@ -246,10 +246,76 @@
 
       <!-- Submit Button -->
       <div class="mt-4 flex justify-center">
-        <button type="submit" class="w-[95%] bg-[#c72066] text-white rounded-md px-8 py-2 hover:bg-[#e747e7] hover:text-white transition-all duration-200">
+        <button type="submit"  class="w-[95%] bg-[#004030] text-white rounded-md px-8 py-2 hover:bg-[#004030] hover:text-white transition-all duration-200">
           Complete Booking
         </button>
       </div>
     </form>
   </div>
 </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div
+  class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50"
+  *ngIf="successful"
+>
+  <div class="bg-white rounded shadow-lg w-[320px]">
+    <div class="bg-[#004030] text-white px-4 py-2 flex justify-between items-center">
+      <span class="font-bold">Booking Successful</span>
+      <button class="text-white hover:text-gray-200">
+        ✕
+      </button>
+    </div>
+    <div class="px-4 py-6 text-center text-gray-800 font-semibold">
+      Your booking has been successfully completed!
+    </div>
+    <div class="flex justify-center pb-4">
+     <button
+  class="bg-[#004030]  hover:bg-[#004030]  text-white px-4 py-2 rounded shadow"
+  [routerLink]="'/main'"
+>
+  OK
+</button>
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+

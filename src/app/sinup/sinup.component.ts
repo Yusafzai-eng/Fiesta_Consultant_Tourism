@@ -44,7 +44,7 @@ export class SinupComponent {
 
       this.singupService.submitForm(data).subscribe({
         next: (res: any) => {
-          alert(res.message || 'Signup successful!');
+          // alert(res.message || 'Signup successful!');
           this.router.navigateByUrl('/login');
         },
         error: (err) => {

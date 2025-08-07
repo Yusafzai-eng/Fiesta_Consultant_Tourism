@@ -2,11 +2,11 @@
 <div class="mt-5">
   <div class="flex space-x-4 justify-center items-center">
     <div class="mt-1">
-      <i class="fa-solid fa-bullhorn text-xl text-pink-700"></i>
-      <h1 class="border-b-2 border-pink-700"></h1>
+      <i class="fa-solid fa-bullhorn text-xl text-[rgb(0,64,48)]"></i>
+      <h1 class="border-b-2 border-[rgb(9,87,63)]"></h1>
     </div>
     <div>
-      <h1 class="font-bold text-2xl text-pink-700">Our Services</h1>
+      <h1 class="font-bold text-2xl text-[rgb(9,87,63)]">Our Services</h1>
     </div>
   </div>
 </div>
@@ -75,14 +75,14 @@
             />
 
             <!-- 🔖 Discount Badge -->
-            <div *ngIf="item.discountPercentage" class="absolute top-1 bg-pink-700 text-white text-xs font-bold px-2 py-1 shadow-md">
+            <div *ngIf="item.discountPercentage" class="absolute top-1 bg-green-600 text-white text-xs font-bold px-2 py-1 shadow-md">
               {{item.discountPercentage}}% OFF
             </div>
           </div>
 
           <!-- 📦 Product Content -->
           <div class="p-2">
-            <h2 class="text-sm font-semibold text-center line-clamp-1">
+            <h2 class="text-sm text-[rgb(0,64,48)] font- text-center line-clamp-1">
               {{ item.title }}
             </h2>
 
@@ -104,14 +104,17 @@
             <!-- 🔽 Duration & Final Price -->
             <div class="flex justify-between">
               <div class="flex space-x-1 items-center">
-                <i class="fa-regular fa-clock text-pink-800 text-sm font-medium"></i>
-                <p class="text-sm font-medium">{{ item.duration }} Hours</p>
+                <i class="fa-regular fa-clock text-green-600 text-sm font-medium"></i>
+                <p class="text-sm text-[rgb(0,64,48)] font-medium">{{ item.duration }} Hours</p>
               </div>
 
               <p class="text-xs font-medium text-center">
-                <span class="text-pink-700 mr-1">AED</span>
+                <span class="text-green-600 mr-1">AED</span>
                 <ng-container *ngIf="item.discountedTotal === 0; else showDiscounted">
-                  {{ item.adultBaseprice }}
+                <span class="text-[rgb(0,64,48)]">
+
+           {{ item.adultBaseprice }}
+                </span>  
                 </ng-container>
                 <ng-template #showDiscounted>
                   {{ item.discountedTotal }}
@@ -161,10 +164,10 @@
 <div class="mt-5 flex justify-center items-center">
   <!-- Desert Safaries Button -->
   <button 
-    class="py-2 px-4 text-pink-700 font-bold text-xl rounded-lg hover:bg-pink-100 focus:ring-4 focus:ring-pink-300 transition duration-300 ease-in-out"
+    class="py-2 px-4 text-green-500 font-bold text-xl rounded-lg hover:bg-pink-100 focus:ring-4 focus:ring-pink-300 transition duration-300 ease-in-out"
     aria-label="Explore Desert Safaris"
   >
-    <span class="border-b-2 border-pink-600">
+    <span class="border-b-2 border-green-600">
       <i class="fa-solid fa-location-dot"></i>
     </span>
     Desert Safaries

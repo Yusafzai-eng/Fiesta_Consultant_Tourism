@@ -23,7 +23,8 @@ export class ProducttableComponent implements OnInit {
   formData: any;
   cartItems: any[] = [];
   personalDetailsForm: FormGroup;
-  isLoading = true;
+  isLoading = false;
+  successful:boolean = false;
 
   paymentMethods = ['Visa', 'Mastercard', 'American Express', 'Discover'];
   countries = [
@@ -272,8 +273,9 @@ export class ProducttableComponent implements OnInit {
       })
       .subscribe({
         next: (res) => {
-          alert('Booking Successful!');
-          this.router.navigate(['/main']);
+          // alert('Booking Successful!');
+          // this.router.navigate(['/main']);
+          this.successful = true;
         },
         error: (err) => {
           console.error('Error posting data:', err);
@@ -353,7 +355,7 @@ export class ProducttableComponent implements OnInit {
             this.cartItems = this.cartItems.filter(
               (i) => i.productId !== item.productId
             );
-            alert(res.message || 'Item removed successfully');
+            // alert(res.message || '');
           }
           this.closeModal();
         },
@@ -364,4 +366,5 @@ export class ProducttableComponent implements OnInit {
         },
       });
   }
+
 }

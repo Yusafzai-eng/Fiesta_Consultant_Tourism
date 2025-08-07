@@ -44,6 +44,23 @@
       />
     </div>
 
+    <!-- Date Search Input -->
+    <div class="relative w-full">
+      <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+        <svg class="w-4 h-4 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+      </div>
+      <input
+        type="date"
+        [(ngModel)]="dateQuery"
+        (change)="filterProducts()"
+        class="block w-full p-2 pl-10 text-sm text-gray-800 border border-slate-300 rounded-lg shadow-sm bg-white
+               focus:border-slate-300 focus:outline-none"
+        placeholder="Filter by date"
+      />
+    </div>
+
     <!-- Reset Button -->
     <button
       type="button"
@@ -56,17 +73,16 @@
 </div>
 
 
-
-    <div class="overflow-x-auto w-full">
-      <table class="w-[100vw] text-sm text-left text-gray-800 shadow rounded">
+<div class="overflow-x-auto w-full hide-scrollbar">
+      <table class="w-[100vw] text-sm text-left overflow-x-auto w-full overflow-x-auto scrollbar-hide text-gray-800 shadow rounded">
         <thead class="bg-slate-200 text-slate-800 uppercase text-xs">
           <tr>
             <th class="p-2">Images</th>
             <th class="p-2 w-36">Title</th>
             <th class="p-2">Transfer</th>
-            <th class="p-2">City</th>
             <th class="p-2">Kids</th>
             <th class="p-2">Adults</th>
+           <th class="p-2">City</th>
             <th class="p-2">Order Date</th>
             <th class="p-2">Time</th>
             <th class="p-2">Category</th>
@@ -96,9 +112,10 @@
                 </td>
 
                 <td class="p-2 font-semibold w-36 truncate max-w-[144px]">
-                  <a [routerLink]="['/products', product?._id]">
-                    {{ product.producttitle }}
-                  </a>
+      <a [routerLink]="['/products', product.productId]">
+  {{ product.producttitle }}
+</a>
+
                 </td>
 
                 <td class="p-2 text-center">{{ product.transfertype}}</td>
@@ -148,6 +165,73 @@
       </table>
     </div>
   </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   <!-- Product Description Modal -->
   <div *ngIf="selectedProduct" class="fixed inset-0 z-50 bg-black bg-opacity-40 flex items-center justify-center">

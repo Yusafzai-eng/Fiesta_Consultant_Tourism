@@ -2,3 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
+.custom-font {
+  font-family: 'popin';
+}

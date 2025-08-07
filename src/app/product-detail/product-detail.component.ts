@@ -71,6 +71,9 @@ export class ProductDetailComponent implements OnInit, AfterViewInit {
     UsedChildRate: 0,
   };
 
+
+
+  
   button = [
     { icon: 'fa-solid fa-calendar-days text-red-500 ', label: 'TourService' },
     { icon: 'fa-solid fa-hourglass-half  text-indigo-600', label: 'Duration' },

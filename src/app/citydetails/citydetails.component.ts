@@ -21,6 +21,7 @@ interface Product {
   productdescription: string;
   wifi: string;
   tourService: string;
+  discountend: number;
   duration: string;
   price: number;
   adultBaseprice: number;
@@ -98,6 +99,7 @@ export class CitydetailsComponent implements OnInit {
           cityName: product.cityName,
           price: product.price,
           citydescription: product.citydescription,
+          discountend: product.discountend,
           adultBaseprice: product.adultBaseprice,
           discountedTotal: product.discountedTotal,
           discountPercentage: product.discountPercentage,
@@ -111,6 +113,7 @@ export class CitydetailsComponent implements OnInit {
           ],
           timings: product.timings || {
             duration: product.duration,
+            discountend: product.discountend,
             departurePoint: product.tourService,
             pickupTime: product.pickUp,
             wifi: product.wifi,

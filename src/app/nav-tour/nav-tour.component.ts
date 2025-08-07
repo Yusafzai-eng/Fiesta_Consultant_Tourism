@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
-
 import { CommonModule } from '@angular/common';
 import { ServiceNameService } from '../service-name.service';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
+import { CitydetailsComponent } from "../citydetails/citydetails.component";
 @Component({
   selector: 'app-nav-tour',
-  imports: [CommonModule, RouterLink, FormsModule, NgxSkeletonLoaderModule],
+  imports: [CommonModule, RouterLink, FormsModule, NgxSkeletonLoaderModule, CitydetailsComponent],
   templateUrl: './nav-tour.component.html',
   styleUrl: './nav-tour.component.css',
 })
@@ -39,12 +39,16 @@ export class NavTourComponent {
           // Corrected image path, including the backend URL
           image:
             item.thumbnail && item.thumbnail[0]
-              ? `http://localhost:4000/uploads/${item.thumbnail[0]}` // Backend image path
+              ? `http://localhost:4000/uploads/${item.thumbnail[1]}` // Backend image path
               : '/assets/fallback-image-url.jpg', // Fallback image
           price: item.price,
+          producttitle: item.producttitle,
           cityName: item.cityName,
           duration: item.duration,
-          discription: item.productdescription,
+          productdescription: item.productdescription,
+          discountend: item.discountend,
+          discountPercentage: item.discountPercentage,
+          adultBaseprice: item.adultBaseprice,
         }));
         this.isloader = false;
 

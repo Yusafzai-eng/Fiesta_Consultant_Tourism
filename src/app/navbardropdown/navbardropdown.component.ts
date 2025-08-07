@@ -13,17 +13,22 @@ export class NavbardropdownComponent  {
 
   defaultSlides = [
     {
-      img: 'https://imagedelivery.net/SwMP4f7rTNZkFOn4O9xPmg/54b896de-2b15-49d9-47f9-df61643d8f00/width=1600',
+    img: '/assets/nature2.jpg',
+      alt: 'Rewards Bonanza',
+    },
+     {
+    img: '/assets/nature12.jpg',
       alt: 'Rewards Bonanza',
     },
     {
-      img: 'https://imagedelivery.net/SwMP4f7rTNZkFOn4O9xPmg/1ea10043-d141-427c-0b0a-175b8ce01600/public',
-      alt: '9 AED Offer',
+    img: '/assets/natures11.webp',
+      alt: 'Rewards Bonanza',
     },
-    {
-      img: 'https://imagedelivery.net/SwMP4f7rTNZkFOn4O9xPmg/c215efca-d7cf-42a6-8555-0db3daf1d600/public',
-      alt: '9 AED Offer',
-    },
+   
+   
+    
+  
+   
   ];
 
   @Input() slides: { img: string; alt: string }[] = this.defaultSlides;
@@ -54,5 +59,45 @@ export class NavbardropdownComponent  {
 
 
   
+  activeIndex = 0;
+  carouselItems = [
+    {     image: '/assets/nature2.jpg', alt: 'Slide 1' },
+    {     image: '/assets/nature12.jpg', alt: 'Slide 1' },
+    {     image: 'https://www.shutterstock.com/image-photo/himalaya-panoramic-view-indian-himalayas-260nw-1841402155.jpg', alt: 'Slide 1' },
+ 
+  ];
+  private interval: any;
+
+  constructor() { }
+
+  ngOnInit(): void {
+    // this.startAutoRotation();
+  }
+
+  ngOnDestroy(): void {
+    this.stopAutoRotation();
+  }
+
+  startAutoRotation(): void {
+    this.interval = setInterval(() => this.next(), 5000);
+  }
+
+  stopAutoRotation(): void {
+    if (this.interval) {
+      clearInterval(this.interval);
+    }
+  }
+
+  next(): void {
+    this.activeIndex = (this.activeIndex + 1) % this.carouselItems.length;
+  }
+
+  prev(): void {
+    this.activeIndex = (this.activeIndex - 1 + this.carouselItems.length) % this.carouselItems.length;
+  }
+
+  goTo(index: number): void {
+    this.activeIndex = index;
+  }
 }
 

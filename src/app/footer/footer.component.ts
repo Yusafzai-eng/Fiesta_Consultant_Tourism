@@ -14,22 +14,22 @@ export class FooterComponent {
     { name: 'Cookie Policy', url: '#' },
     { name: 'Terms and Conditions', url: '#' },
   ];
-
+             src='/assets/image.png'
   logos = [
     {
-      src: 'https://www.dubaitraveltourism.com/assets/images/paytab.png',
+     src:'/assets/paytab.png',
       alt: 'PayTab',
     },
     {
-      src: 'https://www.dubaitraveltourism.com/assets/images/security.png',
+     src:'/assets/security.png',
       alt: 'Security',
     },
     {
-      src: 'https://www.dubaitraveltourism.com/assets/images/payments.png',
+     src:'/assets/payments.png',
       alt: 'Payments',
     },
     {
-      src: 'https://www.dubaitraveltourism.com/assets/images/godaddy.png',
+     src:'/assets/godaddy.png',
       alt: 'GoDaddy',
     },
   ];

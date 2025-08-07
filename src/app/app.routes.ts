@@ -35,8 +35,8 @@ export const routes: Routes = [
     component: MainLayoutComponent,
     children: [
       { path: '', component: MainComponent },
-      { path: 'products/:id', component: ProductDetailComponent },
-      { path: 'city', component: CitydetailsComponent,canActivate: [authGuard]
+      { path: 'products/:id', component: ProductDetailComponent,canActivate:[authGuard] },
+      { path: 'city', component: CitydetailsComponent
  },
       { path: 'card', component: CardsComponent 
 },
@@ -61,6 +61,7 @@ export const routes: Routes = [
   canActivate: [AuthGuard], 
   children: [
     { path: '', component: AllComComponent,canActivate: [AuthGuard], },
+    
     { path: 'Users', component: UsersComponent,canActivate: [AuthGuard], },
     { path: 'Orders', component: OrdersComponent,canActivate: [AuthGuard], },
     { path: 'Add-Products', component: AddProductsComponent,canActivate: [AuthGuard], },

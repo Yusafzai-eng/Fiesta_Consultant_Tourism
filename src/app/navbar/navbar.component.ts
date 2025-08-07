@@ -11,7 +11,7 @@ import { HttpClient } from '@angular/common/http';
   styleUrls: ['./navbar.component.css'],
 })
 export class NavbarComponent {
-  email: string = 'inquiry@dubaitraveltourism.com';
+  email: string = 'fiestaconsultants1@gmail.com';
 
   menuOpen = false;
   isMenuOpen = false;
@@ -106,7 +106,10 @@ export class NavbarComponent {
   }
 
   openWhatsApp() {
-    window.open('https://wa.me/971545404171', '_blank');
+    window.open('https://wa.me/3019307229', '_blank');
+  }
+  openWhatsApp1() {
+    window.open('https://wa.me/3026062955', '_blank');
   }
 
   toggleMenu() {
@@ -150,12 +153,12 @@ export class NavbarComponent {
   ];
 
   links = [
-    { label: 'NEW YEAR EVENTS', path: '/city?cityName=NEW%20YEAR%20EVENTS' },
-    { label: 'SAFARI TOURS', path: '/city?cityName=SAFARI%20TOURS' },
-    { label: 'COMBO DEALS', path: '/city?cityName=COMBO%20DEALS' },
-    { label: 'SEA ADVENTURES', path: '/city?cityName=SEA%20ADVENTURES' },
-    { label: 'CITY TOURS', path: '/city?cityName=CITY%20TOURS' },
-    { label: 'DHOW CRUISE', path: '/city?cityName=DHOW%20CRUISE' },
+    { label: 'Balochistan', path: 'http://localhost:4200/city?cityName=Balochistan' },
+    { label: 'Islamabad', path: 'http://localhost:4200/city?cityName=Islamabad' },
+    { label: 'Lahore', path: 'http://localhost:4200/city?cityName=Lahore' },
+    { label: 'Multan', path: 'http://localhost:4200/city?cityName=Multan' },
+    { label: 'Karachi', path: 'http://localhost:4200/city?cityName=Karachi' },
+    { label: 'Faisalabad', path: 'http://localhost:4200/city?cityName=Faisalabad' },
   ];
 
   menuItems: any[] = [];

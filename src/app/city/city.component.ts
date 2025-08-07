@@ -4,11 +4,12 @@ import { HttpClient } from '@angular/common/http';
 import { DomSanitizer } from '@angular/platform-browser';
 import { RouterLink } from '@angular/router';
 import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
+import { CitydetailsComponent } from "../citydetails/citydetails.component";
 
 @Component({
   selector: 'app-city',
   standalone: true,
-  imports: [RouterLink, CommonModule, NgxSkeletonLoaderModule],
+  imports: [RouterLink, CommonModule, NgxSkeletonLoaderModule, CitydetailsComponent],
   templateUrl: './city.component.html',
   styleUrls: ['./city.component.css'], // ⬅️ style**Urls** (not `styleUrl`)
 })

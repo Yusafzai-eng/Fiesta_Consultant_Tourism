@@ -131,100 +131,122 @@ export class OrdersComponent {
     this.showDetails = false;
   }
   today: Date = new Date();
-  applyFilter(): void {
-    let filtered = [...this.originalUserSummaries];
+// Add these new properties to your component class
+selectedName: string = '';
+selectedEmail: string = '';
 
-    // ✅ Filter by latest 2 or 3 product orders
-    if (this.selectedFilter === 'last2') {
-      let allProducts: any[] = [];
+// Modify the applyFilter method to include name and email filtering
+applyFilter(): void {
+  let filtered = [...this.originalUserSummaries];
 
-      // ✅ Flatten all products with user info
-      this.originalUserSummaries.forEach((user: any) => {
-        user.products.forEach((product: any) => {
-          allProducts.push({
-            ...product,
-            userName: user.userName,
-            userEmail: user.userEmail,
-            userId: user.userId,
-            thumbnail: user.thumbnail,
-            address: user.address,
-            cityName: product.cityName,
-            order_date: product.order_date,
-            total: product.total,
-          });
+  // ✅ Filter by latest 2 or 3 product orders
+  if (this.selectedFilter === 'last2') {
+    let allProducts: any[] = [];
+
+    // ✅ Flatten all products with user info
+    this.originalUserSummaries.forEach((user: any) => {
+      user.products.forEach((product: any) => {
+        allProducts.push({
+          ...product,
+          userName: user.userName,
+          userEmail: user.userEmail,
+          userId: user.userId,
+          thumbnail: user.thumbnail,
+          address: user.address,
+          cityName: product.cityName,
+          order_date: product.order_date,
+          total: product.total,
         });
       });
+    });
 
-      // ✅ Sort by latest order_date
-      allProducts.sort(
-        (a, b) =>
-          new Date(b.order_date).getTime() - new Date(a.order_date).getTime()
-      );
+    // ✅ Sort by latest order_date
+    allProducts.sort(
+      (a, b) =>
+        new Date(b.order_date).getTime() - new Date(a.order_date).getTime()
+    );
 
-      // ✅ Take top 3 latest
-      const last2 = allProducts.slice(0, 3);
+    // ✅ Take top 3 latest
+    const last2 = allProducts.slice(0, 3);
 
-      const filteredUsersMap = new Map<string, any>();
+    const filteredUsersMap = new Map<string, any>();
 
-      last2.forEach((p: any) => {
-        if (!filteredUsersMap.has(p.userEmail)) {
-          filteredUsersMap.set(p.userEmail, {
-            userId: p.userId,
-            userName: p.userName,
-            userEmail: p.userEmail,
-            address: p.address,
-            total: p.total,
-            thumbnail: p.thumbnail,
-            products: [p],
-            latestDate: new Date(p.order_date),
-          });
-        } else {
-          const existing = filteredUsersMap.get(p.userEmail);
-          existing.products.push(p);
-          existing.total += p.total;
-        }
-      });
+    last2.forEach((p: any) => {
+      if (!filteredUsersMap.has(p.userEmail)) {
+        filteredUsersMap.set(p.userEmail, {
+          userId: p.userId,
+          userName: p.userName,
+          userEmail: p.userEmail,
+          address: p.address,
+          total: p.total,
+          thumbnail: p.thumbnail,
+          products: [p],
+          latestDate: new Date(p.order_date),
+        });
+      } else {
+        const existing = filteredUsersMap.get(p.userEmail);
+        existing.products.push(p);
+        existing.total += p.total;
+      }
+    });
 
-      filtered = Array.from(filteredUsersMap.values());
-    }
-
-    // ✅ Filter by city
-    if (this.selectedCity.trim() !== '') {
-      filtered = filtered.filter((user) =>
-        user.products.some(
-          (p: any) =>
-            p.cityName?.toLowerCase().trim() ===
-            this.selectedCity.toLowerCase().trim()
-        )
-      );
-    }
-
-    // ✅ Filter by selected date (order_date)
-    if (this.selectedDate) {
-      const selectedDateStr = new Date(this.selectedDate).toLocaleDateString(
-        'en-US'
-      ); // e.g. 7/21/2025
-
-      filtered = filtered.filter((user) =>
-        user.products.some((p: any) => {
-          const productDateStr = new Date(p.order_date).toLocaleDateString(
-            'en-US'
-          );
-          return productDateStr === selectedDateStr;
-        })
-      );
-    }
-
-    // ✅ Set final result
-    this.userSummaries = filtered;
+    filtered = Array.from(filteredUsersMap.values());
   }
 
-  resetFilters(): void {
-    this.selectedFilter = 'all';
-    this.selectedCity = '';
-    this.selectedDate = '';
-    this.userSummaries = [...this.originalUserSummaries];
+  // ✅ Filter by city
+  if (this.selectedCity.trim() !== '') {
+    filtered = filtered.filter((user) =>
+      user.products.some(
+        (p: any) =>
+          p.cityName?.toLowerCase().trim() ===
+          this.selectedCity.toLowerCase().trim()
+      )
+    );
   }
+
+  // ✅ Filter by selected date (order_date)
+  if (this.selectedDate) {
+    const selectedDateStr = new Date(this.selectedDate).toLocaleDateString(
+      'en-US'
+    ); // e.g. 7/21/2025
+
+    filtered = filtered.filter((user) =>
+      user.products.some((p: any) => {
+        const productDateStr = new Date(p.order_date).toLocaleDateString(
+          'en-US'
+        );
+        return productDateStr === selectedDateStr;
+      })
+    );
+  }
+
+  // ✅ Filter by user name
+  if (this.selectedName.trim() !== '') {
+    filtered = filtered.filter((user) =>
+      user.userName.toLowerCase().includes(this.selectedName.toLowerCase().trim())
+    );
+  }
+
+  // ✅ Filter by user email
+  if (this.selectedEmail.trim() !== '') {
+    filtered = filtered.filter((user) =>
+      user.userEmail.toLowerCase().includes(this.selectedEmail.toLowerCase().trim())
+    );
+  }
+
+  // ✅ Set final result
+  this.userSummaries = filtered;
+}
+
+// Update the resetFilters method to reset the new filters
+resetFilters(): void {
+  this.selectedFilter = 'all';
+  this.selectedCity = '';
+  this.selectedDate = '';
+  this.selectedName = '';
+  this.selectedEmail = '';
+  this.userSummaries = [...this.originalUserSummaries];
+}
 
   onEdit(id: string) {
     this.router.navigate(['/admin/edit', id]);
