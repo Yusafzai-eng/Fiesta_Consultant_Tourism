@@ -152,13 +152,14 @@ export class NavbarComponent {
     },
   ];
 
+
   links = [
-    { label: 'Balochistan', path: 'http://localhost:4200/city?cityName=Balochistan' },
-    { label: 'Islamabad', path: 'http://localhost:4200/city?cityName=Islamabad' },
-    { label: 'Lahore', path: 'http://localhost:4200/city?cityName=Lahore' },
-    { label: 'Multan', path: 'http://localhost:4200/city?cityName=Multan' },
-    { label: 'Karachi', path: 'http://localhost:4200/city?cityName=Karachi' },
-    { label: 'Faisalabad', path: 'http://localhost:4200/city?cityName=Faisalabad' },
+    { label: 'Balochistan', path: '/city?cityName=Balochistan' },
+    { label: 'Islamabad', path: '/city?cityName=Islamabad' },
+    { label: 'Lahore', path: '/city?cityName=Lahore' },
+    { label: 'Multan', path: '/city?cityName=Multan' },
+    { label: 'Karachi', path: '/city?cityName=Karachi' },
+    { label: 'Faisalabad', path: '/city?cityName=Faisalabad' },
   ];
 
   menuItems: any[] = [];
